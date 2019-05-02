@@ -1,0 +1,5 @@
+2019-05-02 17:16:33 [ DEBUG ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:35) ] Here is some DEBUG
+2019-05-02 17:16:33 [ INFO ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:36) ] Here is some INFO
+2019-05-02 17:16:33 [ WARN ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:37) ] Here is some WARN
+2019-05-02 17:16:33 [ ERROR ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:38) ] Here is some ERROR
+2019-05-02 17:16:33 [ FATAL ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:39) ] Here is some FATAL
