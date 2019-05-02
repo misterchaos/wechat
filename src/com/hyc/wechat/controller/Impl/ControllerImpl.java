@@ -17,6 +17,7 @@
 package com.hyc.wechat.controller.Impl;
 
 import com.hyc.wechat.controller.Controller;
+import com.hyc.wechat.controller.provider.Provider;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

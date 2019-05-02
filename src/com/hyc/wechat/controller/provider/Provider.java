@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hyc.wechat.controller.Impl;
+package com.hyc.wechat.controller.provider;
 
 import com.hyc.wechat.controller.annotation.Action;
 import com.hyc.wechat.controller.annotation.ActionProvider;

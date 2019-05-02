@@ -16,6 +16,10 @@
 
 package com.hyc.wechat.controller.listener;
 
+import com.hyc.wechat.controller.Controller;
+import com.hyc.wechat.controller.Impl.ControllerImpl;
+import com.hyc.wechat.controller.provider.UserProvider;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
@@ -31,9 +35,11 @@ import javax.servlet.annotation.WebListener;
 public class ServletContextListener implements javax.servlet.ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        //装载服务对象
+        //装载Controller容器
+        Controller controller = ControllerImpl.getInstance();
+        controller.registerProvider("userProvider",new UserProvider());
         ServletContext sc = sce.getServletContext();
-
+        sc.setAttribute("controller",controller);
     }
 
     @Override

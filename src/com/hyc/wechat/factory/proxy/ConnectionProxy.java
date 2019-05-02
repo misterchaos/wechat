@@ -31,7 +31,7 @@ import java.sql.Connection;
  * @description 用于代理数据库连接对象
  * @date 2019-05-01 17:52
  */
-public class ConnectionProxyFactory implements InvocationHandler {
+public class ConnectionProxy implements InvocationHandler {
 
     private Connection target;
     private DataSource dataSource;
@@ -41,7 +41,7 @@ public class ConnectionProxyFactory implements InvocationHandler {
         return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(),new Class[]{Connection.class},this);
     }
 
-    public ConnectionProxyFactory(DataSource dataSource) {
+    public ConnectionProxy(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

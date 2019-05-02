@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.hyc.wechat.controller.Impl;
+package com.hyc.wechat.controller.provider;
 
-import com.hyc.wechat.controller.Impl.Provider;
 import com.hyc.wechat.controller.annotation.Action;
 import com.hyc.wechat.controller.annotation.ActionProvider;
 import com.hyc.wechat.controller.constant.RequestMethod;
+import com.hyc.wechat.factory.ServiceProxyFactory;
 import com.hyc.wechat.model.po.User;
-import com.hyc.wechat.service.Impl.UserServiceImpl;
 import com.hyc.wechat.service.UserService;
 import com.hyc.wechat.util.BeanUtils;
 
@@ -38,10 +37,11 @@ import java.io.IOException;
 @ActionProvider(path = "/user")
 public class UserProvider extends Provider {
 
+    UserService userService = (UserService) ServiceProxyFactory.getInstance().getProxyInstance(UserService.class);
+
     @Action(method = RequestMethod.REGISTER_DO)
     public void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        User user = (User) BeanUtils.toObject(req.getParameterMap(),User.class);
-        UserService userService = new UserServiceImpl();
+        User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
         userService.register(user);
         resp.getWriter().write("注册成功");
     }

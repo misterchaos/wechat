@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hyc.wechat.factory.proxy;
+package com.hyc.wechat.factory;
 
 import com.hyc.wechat.dao.SQLRunner;
 import com.hyc.wechat.dao.annotation.*;
@@ -32,11 +32,19 @@ import java.lang.reflect.Proxy;
  */
 public class DaoProxyFactory implements InvocationHandler {
 
-    SQLRunner executor = new SQLRunnerImpl();
-
+    private static SQLRunner executor = new SQLRunnerImpl();
+    private static DaoProxyFactory instance= new DaoProxyFactory();
 
     public Object getProxyInstance(Class interfaces) {
         return Proxy.newProxyInstance(interfaces.getClassLoader(), new Class[]{interfaces}, this);
+    }
+
+    private DaoProxyFactory() {
+
+    }
+
+    public static DaoProxyFactory getInstance(){
+        return instance;
     }
 
     @Override

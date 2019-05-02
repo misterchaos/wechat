@@ -17,12 +17,9 @@
 package com.hyc.wechat.controller.servlet;
 
 import com.hyc.wechat.controller.*;
-import com.hyc.wechat.controller.Impl.ControllerImpl;
-import com.hyc.wechat.controller.Impl.Provider;
-import com.hyc.wechat.controller.Impl.UserProvider;
+import com.hyc.wechat.controller.provider.Provider;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,10 +33,7 @@ import java.util.List;
  * @description 用于处理用户相关请求
  * @date 2019-05-02 03:28
  */
-@WebServlet("/*")
-public class UserServlet extends HttpServlet {
-//TODO 改写到web.xml
-
+public class MyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         this.doPost(req, resp);
@@ -47,10 +41,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Provider userProvider = new UserProvider();
-
-        Controller controller = ControllerImpl.getInstance();
-        controller.registerProvider(userProvider.getClass().getName(),userProvider);
+        Controller controller = (Controller) getServletContext().getAttribute("controller");
         controller.doPost(req, resp);
     }
 

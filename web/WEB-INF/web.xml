@@ -20,6 +20,18 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
+    <servlet>
+        <servlet-name>MyServlet</servlet-name>
+        <servlet-class>com.hyc.wechat.controller.servlet.MyServlet</servlet-class>
+        <multipart-config>
+            <location>C:/Users/Misterchaos/Documents/Java Develop Workplaces/IDEA workspace/wechat/web/file</location>
+        </multipart-config>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MyServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
     <jsp-config>
         <taglib>
             <taglib-uri>http://java.sun.com/jsp/jstl/fmt</taglib-uri>

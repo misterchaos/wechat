@@ -2,10 +2,9 @@ package com.hyc.wechat.dao.impl;
 
 import com.hyc.wechat.dao.DataSource;
 import com.hyc.wechat.exception.DaoException;
-import com.hyc.wechat.factory.proxy.ConnectionProxyFactory;
+import com.hyc.wechat.factory.proxy.ConnectionProxy;
 
 import java.io.IOException;
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -143,7 +142,7 @@ public class DataSourceImpl implements DataSource {
 
             try {
                 if (conn.isValid(TIMEOUT)) {
-                    return new ConnectionProxyFactory(this).getProxyInstance(conn);
+                    return new ConnectionProxy(this).getProxyInstance(conn);
                 } else {
                     destroyConnection(conn);
                     return createConnection();
@@ -153,7 +152,7 @@ public class DataSourceImpl implements DataSource {
             }
         } else if (currentCount < MAX_SIZE) {
             Connection conn =  createConnection();
-            return new ConnectionProxyFactory(this).getProxyInstance(conn);
+            return new ConnectionProxy(this).getProxyInstance(conn);
         } else {
             throw new DaoException("数据库连接数已达到最大值");
         }

@@ -17,7 +17,7 @@
 package com.hyc.wechat.service.Impl;
 
 import com.hyc.wechat.dao.UserDao;
-import com.hyc.wechat.factory.proxy.DaoProxyFactory;
+import com.hyc.wechat.factory.DaoProxyFactory;
 import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.model.po.User;
 import com.hyc.wechat.service.UserService;
@@ -31,11 +31,11 @@ import com.hyc.wechat.service.constants.Status;
  */
 public class UserServiceImpl implements UserService {
 
-    private UserDao userDao = (UserDao) new DaoProxyFactory().getProxyInstance(UserDao.class);
+    private UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
+
     @Override
     public ServiceResult register(User user) {
         userDao.insert(user);
-
         return new ServiceResult(Status.SUCCESS,"注册成功！",user);
     }
 }

@@ -18,7 +18,7 @@ package com.hyc.wechat.test;
 
 import com.hyc.wechat.dao.FriendDao;
 import com.hyc.wechat.dao.UserDao;
-import com.hyc.wechat.factory.proxy.DaoProxyFactory;
+import com.hyc.wechat.factory.DaoProxyFactory;
 import com.hyc.wechat.model.po.Friend;
 import com.hyc.wechat.model.po.User;
 
@@ -33,15 +33,14 @@ import java.util.List;
  */
 public class TestSQlHandler {
     public static void main(String[] args) {
-        UserDao userDao = (UserDao) new DaoProxyFactory().getProxyInstance(UserDao.class);
+        UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
         User user = new User();
         user.setName("test");
         userDao.insert(user);
         user= userDao.getUserById("50");
         List list = userDao.listByName("test");
-        System.out.println(list);
 
-        FriendDao friendDao = (FriendDao) new DaoProxyFactory().getProxyInstance(FriendDao.class);
+        FriendDao friendDao = (FriendDao) DaoProxyFactory.getInstance().getProxyInstance(FriendDao.class);
         Friend friend  = new Friend();
         friend.setAlias("test");
         friend.setUserId(new BigInteger("13"));
