@@ -45,7 +45,6 @@ public class MyServlet extends HttpServlet {
         controller.doPost(req, resp);
     }
 
-    private List<Provider> providers = new LinkedList();
 }
 
 

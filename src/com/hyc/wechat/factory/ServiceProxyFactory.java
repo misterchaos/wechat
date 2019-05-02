@@ -16,10 +16,6 @@
 
 package com.hyc.wechat.factory;
 
-import com.hyc.wechat.dao.SQLRunner;
-import com.hyc.wechat.dao.annotation.*;
-import com.hyc.wechat.dao.impl.SQLRunnerImpl;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -32,25 +28,25 @@ import java.lang.reflect.Proxy;
  */
 public class ServiceProxyFactory implements InvocationHandler {
 
-    private static ServiceProxyFactory instance= new ServiceProxyFactory();
+    private Object target;
 
-    public Object getProxyInstance(Class interfaces) {
-        return Proxy.newProxyInstance(interfaces.getClassLoader(), new Class[]{interfaces}, this);
+    public Object getProxyInstance(Object target) {
+        this.target =target;
+        return Proxy.newProxyInstance(target.getClass().getClassLoader(), target.getClass().getInterfaces(), this);
     }
 
-    private ServiceProxyFactory() {
-
-    }
-
-    public static ServiceProxyFactory getInstance(){
-        return instance;
-    }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-        return method.invoke(proxy, args);
+        return method.invoke(target, args);
     }
 
+    public Object getTarget() {
+        return target;
+    }
 
+    public void setTarget(Object target) {
+        this.target = target;
+    }
 }

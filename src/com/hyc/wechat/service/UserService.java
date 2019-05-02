@@ -26,5 +26,25 @@ import com.hyc.wechat.model.po.User;
  * @date 2019-05-02 02:18
  */
 public interface UserService {
-    ServiceResult register(User user);
+    /**
+     * 检查注册用户的信息是否有效
+     *
+     * @param user 用户对象
+     * @return 返回传入时的对象
+     */
+    ServiceResult checkRegister(User user);
+
+    /**
+     * 添加一个用户账号
+     *
+     * @param user 用户对象
+     * @return 返沪传入的用户的对象
+     */
+    ServiceResult insertUser(User user);
+
+    /**
+     * @param user
+     * @return
+     */
+    ServiceResult login(User user);
 }

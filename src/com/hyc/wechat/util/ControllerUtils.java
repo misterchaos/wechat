@@ -37,15 +37,13 @@ public class ControllerUtils {
      * @see RequestMethod
      */
     public static RequestMethod valueOf(String name) {
-        if (name != null) {
             name=name.toUpperCase().replaceAll("\\.", "_");
             try {
                 return RequestMethod.valueOf(name);
-            }catch (IllegalArgumentException e){
-                e.printStackTrace();
+            }catch (IllegalArgumentException|NullPointerException e){
+                //此处异常表明请求参数没有匹配到任何服务,为无效请求
+                return RequestMethod.INVALID_REQUEST;
             }
-        }
-        return null;
     }
 }
 

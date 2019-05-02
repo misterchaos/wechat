@@ -17,6 +17,7 @@
 package com.hyc.wechat.controller.Impl;
 
 import com.hyc.wechat.controller.Controller;
+import com.hyc.wechat.controller.annotation.ControllerConfig;
 import com.hyc.wechat.controller.provider.Provider;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+@ControllerConfig(path = "/wechat")
 public class ControllerImpl implements Controller {
 
     /**
@@ -46,10 +48,11 @@ public class ControllerImpl implements Controller {
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) {
         String url = req.getRequestURI();
+        String contextPath= this.getClass().getAnnotation(ControllerConfig.class).path();
         Set<String> keys = providerMap.keySet();
         for (String key : keys) {
             //解析注解中的path信息，匹配ActionProvider
-            String path = providerMap.get(key).getPath();
+            String path =contextPath +providerMap.get(key).getPath();
             if (url.equalsIgnoreCase(path)) {
                 providerMap.get(key).doAction(req, resp);
             }

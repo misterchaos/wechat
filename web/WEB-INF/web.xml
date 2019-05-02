@@ -29,7 +29,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>MyServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/wechat/*</url-pattern>
     </servlet-mapping>
 
     <jsp-config>

@@ -16,7 +16,7 @@
 
 package com.hyc.wechat.controller.filter;
 
-import com.hyc.wechat.controller.constant.WebPages;
+import com.hyc.wechat.controller.constant.WebPage;
 import com.hyc.wechat.exception.ServiceException;
 
 import javax.servlet.*;
@@ -65,15 +65,10 @@ public class EncodingFilter implements Filter {
             resp.setCharacterEncoding(ENCODING);
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (IOException | ServiceException e) {
-            resp.sendRedirect(WebPages.ERROR_JSP.toString());
+            resp.sendRedirect(WebPage.ERROR_JSP.toString());
         }
 
-        //TODO debug
-        System.out.println("编码过滤器：" + "method = " + req.getParameter("method") + " view = " + req.getParameter("view") + " find = " + req.getParameter("find") + " name = " + req.getParameter("name"));
-        System.out.println("用户名：" + req.getParameter("name"));
-        System.out.println("电话号码" + req.getParameter("phoneNumber"));
-        System.out.println("昵称" + req.getParameter("nickName"));
-        System.out.println("请求链接：" + req.getQueryString());
+        System.out.println("[请求url] : "+req.getRequestURI()+" [请求参数] ：" + req.getQueryString());
     }
 }
 

@@ -32,6 +32,11 @@ public enum RequestMethod {
      */
     INDEX_VIEW,
 
+    /**
+     * 无效请求
+     */
+
+    INVALID_REQUEST,
     /*
      **************************************************************
      *               用户

@@ -24,13 +24,13 @@ package com.hyc.wechat.controller.constant;
  * @description
  * @date 2019-04-18 12:48
  */
-public enum WebPages {
+public enum WebPage {
 
 
     /**
      * 注册界面
      */
-    REGIST_JSP,
+    REGISTER_JSP,
     /**
      * 网站首页
      */
@@ -70,6 +70,6 @@ public enum WebPages {
 
     @Override
     public String toString() {
-        return super.toString().toLowerCase().replace("_", ".");
+        return "/"+super.toString().toLowerCase().replaceAll("_", ".");
     }
 }

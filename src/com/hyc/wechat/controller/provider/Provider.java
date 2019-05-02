@@ -19,10 +19,13 @@ package com.hyc.wechat.controller.provider;
 import com.hyc.wechat.controller.annotation.Action;
 import com.hyc.wechat.controller.annotation.ActionProvider;
 import com.hyc.wechat.controller.constant.RequestMethod;
+import com.hyc.wechat.controller.constant.WebPage;
 import com.hyc.wechat.util.ControllerUtils;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -47,6 +50,12 @@ public abstract class Provider {
     public void doAction(HttpServletRequest req, HttpServletResponse resp) {
         try {
             RequestMethod requestMethod = ControllerUtils.valueOf(req.getParameter("method"));
+            if (RequestMethod.INVALID_REQUEST.equals(requestMethod)) {
+                req.setAttribute("message", "无效的访问链接");
+                resp.getWriter().write("无效访问");
+                req.getRequestDispatcher("/error.jsp").forward(req, resp);
+                return;
+            }
             Method[] methods = this.getClass().getMethods();
             for (Method m : methods) {
                 Action action = m.getAnnotation(Action.class);
@@ -54,8 +63,14 @@ public abstract class Provider {
                     m.invoke(this, req, resp);
                 }
             }
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException | ServletException | IOException e) {
             e.printStackTrace();
+            req.setAttribute("message", "服务器异常");
+            try {
+                req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
+            } catch (ServletException | IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

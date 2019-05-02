@@ -99,8 +99,7 @@ public class BeanUtils {
                     for (Method m : methods) {
 
                         if (m.getName().equalsIgnoreCase(StringUtils.field2SetMethod(f.getName()))) {
-                            //TODO
-                            System.out.println("初始化属性：" + f.getName() + "属性值：" + value);
+
                             m.invoke(obj, value);
                         }
                     }

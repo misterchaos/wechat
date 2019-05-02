@@ -19,11 +19,16 @@ package com.hyc.wechat.controller.provider;
 import com.hyc.wechat.controller.annotation.Action;
 import com.hyc.wechat.controller.annotation.ActionProvider;
 import com.hyc.wechat.controller.constant.RequestMethod;
+import com.hyc.wechat.controller.constant.WebPage;
 import com.hyc.wechat.factory.ServiceProxyFactory;
+import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.model.po.User;
+import com.hyc.wechat.service.Impl.UserServiceImpl;
 import com.hyc.wechat.service.UserService;
+import com.hyc.wechat.service.constants.Status;
 import com.hyc.wechat.util.BeanUtils;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -37,13 +42,32 @@ import java.io.IOException;
 @ActionProvider(path = "/user")
 public class UserProvider extends Provider {
 
-    UserService userService = (UserService) ServiceProxyFactory.getInstance().getProxyInstance(UserService.class);
+    private UserService userService = (UserService) new ServiceProxyFactory().getProxyInstance(new UserServiceImpl());
 
     @Action(method = RequestMethod.REGISTER_DO)
-    public void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void register(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
-        userService.register(user);
-        resp.getWriter().write("注册成功");
+        ServiceResult result;
+        //检查用户注册信息
+        result = userService.checkRegister(user);
+        if (result.getStatus().equals(Status.SUCCESS)) {
+            resp.getWriter().write(result.getMessage());
+        } else {
+            req.setAttribute("message", result.getMessage());
+            req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
+            return;
+        }
+
+        //插入用户
+        result = userService.insertUser(user);
+        if(result.getStatus().equals(Status.SUCCESS)){
+            resp.getWriter().write(result.getMessage());
+        }else {
+            req.setAttribute("message",result.getMessage());
+            req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
+            return;
+        }
+
     }
 
 }

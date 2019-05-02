@@ -19,7 +19,6 @@ package com.hyc.wechat.dao;
 import com.hyc.wechat.dao.annotation.Query;
 import com.hyc.wechat.dao.annotation.Result;
 import com.hyc.wechat.dao.annotation.ResultType;
-import com.hyc.wechat.dao.annotation.Table;
 import com.hyc.wechat.model.po.User;
 
 import java.util.List;
@@ -50,8 +49,21 @@ public interface UserDao extends BaseDao {
     @Query(value = "select " + ALL_FILED + " from " + TABLE + " where id = ? ")
     User getUserById(Object id);
 
+    /**
+     * 通过邮箱查询一个用户
+     *
+     * @param email 账户邮箱
+     * @return 用户对象
+     * @name getUserByEmail
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/2
+     */
+    @Result(entity = User.class, returns = ResultType.OBJECT)
+    @Query(value = "select " + ALL_FILED + " from " + TABLE + " where email = ? ")
+    User getUserByEmail(String email);
 
-    @Result(entity = User.class,returns = ResultType.LIST)
-    @Query(value = "select "+ALL_FILED+" from "+ TABLE+" where name = ?")
+    @Result(entity = User.class, returns = ResultType.LIST)
+    @Query(value = "select " + ALL_FILED + " from " + TABLE + " where name = ?")
     List<User> listByName(String name);
 }
