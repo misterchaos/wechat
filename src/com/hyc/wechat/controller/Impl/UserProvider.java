@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.hyc.wechat.controller;
+package com.hyc.wechat.controller.Impl;
 
+import com.hyc.wechat.controller.Impl.Provider;
 import com.hyc.wechat.controller.annotation.Action;
 import com.hyc.wechat.controller.annotation.ActionProvider;
+import com.hyc.wechat.controller.constant.RequestMethod;
 import com.hyc.wechat.model.po.User;
 import com.hyc.wechat.service.Impl.UserServiceImpl;
 import com.hyc.wechat.service.UserService;
@@ -34,10 +36,9 @@ import java.io.IOException;
  * @date 2019-05-02 10:07
  */
 @ActionProvider(path = "/user")
-public class UserProviderImpl implements UserProvider {
+public class UserProvider extends Provider {
 
-    @Override
-    @Action(method = "register.do")
+    @Action(method = RequestMethod.REGISTER_DO)
     public void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = (User) BeanUtils.toObject(req.getParameterMap(),User.class);
         UserService userService = new UserServiceImpl();

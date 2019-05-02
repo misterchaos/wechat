@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package com.hyc.wechat.controller;
+package com.hyc.wechat.controller.Impl;
 
-import com.hyc.wechat.controller.Impl.Provider;
+import com.hyc.wechat.controller.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-/**
- * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @program wechat
- * @description 负责转发请求
- * @date 2019-05-02 11:00
- */
-public interface Controller {
+public class ControllerImpl implements Controller {
 
+    /**
+     * 用来装载provider的容器
+     */
+    private Map<String, Provider> providerMap = new HashMap<>();
+    private static ControllerImpl ourInstance = new ControllerImpl();
 
     /**
      * 负责将请求转发到url对应的Provider
@@ -40,7 +42,18 @@ public interface Controller {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/2
      */
-    void doPost(HttpServletRequest req, HttpServletResponse resp);
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+        String url = req.getRequestURI();
+        Set<String> keys = providerMap.keySet();
+        for (String key : keys) {
+            //解析注解中的path信息，匹配ActionProvider
+            String path = providerMap.get(key).getPath();
+            if (url.equalsIgnoreCase(path)) {
+                providerMap.get(key).doAction(req, resp);
+            }
+        }
+    }
 
     /**
      * 用于将一个provider注册到Controller中
@@ -52,7 +65,10 @@ public interface Controller {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/2
      */
-    Provider registerProvider(String name, Provider provider);
+    @Override
+    public Provider registerProvider(String name, Provider provider) {
+        return providerMap.put(name, provider);
+    }
 
     /**
      * 用于将一个provider从controller中移除
@@ -63,6 +79,25 @@ public interface Controller {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/2
      */
-    Provider removeProvider(String name);
+    @Override
+    public Provider removeProvider(String name) {
+        return providerMap.remove(name);
+    }
+
+    public static ControllerImpl getInstance() {
+        return ourInstance;
+    }
+
+    private ControllerImpl() {
+    }
+
+    public Map<String, Provider> getProviderMap() {
+        return providerMap;
+    }
+
+    public void setProviderMap(Map<String, Provider> providerMap) {
+        this.providerMap = providerMap;
+    }
+
 
 }

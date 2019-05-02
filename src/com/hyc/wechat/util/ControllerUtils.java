@@ -16,11 +16,7 @@
 
 package com.hyc.wechat.util;
 
-import com.hyc.wechat.controller.constant.Methods;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.hyc.wechat.controller.constant.RequestMethod;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -32,31 +28,24 @@ public class ControllerUtils {
 
 
     /**
-     * 解析请求的参数，返回对应的枚举项
-     *
-     * @param req  请求
-     * @param resp 响应
-     * @return com.hyc.www.controller.constant.Methods
-     * @name getMethod
+     * 返回请求中method对应的RequestMethod枚举项
+     * @param name 请求中的method参数值
+     * @name valueOf
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/4/20
-     * @see com.hyc.wechat.controller.constant.Methods
+     * @see RequestMethod
      */
-    public static Methods getMethod(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String m = req.getParameter("method");
-        Methods method = null;
-
-        try {
-            method = Methods.valueOf(m);
-        } catch (NullPointerException | IllegalArgumentException e) {
-            //这里是非法的请求导致异常，一律重定向到首页
-            //TODO 这里不能重定向到首页
-            System.out.println("非法请求：重定向到首页");
-            return Methods.INDEX_VIEW;
+    public static RequestMethod valueOf(String name) {
+        if (name != null) {
+            name=name.toUpperCase().replaceAll("\\.", "_");
+            try {
+                return RequestMethod.valueOf(name);
+            }catch (IllegalArgumentException e){
+                e.printStackTrace();
+            }
         }
-        return method;
+        return null;
     }
-
-
 }
+

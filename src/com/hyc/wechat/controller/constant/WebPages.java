@@ -17,63 +17,59 @@
 package com.hyc.wechat.controller.constant;
 
 /**
- * request中method的枚举常量
+ * 界面的地址常量
  *
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
  * @program XHotel
  * @description
- * @date 2019-04-18 12:45
+ * @date 2019-04-18 12:48
  */
-
-public enum Methods {
-
-    /**
-     * 显示主页
-     */
-    INDEX_VIEW,
-
-    /*
-     **************************************************************
-     *               用户
-     **************************************************************
-     */
-    /**
-     * 执行登陆方法
-     */
-    LOGIN_DO,
-    /**
-     * 执行注册方法
-     */
-    REGIST_DO,
-
-    /**
-     * 执行退出登陆方法
-     */
-    LOGOUT_DO,
-
-    /*
-     **************************************************************
-     *               通用操作方法
-     **************************************************************
-     */
-    /**
-     * 添加
-     */
-    ADD_DO,
-    /**
-     * 删除
-     */
-    DELETE_DO,
-    /**
-     * 更新
-     */
-    UPDATE_DO,
-
-    /**
-     * 查找
-     */
-    FIND_DO;
+public enum WebPages {
 
 
+    /**
+     * 注册界面
+     */
+    REGIST_JSP,
+    /**
+     * 网站首页
+     */
+    INDEX_JSP,
+    /**
+     * 错误页面
+     */
+    ERROR_JSP,
+    /**
+     * 房间页面
+     */
+    ROOM_JSP,
+    /**
+     * 登陆界面
+     */
+    LOGIN_JSP,
+    /**
+     * 用户界面
+     */
+    USER_JSP,
+    /**
+     * 订单界面
+     */
+    ORDER_JSP,
+    /**
+     * 成功页面
+     */
+    SUCCESS_JSP,
+    /**
+     * 评论界面
+     */
+    REMARK_JSP,
+    /**
+     * 相册页面
+     */
+    PICTRUES_JSP;
+
+    @Override
+    public String toString() {
+        return super.toString().toLowerCase().replace("_", ".");
+    }
 }
-

@@ -30,7 +30,6 @@ import static com.hyc.wechat.util.StringUtils.toLegalText;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @program XHotel
  * @description 用于将请求参数映射为Javabean对象
  * @date 2019-04-15 00:47
  */

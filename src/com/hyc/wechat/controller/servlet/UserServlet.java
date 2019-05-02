@@ -16,13 +16,10 @@
 
 package com.hyc.wechat.controller.servlet;
 
-import com.hyc.wechat.controller.Controller;
-import com.hyc.wechat.controller.Provider;
-import com.hyc.wechat.controller.UserProvider;
-import com.hyc.wechat.controller.UserProviderImpl;
-import com.hyc.wechat.factory.proxy.ControllerProxyFactory;
-import com.hyc.wechat.factory.proxy.ProviderProxyFactory;
-import com.hyc.wechat.model.po.User;
+import com.hyc.wechat.controller.*;
+import com.hyc.wechat.controller.Impl.ControllerImpl;
+import com.hyc.wechat.controller.Impl.Provider;
+import com.hyc.wechat.controller.Impl.UserProvider;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,6 +27,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -48,12 +47,14 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ControllerProxyFactory proxyFactory = new  ControllerProxyFactory();
-        UserProvider userProvider = (UserProvider) new ProviderProxyFactory().getProxyInstance(UserProvider.class,new UserProviderImpl());
-        proxyFactory.addProvider(userProvider);
-        Controller controller = (Controller) proxyFactory.getProxyInstance(Controller.class);
-        controller.getProvider(req, resp);
+        Provider userProvider = new UserProvider();
+
+        Controller controller = ControllerImpl.getInstance();
+        controller.registerProvider(userProvider.getClass().getName(),userProvider);
+        controller.doPost(req, resp);
     }
+
+    private List<Provider> providers = new LinkedList();
 }
 
 

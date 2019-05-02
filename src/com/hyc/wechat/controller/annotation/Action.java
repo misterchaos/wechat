@@ -16,6 +16,9 @@
 
 package com.hyc.wechat.controller.annotation;
 
+
+import com.hyc.wechat.controller.constant.RequestMethod;
+
 import java.lang.annotation.*;
 
 /**
@@ -28,5 +31,5 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface Action {
     String path()default "";
-    String method()default "";
+    RequestMethod method();
 }

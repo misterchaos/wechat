@@ -16,7 +16,7 @@
 
 package com.hyc.wechat.controller.filter;
 
-import com.hyc.wechat.controller.constant.Pages;
+import com.hyc.wechat.controller.constant.WebPages;
 import com.hyc.wechat.exception.ServiceException;
 
 import javax.servlet.*;
@@ -65,7 +65,7 @@ public class EncodingFilter implements Filter {
             resp.setCharacterEncoding(ENCODING);
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (IOException | ServiceException e) {
-            resp.sendRedirect(Pages.ERROR_JSP.toString());
+            resp.sendRedirect(WebPages.ERROR_JSP.toString());
         }
 
         //TODO debug
