@@ -50,7 +50,7 @@
 <%-- 页面头部--%>
 <div class="login-head" style="height: 100px">
     <div class="jumbotron" style="padding-bottom: 20px;padding-top:20px;margin:0px">
-        <a href="/${WebPage.INDEX_JSP.toString()}"><h2 style="text-align: left">wechat在线聊天系统</h2></a>
+        <a href="${WebPage.INDEX_JSP.toString()}"><h2 style="text-align: left">wechat在线聊天系统</h2></a>
     </div>
 </div>
 
@@ -83,10 +83,10 @@
                 </strong>
                 <div class="panel-body">
                     <div class="color-input-field">
-                        <form name="login" action="${pageContext.request.contextPath}/user?method=${RequestMethod.REGISTER_DO}"
+                        <form name="login" action="${pageContext.request.contextPath}/wechat/user?method=${RequestMethod.REGISTER_DO}"
                               method="post" onsubmit="return agree()">
-                            <input type="text" required="required" class="form-control" name="name"
-                                   placeholder="请输入用户名(6-20位英文字母，数字或下划线)" align="center">
+                            <input type="text" required="required" class="form-control" name="email"
+                                   placeholder="请输入邮箱号" align="center">
                             <br>
                             <input type="password" required="required" class="form-control" name="password"
                                    placeholder="请输入密码(6-20位英文字母，数字或下划线)"

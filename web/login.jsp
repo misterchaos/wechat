@@ -39,7 +39,7 @@
 <%-- 页面头部--%>
 <div class="login-head" style="height: 100px">
     <div class="jumbotron" style="padding-bottom: 20px;padding-top:20px;margin:0px">
-        <a href="/${WebPage.INDEX_JSP.toString()}"><h2 style="text-align: left">wechat在线聊天系统</h2></a>
+        <a href="${WebPage.INDEX_JSP.toString()}"><h2 style="text-align: left">wechat在线聊天系统</h2></a>
     </div>
 </div>
 <c:if test="${message!=null}">
