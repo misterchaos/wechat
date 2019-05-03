@@ -16,7 +16,7 @@
 
 package com.hyc.wechat.model.po;
 
-import com.hyc.wechat.dao.annotation.Filed;
+import com.hyc.wechat.dao.annotation.Field;
 import com.hyc.wechat.dao.annotation.Table;
 import com.hyc.wechat.model.po.abs.BaseEntity;
 
@@ -28,27 +28,27 @@ import com.hyc.wechat.model.po.abs.BaseEntity;
  */
 @Table(name = "user")
 public class User extends BaseEntity {
-    @Filed(name = "email")
+    @Field(name = "email")
     private String email;
-    @Filed(name = "wechat_id")
+    @Field(name = "wechat_id")
     private String wechatId;
-    @Filed(name = "phone")
+    @Field(name = "phone")
     private String phone;
-    @Filed(name = "password")
+    @Field(name = "password")
     private String password;
-    @Filed(name = "gender")
+    @Field(name = "gender")
     private String gender;
-    @Filed(name = "signature")
+    @Field(name = "signature")
     private String signature;
-    @Filed(name = "name")
+    @Field(name = "name")
     private String name;
-    @Filed(name = "profile_photo")
+    @Field(name = "profile_photo")
     private String profilePhoto;
-    @Filed(name = "chat_background")
+    @Field(name = "chat_background")
     private String chatBackground;
-    @Filed(name = "location")
+    @Field(name = "location")
     private String location;
-    @Filed(name = "online_status")
+    @Field(name = "online_status")
     private String onlineStatus;
 
 

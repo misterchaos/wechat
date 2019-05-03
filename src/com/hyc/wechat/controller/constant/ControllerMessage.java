@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 
-package com.hyc.wechat.service.constants;
+package com.hyc.wechat.controller.constant;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @description 用于描述错误信息
- * @date 2019-05-02 22:27
+ * @description 用于枚举控制层的系统消息
+ * @date 2019-05-03 13:11
  */
-public enum ErrorMessage{
-    /**
-     * 邮箱格式不合法
+public enum ControllerMessage {
+    /*
+     **************************************************************
+     *              系统错误码
+     **************************************************************
      */
-    EMAIL_FORMAT_INCORRECT("您输入的邮箱格式不正确，邮箱只能由英文字母/数字组成,且域名符合规则"),
     /**
-     * 邮箱已被注册
+     * 系统故障
      */
-    EMAIL_ALREADY_USED("该邮箱已被注册！"),
-    /**
-     * 密码不符合要求
-     */
-    INVALID_PASSWORD("您的密码不符合要求，密码必须是6~20位英文字母/数字/下划线组成");
+    SYSTEM_EXECEPTION("服务器异常，无法提供服务");
 
     public String message;
 
-    ErrorMessage(String message) {
+    ControllerMessage(String message) {
         this.message = message;
     }
 

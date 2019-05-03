@@ -31,8 +31,8 @@ import java.util.List;
  */
 public interface UserDao extends BaseDao {
     String TABLE = "user";
-    String ALL_FILED = "id,email,wechat_id,phone,password,gender,signature,name,profile_photo"
-            + ",chat_background,location,online_status,status,gmt_create,gmt_modified";
+    String ALL_FIELD = "email,wechat_id,phone,password,gender,signature,name,profile_photo"
+            + ",chat_background,location,online_status,"+BASE_FIELD;
 
 
     /**
@@ -46,7 +46,7 @@ public interface UserDao extends BaseDao {
      * @date 2019/5/2
      */
     @Result(entity = User.class, returns = ResultType.OBJECT)
-    @Query(value = "select " + ALL_FILED + " from " + TABLE + " where id = ? ")
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where id = ? ")
     User getUserById(Object id);
 
     /**
@@ -60,10 +60,25 @@ public interface UserDao extends BaseDao {
      * @date 2019/5/2
      */
     @Result(entity = User.class, returns = ResultType.OBJECT)
-    @Query(value = "select " + ALL_FILED + " from " + TABLE + " where email = ? ")
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where email = ? ")
     User getUserByEmail(String email);
 
+
+    /**
+     * 通过用户名查询一个用户
+     *
+     * @param wechatId 微信号
+     * @return 用户对象
+     * @name getUserByWechatId
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/2
+     */
+    @Result(entity = User.class, returns = ResultType.OBJECT)
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where wechat_id = ? ")
+    User getUserByWechatId(String wechatId);
+
     @Result(entity = User.class, returns = ResultType.LIST)
-    @Query(value = "select " + ALL_FILED + " from " + TABLE + " where name = ?")
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where name = ?")
     List<User> listByName(String name);
 }

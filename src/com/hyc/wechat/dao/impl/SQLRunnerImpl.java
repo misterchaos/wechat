@@ -351,6 +351,8 @@ public class SQLRunnerImpl implements SQLRunner {
                          */
                         for (Method ms : methods) {
                             if (ms.getName().equalsIgnoreCase(setters[i])) {
+                                //TODO
+                                System.out.println("[执行方法]： "+ms.getName()+"[属性值]："+rs.getObject(columns[i]));
                                 ms.invoke(obj, rs.getObject(columns[i]));
                             }
                         }
@@ -358,7 +360,6 @@ public class SQLRunnerImpl implements SQLRunner {
                     list.add(obj);
                 }
             } catch (SQLException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                e.printStackTrace();
                 throw new DaoException("映射结果集产生异常：" + e.getMessage(), e);
             }
             return list;

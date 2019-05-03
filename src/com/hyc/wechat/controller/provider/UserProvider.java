@@ -50,24 +50,84 @@ public class UserProvider extends Provider {
         ServiceResult result;
         //检查用户注册信息
         result = userService.checkRegister(user);
-        if (result.getStatus().equals(Status.SUCCESS)) {
-            resp.getWriter().write(result.getMessage());
-        } else {
+        if (Status.ERROR.equals(result.getStatus())) {
             req.setAttribute("message", result.getMessage());
             req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
             return;
+        } else {
+            //注册信息合法时的处理
+            resp.getWriter().write(result.getMessage());
         }
 
         //插入用户
         result = userService.insertUser(user);
-        if(result.getStatus().equals(Status.SUCCESS)){
-            resp.getWriter().write(result.getMessage());
-        }else {
-            req.setAttribute("message",result.getMessage());
+        if (Status.ERROR.equals(result.getStatus())) {
+            req.setAttribute("message", result.getMessage());
             req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
             return;
+        } else {
+            //插入用户成功时的处理
+            resp.getWriter().write(result.getMessage());
         }
 
     }
+
+    @Action(method = RequestMethod.LOGIN_DO)
+    public void login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
+        ServiceResult result;
+        //校验密码是否正确
+        result = userService.checkPassword(user);
+        if (Status.ERROR.equals(result.getStatus())) {
+            req.setAttribute("message", result.getMessage());
+            req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
+            return;
+        } else {
+            //校验密码成功时的处理
+            resp.getWriter().write(result.getMessage());
+        }
+    }
+
+    @Action(method = RequestMethod.GET_DO)
+    public void get(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
+        ServiceResult result;
+        //获取用户数据
+        result = userService.getUserInfo(user.getId());
+        if (Status.ERROR.equals(result.getStatus())) {
+            req.setAttribute("message", result.getMessage());
+            req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
+            return;
+        } else {
+            //获取数据成功时的处理
+            resp.getWriter().write(result.getMessage());
+        }
+    }
+
+
+    @Action(method = RequestMethod.UPDATE_DO)
+    public void update(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
+        ServiceResult result;
+        //检查用户名（微信号）是否合法
+        result = userService.checkWechatId(user.getWechatId());
+        if (Status.ERROR.equals(result.getStatus())) {
+            req.setAttribute("message", result.getMessage());
+            req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
+            return;
+        } else {
+            resp.getWriter().write(result.getMessage());
+        }
+        //更新用户数据
+        result = userService.updateUserInfo(user);
+        if (Status.ERROR.equals(result.getStatus())) {
+            req.setAttribute("message", result.getMessage());
+            req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
+            return;
+        } else {
+            resp.getWriter().write(result.getMessage());
+        }
+    }
+
 
 }

@@ -16,31 +16,26 @@
 
 package com.hyc.wechat.controller.servlet;
 
-import com.hyc.wechat.controller.*;
-import com.hyc.wechat.controller.provider.Provider;
+import com.hyc.wechat.controller.Controller;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
  * @program wechat
- * @description 用于处理用户相关请求
+ * @description 接收客户端请求，将其转发到controller
  * @date 2019-05-02 03:28
  */
 public class MyServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         this.doPost(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         Controller controller = (Controller) getServletContext().getAttribute("controller");
         controller.doPost(req, resp);
     }

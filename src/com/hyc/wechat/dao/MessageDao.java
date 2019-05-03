@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package com.hyc.wechat.dao.annotation;
-
-import java.lang.annotation.*;
+package com.hyc.wechat.dao;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @description 用于注解SQL语句的返回结果类型
- * @program wechat
- * @date 2019-05-01 13:32
+ * @description 用于message表的CRUD
+ * @date 2019-05-03 13:06
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface Filed {
-    String name ();
+public interface MessageDao extends BaseDao {
 }

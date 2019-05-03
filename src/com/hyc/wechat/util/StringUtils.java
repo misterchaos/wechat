@@ -30,11 +30,20 @@ public class StringUtils {
         return method.toString();
     }
 
+    /**
+     * 将java变量名转化成mysql的属性名，在每个大写字母的前面加上'_'
+     * @name field2SqlField
+     * @param field java属性
+     * @return mysql属性名
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/3
+     */
     public static String field2SqlField(String field) {
-        byte[] bytes = field.getBytes();
+      byte[] bytes = field.getBytes();
         StringBuilder name = new StringBuilder();
         for (byte aByte : bytes) {
-            if (aByte > 'A' && aByte < 'Z') {
+            if (aByte >= 'A' && aByte <= 'Z') {
                 name.append('_');
             }
             name.append((char) aByte);

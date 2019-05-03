@@ -23,17 +23,16 @@ import java.math.BigInteger;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @program wechat
- * @description 朋友表
- * @date 2019-05-02 01:56
+ * @description 用户和群聊的中间表
+ * @date 2019-05-03 12:58
  */
-@Table(name = "friend")
-public class Friend extends BaseEntity {
+@Table(name = "member")
+public class Member extends BaseEntity {
     private BigInteger userId;
-    private BigInteger friendId;
-    private BigInteger groupId;
-    private String alias;
-    private String description;
+    private BigInteger chatId;
+    private String groupAlias;
+    private String background;
+
     public BigInteger getUserId() {
         return userId;
     }
@@ -42,35 +41,27 @@ public class Friend extends BaseEntity {
         this.userId = userId;
     }
 
-    public BigInteger getFriendId() {
-        return friendId;
+    public BigInteger getChatId() {
+        return chatId;
     }
 
-    public void setFriendId(BigInteger friendId) {
-        this.friendId = friendId;
+    public void setChatId(BigInteger chatId) {
+        this.chatId = chatId;
     }
 
-    public BigInteger getGroupId() {
-        return groupId;
+    public String getGroupAlias() {
+        return groupAlias;
     }
 
-    public void setGroupId(BigInteger groupId) {
-        this.groupId = groupId;
+    public void setGroupAlias(String groupAlias) {
+        this.groupAlias = groupAlias;
     }
 
-    public String getAlias() {
-        return alias;
+    public String getBackground() {
+        return background;
     }
 
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setBackground(String background) {
+        this.background = background;
     }
 }

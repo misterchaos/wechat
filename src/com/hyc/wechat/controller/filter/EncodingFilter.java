@@ -16,8 +16,8 @@
 
 package com.hyc.wechat.controller.filter;
 
+import com.hyc.wechat.controller.constant.ControllerMessage;
 import com.hyc.wechat.controller.constant.WebPage;
-import com.hyc.wechat.exception.ServiceException;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -55,20 +55,25 @@ public class EncodingFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
-
-        req.setCharacterEncoding(ENCODING);
         try {
+            req.setCharacterEncoding(ENCODING);
             resp.setContentType("text/html;charset=utf-8");
             resp.setCharacterEncoding(ENCODING);
             filterChain.doFilter(servletRequest, servletResponse);
-        } catch (IOException | ServiceException e) {
-            resp.sendRedirect(WebPage.ERROR_JSP.toString());
+        } catch (IOException | ServletException e) {
+            e.printStackTrace();
+            try {
+                req.setAttribute("message", ControllerMessage.SYSTEM_EXECEPTION.message);
+                req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
+            } catch (ServletException | IOException ex) {
+                ex.printStackTrace();
+            }
         }
 
-        System.out.println("[请求url] : "+req.getRequestURI()+" [请求参数] ：" + req.getQueryString());
+        System.out.println("[请求url] : " + req.getRequestURI() + " [请求参数] ：" + req.getQueryString());
     }
 }
 

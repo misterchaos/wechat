@@ -18,6 +18,7 @@ package com.hyc.wechat.controller.listener;
 
 import com.hyc.wechat.controller.Controller;
 import com.hyc.wechat.controller.Impl.ControllerImpl;
+import com.hyc.wechat.controller.provider.ChatProvider;
 import com.hyc.wechat.controller.provider.UserProvider;
 
 import javax.servlet.ServletContext;
@@ -37,7 +38,10 @@ public class ServletContextListener implements javax.servlet.ServletContextListe
     public void contextInitialized(ServletContextEvent sce) {
         //装载Controller容器
         Controller controller = ControllerImpl.getInstance();
+        //注册服务
         controller.registerProvider("userProvider",new UserProvider());
+        controller.registerProvider("chatProvider",new ChatProvider());
+        //将Controller注入ServletContext
         ServletContext sc = sce.getServletContext();
         sc.setAttribute("controller",controller);
     }

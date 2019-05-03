@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
  * @description 所有ActionProvider的父类，提供共有的doAction方法
  * @date 2019-05-02 11:39
  */
-public abstract class Provider {
+public class Provider {
 
 
     /**

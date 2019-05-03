@@ -26,7 +26,7 @@ import com.hyc.wechat.dao.annotation.*;
  */
 public interface BaseDao {
 
-
+    String BASE_FIELD = "id,status,gmt_create,gmt_modified";
 
     /*
      **************************************************************

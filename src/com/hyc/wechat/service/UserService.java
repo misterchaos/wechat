@@ -38,13 +38,40 @@ public interface UserService {
      * 添加一个用户账号
      *
      * @param user 用户对象
-     * @return 返沪传入的用户的对象
+     * @return 返回传入的用户的对象
      */
     ServiceResult insertUser(User user);
 
     /**
-     * @param user
-     * @return
+     * 校验用户的密码
+     *
+     * @param user 用户对象
+     * @return 返回传入的用户对象
      */
-    ServiceResult login(User user);
+    ServiceResult checkPassword(User user);
+
+    /**
+     * 校验用户名（微信号），是否合法，是否已被占用
+     *
+     * @param wechatId 微信号
+     * @return 返回传入的用户名
+     */
+    ServiceResult checkWechatId(String wechatId);
+
+    /**
+     * 通过用户id获取用户个人信息
+     *
+     * @param id 用户id
+     * @return 返回用户的个人信息
+     */
+    ServiceResult getUserInfo(Object id);
+
+
+    /**
+     * 更新用户的个人信息,不包括密码，邮箱
+     *
+     * @param user 用户对象
+     * @return 返回传入的用户对象，如果由密码信息/邮箱信息，将被清空
+     */
+    ServiceResult updateUserInfo(User user);
 }

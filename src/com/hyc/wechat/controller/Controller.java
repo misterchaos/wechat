@@ -48,6 +48,7 @@ public interface Controller {
      * @param name     provider的名字
      * @param provider provider对象
      * @name registerProvider
+     * @return 返回注册的Provider
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/2
@@ -60,6 +61,7 @@ public interface Controller {
      * @param name provider的名字
      * @name registerProvider
      * @notice none
+     * @return 放回移除的provider
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/2
      */

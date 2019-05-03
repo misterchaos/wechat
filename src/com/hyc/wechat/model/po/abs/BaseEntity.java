@@ -16,7 +16,7 @@
 
 package com.hyc.wechat.model.po.abs;
 
-import com.hyc.wechat.dao.annotation.Filed;
+import com.hyc.wechat.dao.annotation.Field;
 
 import java.math.BigInteger;
 import java.util.Date;
@@ -29,13 +29,13 @@ import java.util.Date;
  */
 public abstract class BaseEntity {
 
-    @Filed(name = "id")
+    @Field(name = "id")
     private BigInteger id;
-    @Filed(name = "status")
+    @Field(name = "status")
     private Integer status;
-    @Filed(name = "gmt_create")
+    @Field(name = "gmt_create")
     private Date gmtCreate;
-    @Filed(name = "gmt_modified")
+    @Field(name = "gmt_modified")
     private Date gmtModified;
 
     public BigInteger getId() {
