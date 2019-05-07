@@ -31,8 +31,8 @@ import java.util.List;
  */
 public interface UserDao extends BaseDao {
     String TABLE = "user";
-    String ALL_FIELD = "email,wechat_id,phone,password,gender,signature,name,profile_photo"
-            + ",chat_background,location,online_status,"+BASE_FIELD;
+    String ALL_FIELD = "email,wechat_id,phone,password,gender,signature,name,photo"
+            + ",chat_background,location,online_status," + BASE_FIELD;
 
 
     /**
@@ -78,7 +78,31 @@ public interface UserDao extends BaseDao {
     @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where wechat_id = ? ")
     User getUserByWechatId(String wechatId);
 
+    /**
+     * @param name 用户昵称
+     * @return
+     * @name listByName
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/5
+     */
     @Result(entity = User.class, returns = ResultType.LIST)
     @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where name = ?")
     List<User> listByName(String name);
+
+
+    /**
+     * 通过关键词模糊查询用户昵称相近的用户
+     *
+     * @param keyWord 关键词
+     * @return
+     * @name listLike
+     * @notice 注意本方法本身不带有模糊查询功能，必须在传入参数中带有模糊条件
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/6
+     */
+    @Result(entity = User.class, returns = ResultType.LIST)
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where name like ? ")
+    List<User> listLikeName(String keyWord);
+
 }

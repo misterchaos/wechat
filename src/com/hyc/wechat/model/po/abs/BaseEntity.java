@@ -16,6 +16,7 @@
 
 package com.hyc.wechat.model.po.abs;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hyc.wechat.dao.annotation.Field;
 
 import java.math.BigInteger;
@@ -70,5 +71,18 @@ public abstract class BaseEntity {
         this.gmtModified = gmtModified;
     }
 
+    /**
+     * 所有的po层实体类都继承此类，在这里一次性重写toString方法，使用json格式输出
+     *
+     * @return
+     * @name toString
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/7
+     */
+    @Override
+    public String toString() {
+        return JSONObject.toJSONString(this);
+    }
 
 }

@@ -42,8 +42,8 @@ public class User extends BaseEntity {
     private String signature;
     @Field(name = "name")
     private String name;
-    @Field(name = "profile_photo")
-    private String profilePhoto;
+    @Field(name = "photo")
+    private String photo;
     @Field(name = "chat_background")
     private String chatBackground;
     @Field(name = "location")
@@ -108,12 +108,12 @@ public class User extends BaseEntity {
         this.name = name;
     }
 
-    public String getProfilePhoto() {
-        return profilePhoto;
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setProfilePhoto(String profilePhoto) {
-        this.profilePhoto = profilePhoto;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public String getChatBackground() {

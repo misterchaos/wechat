@@ -16,6 +16,12 @@
 
 package com.hyc.wechat.util;
 
+import com.alibaba.fastjson.JSONObject;
+import com.hyc.wechat.model.po.User;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -112,6 +118,31 @@ public class BeanUtils {
             }
         }
         return obj;
+    }
+
+
+    public static Object jsonToJavaObject(InputStream inputStream,Class targetClass) {
+    /**
+     * 将输入流中的json数据转化成java对象
+    * @name jsonToJavaObject
+    * @param inputStream 输入json数据的输入流
+    * @notice none
+    * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+    * @date 2019/5/5
+    */    JSONObject jsonObject = null;
+        try {
+            BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            StringBuilder builder = new StringBuilder();
+            String jsonData;
+            while ((jsonData = streamReader.readLine()) != null) {
+                builder.append(jsonData);
+            }
+            jsonObject = JSONObject.parseObject(builder.toString());
+            System.out.println("json数据："+jsonObject.toJSONString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return JSONObject.toJavaObject(jsonObject, targetClass);
     }
 
 

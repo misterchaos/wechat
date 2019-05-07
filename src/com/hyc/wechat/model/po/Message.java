@@ -16,10 +16,14 @@
 
 package com.hyc.wechat.model.po;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.hyc.wechat.dao.annotation.Table;
 import com.hyc.wechat.model.po.abs.BaseEntity;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -28,9 +32,30 @@ import java.math.BigInteger;
  */
 @Table(name = "message")
 public class Message extends BaseEntity {
+    @JSONField(name = "sender_id")
     private BigInteger senderId;
+    @JSONField(name ="chat_id")
     private BigInteger chatId;
     private String content;
+    private String type;
+    private Timestamp time;
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
+    }
 
     public BigInteger getSenderId() {
         return senderId;

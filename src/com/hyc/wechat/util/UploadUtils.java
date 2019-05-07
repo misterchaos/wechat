@@ -17,6 +17,8 @@
 package com.hyc.wechat.util;
 
 import com.hyc.wechat.exception.ServiceException;
+import com.hyc.wechat.model.po.Chat;
+import com.hyc.wechat.model.po.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -43,37 +45,12 @@ public class UploadUtils {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/4/19
      */
-    public static String upload(Part part) throws IOException {
+    public static String toPhotoName(Part part) throws IOException {
         String head = part.getHeader("Content-Disposition");
         String filename = getUUID() + head.substring(head.lastIndexOf("."), head.lastIndexOf("\""));
-        part.write(filename);
+        part.write("photo/"+filename);
         return filename;
     }
 
 
-    /**
-     * 用于上传照片
-     *
-     * @param obj 照片的所有者，比如一个user或room
-     * @name uploadPhoto
-     * @notice none
-     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-     * @date 2019/4/20
-     */
-    public static void uploadPhoto(HttpServletRequest req, Object obj) {
-        String photo = null;
-        try {
-            Part part = req.getPart("photo");
-            if (part == null) {
-                photo = "default.jpg";
-            } else if (part.getSize() > 0) {
-                photo = upload(part);
-            }
-        } catch (IOException | ServletException |
-                NullPointerException e) {
-            e.printStackTrace();
-            throw new ServiceException("无法上传照片" + e);
-        }
-
-    }
 }

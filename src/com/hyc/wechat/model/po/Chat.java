@@ -28,9 +28,27 @@ import java.math.BigInteger;
  */
 @Table(name = "chat")
 public class Chat extends BaseEntity {
+    private String number;
     private BigInteger ownerId;
     private String name;
     private Integer member;
+    private String photo;
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 
     public BigInteger getOwnerId() {
         return ownerId;

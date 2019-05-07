@@ -64,7 +64,7 @@ public interface UserService {
      * @param id 用户id
      * @return 返回用户的个人信息
      */
-    ServiceResult getUserInfo(Object id);
+    ServiceResult getUser(Object id);
 
 
     /**
@@ -73,5 +73,17 @@ public interface UserService {
      * @param user 用户对象
      * @return 返回传入的用户对象，如果由密码信息/邮箱信息，将被清空
      */
-    ServiceResult updateUserInfo(User user);
+    ServiceResult updateUser(User user);
+
+    /**
+     * 返回昵称与传入参数相似的用户列表
+     *
+     * @param name 用户昵称
+     * @return
+     * @name listUserLikeName
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/6
+     */
+    ServiceResult listUserLikeName(String name);
 }

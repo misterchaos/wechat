@@ -27,110 +27,128 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <html>
 <head>
-    <title>${param.title}</title>
+    <title>wechat</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet"
-          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <meta name="viewport" content="width=1920px, initial-scale=0.8,maximum-scale=0.8,user-scalable=0">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-<%-- 页面头部--%>
-<div class="login-head" style="height: 100px">
-    <div class="jumbotron" style="padding-bottom: 20px;padding-top:20px;margin:0px">
-        <a href="${WebPage.INDEX_JSP.toString()}"><h2 style="text-align: left">wechat在线聊天系统</h2></a>
+<div class="background">
+    <%-- 页面头部--%>
+    <div class="login-head" style="height: 100px">
+        <div class="jumbotron" style="padding-bottom: 20px;padding-top:20px;margin:0px">
+            <div class="logo">
+                <a href="${WebPage.INDEX_JSP.toString()}" style="color: #999;font-size: 44px;text-decoration: none"><img
+                        src="/static/img/logo.png" alt="logo" style="width: 100px;margin: 10px">微信，是一种生活方式</h2>
+                </a>
+            </div>
+        </div>
     </div>
-</div>
-<c:if test="${message!=null}">
-    <div class="alert alert-warning alert-dismissable" style="margin-bottom: 0">
-        <button type="button" class="close" data-dismiss="alert"
-                aria-hidden="true">
-            &times;
-        </button>
-        提示：${message}
-    </div>
-</c:if>
-
-
-<div class="login-body" style="overflow: hidden;position: absolute">
-    <div class="background"  style="        background-image: linear-gradient(45deg,#40B028,#1B6EC6);
-        position: fixed;
-        height: 100%;
-        width: 100%;">
-    </div>
-</div>
-
-<div class="login-body">
-    <div class="login-layout">
-        <div class="login-box">
-            <div class="panel panel-default" style="padding: 20px;font-style: inherit">
-                <strong>
-                    <h2 class="panel-title" style="text-align: center">用户名登陆</h2>
-                </strong>
-                <div class="panel-body">
-                    <div class="color-input-field">
-                        <form name="login" action="${pageContext.request.contextPath}/user?method=${RequestMethod.LOGIN_DO}" method="post">
-                            <c:if test="${data!=null}">
-                                <input type="text" required="required" class="form-control" name="name" value="${data.users[0].name}" placeholder="请输入用户名" align="center">
-                            </c:if>
-                            <c:if test="${data==null}">
-                                <input type="text" required="required" class="form-control" name="name" placeholder="请输入用户名" align="center">
-                            </c:if>
-                            <br>
-                            <input type="password" required="required" class="form-control" name="password" placeholder="请输入密码"
-                                   align="center">
-                            <input type="checkbox" name="auto_login" value="true" style="margin-bottom: 13px">记住登陆
-                            <input type="submit" class="form-control" value="登陆"
-                                   style="background-color: darkorchid;color: #FFFFFF">
-                        </form>
-                        <br>
-                        <a href="${WebPage.REGISTER_JSP.toString()}">立即注册</a>
-                    </div>
+    <script>
+        <c:if test="${message!=null}">
+        alert("系统提示：${message}");
+        </c:if>
+    </script>
+    <div class="input-box">
+        <div class="color-input-field">
+            <h2 class="input-box-title">邮箱登陆</h2>
+            <form action="${pageContext.request.contextPath}/wechat/user?method=${RequestMethod.LOGIN_DO.toString()}"
+                  method="post">
+                <c:if test="${data!=null}">
+                    <input type="text" required="required" class="form-control" name="email"
+                           value="${data.email}" placeholder="请输入登陆邮箱">
+                </c:if>
+                <c:if test="${data==null}">
+                    <input type="text" required="required" class="form-control" name="email"
+                           placeholder="请输入登陆邮箱">
+                </c:if>
+                <br/>
+                <input type="password" required="required" class="form-control" name="password"
+                       placeholder="请输入密码">
+                <div class="remember-me">
+                    <input type="checkbox" name="auto_login" value="true">记住登陆
                 </div>
+                <input type="submit" class="submit-button" value="登陆">
+            </form>
+            <br>
+            <div class="switch-button">
+                <a href="${WebPage.REGISTER_JSP.toString()}">立即注册</a>
             </div>
         </div>
     </div>
 </div>
+
 </body>
 <style type="text/css">
+    .background {
+        height: 100%;
+        min-height: 750px;
+        text-align: center;
+        font-size: 14px;
+        background-color: #f1f1f1;
+        z-index: -1;
+    }
+
+    .logo {
+        position: absolute;
+        top: 56px;
+        margin-left: 50px;
+    }
 
     .form-control {
         padding: 10px;
-        height: 42px
+        min-height: 55px;
+        max-height: 70px;
+        font-size: 22px;
     }
 
-
-    .login-body {
-        width: 100%;
-        height: 800px;
+    .input-box-title {
+        text-align: center;
+        margin: 0 auto 50px;
+        padding: 10px;
+        font-weight: 400;
+        color: #969696
     }
 
-    .login-layout {
-        position: relative;
-        float: right;
-        width: 80%;
-        min-height: 540px;
-        max-width: 450px;
-        margin-right: 72px;
-        margin-top: 40px;
-        margin-left: 72px;
+    .color-input-field {
+        padding: 50px;
+        font-size: 22px;
+        height: 625px;
+        width: 500px
     }
 
-    .login-box {
-        position: relative;
-        left: 0;
-        right: 0;
-        top: 50%;
-        background: #fff;
-        padding: 20px 20px 20px,20px;
-        min-height: 300px;
+    .input-box {
+        width: fit-content;
+        margin: 104px auto;
+        background-color: #fff;
         border-radius: 4px;
-        -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, .1);
-        box-shadow: 0 1px 6px rgba(0, 0, 0, .1);
-
+        box-shadow: 0 0 8px rgba(0, 0, 0, .1);
+        vertical-align: middle;
     }
 
+    .submit-button {
+        margin-top: 20px;
+        background-color:#1AAD19;
+        color: #FFFFFF;
+        padding: 9px 18px;
+        border-radius: 5px;
+        outline: none;
+        border: none;
+        width: 100%;
+    }
+
+    .remember-me {
+        float: left;
+        font-weight: 400;
+        color: #969696;
+        margin-top: 20px;
+    }
+
+    .switch-button {
+        text-align: left;
+    }
 
 </style>
 </html>

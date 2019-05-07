@@ -133,6 +133,8 @@ public class JdbcUtils {
      * @date 2019/4/8
      */
     public static void setParams(PreparedStatement ps, Object[] params) {
+        for (int i = 0; i < params.length; i++) {
+        }
         if (params != null) {
             for (int i = 0; i < params.length; i++) {
                 try {

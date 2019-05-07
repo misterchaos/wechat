@@ -32,6 +32,15 @@ public class Member extends BaseEntity {
     private BigInteger chatId;
     private String groupAlias;
     private String background;
+    private Integer level;
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
 
     public BigInteger getUserId() {
         return userId;

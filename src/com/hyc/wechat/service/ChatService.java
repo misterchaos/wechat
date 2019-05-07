@@ -19,6 +19,7 @@ package com.hyc.wechat.service;
 import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.model.po.Chat;
 import com.hyc.wechat.model.po.Member;
+import com.hyc.wechat.model.po.User;
 
 /**
  * @author <a href="mailto:kobe5243 48@gmail.com">黄钰朝</a>
@@ -64,5 +65,39 @@ public interface ChatService {
      */
     ServiceResult quitChat(Member[] members);
 
+    /**
+     * 返回一个用户的所有聊天
+     *
+     * @param user 用户对象
+     * @return 该用户的所有聊天
+     * @name listChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/3
+     */
+    ServiceResult listChat(User user);
 
+    /**
+     * 删除一个聊天
+     *
+     * @param chat
+     * @return
+     * @name removeChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/6
+     */
+    void removeChat(Chat chat);
+
+    /**
+     * 通过聊天编号查询聊天
+     *
+     * @param number 聊天编号
+     * @return
+     * @name getChatByNumber
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/6
+     */
+    void getChatByNumber(Object number);
 }

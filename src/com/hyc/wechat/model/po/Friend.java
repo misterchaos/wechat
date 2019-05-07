@@ -31,9 +31,28 @@ import java.math.BigInteger;
 public class Friend extends BaseEntity {
     private BigInteger userId;
     private BigInteger friendId;
+    private BigInteger chatId;
+    private String photo;
     private BigInteger groupId;
     private String alias;
     private String description;
+
+    public BigInteger getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(BigInteger chatId) {
+        this.chatId = chatId;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
     public BigInteger getUserId() {
         return userId;
     }

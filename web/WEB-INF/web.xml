@@ -22,9 +22,9 @@
 
     <servlet>
         <servlet-name>MyServlet</servlet-name>
-        <servlet-class>com.hyc.wechat.controller.servlet.MyServlet</servlet-class>
+        <servlet-class>com.hyc.wechat.controller.impl.servlet.MyServlet</servlet-class>
         <multipart-config>
-            <location>C:/Users/Misterchaos/Documents/Java Develop Workplaces/IDEA workspace/wechat/web/file</location>
+            <location>C:\Users\Misterchaos\Documents\Java Develop Workplaces\IDEA workspace\wechat\out\artifacts\wechat_war_exploded\upload</location>
         </multipart-config>
     </servlet>
     <servlet-mapping>

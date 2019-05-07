@@ -17,8 +17,8 @@
 package com.hyc.wechat.dao.impl;
 
 import com.hyc.wechat.dao.ResultMapper;
-import com.hyc.wechat.dao.SQLRunner;
 import com.hyc.wechat.dao.SQLMapper;
+import com.hyc.wechat.dao.SQLRunner;
 import com.hyc.wechat.exception.DaoException;
 import com.hyc.wechat.util.JdbcUtils;
 
@@ -107,6 +107,7 @@ public class SQLRunnerImpl implements SQLRunner {
          */
         String sql = sqlMapper.doMap(fieldNames.toArray());
         Object[] params = fieldValues.toArray();
+
         /**
          * 请不要对Connection使用auto-close，应该使用JdbcUtils提供的close方法放回数据库连接池
          */
@@ -116,6 +117,7 @@ public class SQLRunnerImpl implements SQLRunner {
             /**
              * 给预编译语句填入参数
              */
+
             JdbcUtils.setParams(ps, params);
             /**
              * 将ps填入参数后的完整语句赋值给sql
@@ -180,7 +182,7 @@ public class SQLRunnerImpl implements SQLRunner {
      * @date 2019/4/10
      */
     @Override
-    public int update(Object obj,String table) {
+    public int update(Object obj, String table) {
         return obj == null ? 0 : executeUpdate(obj, params -> {
             /**
              * updateRunner会传入一个属性值LinkedList
@@ -226,7 +228,7 @@ public class SQLRunnerImpl implements SQLRunner {
      * @date 2019/4/13
      */
     @Override
-    public int delete(Object obj,String table) {
+    public int delete(Object obj, String table) {
         return obj == null ? 0 : executeUpdate(obj, params -> {
             /**
              * updateRunner会传入一个属性值LinkedList
@@ -236,7 +238,7 @@ public class SQLRunnerImpl implements SQLRunner {
              * 根据属性名生成预编译sql更新语句
              */
             StringBuilder sql = new StringBuilder("delete from " + table);
-            sql.append(whereMapper(params,"and","="));
+            sql.append(whereMapper(params, "and", "="));
             return sql.toString();
         });
     }
@@ -352,7 +354,7 @@ public class SQLRunnerImpl implements SQLRunner {
                         for (Method ms : methods) {
                             if (ms.getName().equalsIgnoreCase(setters[i])) {
                                 //TODO
-                                System.out.println("[执行方法]： "+ms.getName()+"[属性值]："+rs.getObject(columns[i]));
+//                                System.out.println("[执行方法]： "+ms.getName()+"[属性值]："+rs.getObject(columns[i]));
                                 ms.invoke(obj, rs.getObject(columns[i]));
                             }
                         }

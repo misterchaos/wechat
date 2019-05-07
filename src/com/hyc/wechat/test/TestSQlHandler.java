@@ -16,10 +16,11 @@
 
 package com.hyc.wechat.test;
 
-import com.hyc.wechat.dao.FriendDao;
+import com.hyc.wechat.dao.ChatDao;
+import com.hyc.wechat.dao.MomentDao;
 import com.hyc.wechat.dao.UserDao;
 import com.hyc.wechat.factory.DaoProxyFactory;
-import com.hyc.wechat.model.po.Friend;
+import com.hyc.wechat.model.po.Moment;
 import com.hyc.wechat.model.po.User;
 
 import java.math.BigInteger;
@@ -35,18 +36,18 @@ public class TestSQlHandler {
     public static void main(String[] args) {
         UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
         User user = new User();
-        user.setName("test");
+        user.setName("testasdf中文");
         userDao.insert(user);
-        user= userDao.getUserById("50");
-        List list = userDao.listByName("test");
-
-        FriendDao friendDao = (FriendDao) DaoProxyFactory.getInstance().getProxyInstance(FriendDao.class);
-        Friend friend  = new Friend();
-        friend.setAlias("test");
-        friend.setUserId(new BigInteger("13"));
-        friend.setFriendId(new BigInteger("13"));
-        friend.setGroupId(new BigInteger("0"));
-
-        friendDao.insert(friend);
+        user = userDao.getUserById("50");
+        List list = userDao.listLikeName("%昵称%");
+        System.out.println("查询到记录：" + list.size() + "条");
+        ChatDao chatDao = (ChatDao) DaoProxyFactory.getInstance().getProxyInstance(ChatDao.class);
+        chatDao.toFriendChat("4", "123");
+        Moment moment = new Moment();
+        moment.setUserId(BigInteger.valueOf(0));
+        moment.setContent("一条朋友圈");
+        moment.setLove(10L);
+        MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);
+        momentDao.insert(moment);
     }
 }
