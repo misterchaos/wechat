@@ -19,6 +19,7 @@ package com.hyc.wechat.model.builder;
 import com.hyc.wechat.model.vo.MomentVO;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -35,6 +36,28 @@ public class MomentVOBuilder {
 
     public MomentVO build() {
         return this.momentVO;
+    }
+
+
+    public MomentVOBuilder setTime(Timestamp time){
+        this.momentVO.setTime(time);
+        return this;
+    }
+
+    public MomentVOBuilder setUserPhoto(String userPhoto){
+        this.momentVO.setUserPhoto(userPhoto);
+        return this;
+    }
+
+
+    public MomentVOBuilder setPhoto(String photo){
+        this.momentVO.setPhoto(photo);
+        return this;
+    }
+
+    public MomentVOBuilder setUserName(String userName){
+        this.momentVO.setUserName(userName);
+        return this;
     }
 
     public MomentVOBuilder setId(BigInteger id) {

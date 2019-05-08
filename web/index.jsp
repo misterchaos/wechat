@@ -51,7 +51,6 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (data) {
-                    alert("错误");
                     alert("系统提示：" + data.message);
                     callback(data);
                 },
@@ -65,12 +64,15 @@
     <!--END——发送请求脚本-->
 </head>
 <body>
-<div class="page-body">
+<div class="page-body" style="background-color: #eee;">
+    <img src="/upload/photo/${login.chatBackground}" style="position: absolute;height: 100%;width: 100%">
+
     <!--BEGIN——菜单列表-->
     <div class="menu">
         <div class="menu-head">
             <div class="menu-head-photo">
-                <img src="/upload/photo/${login.photo}" class="menu-head-img" onclick="loadUserInfoHtml()">
+                <img src="/upload/photo/${login.photo}" class="menu-head-img"
+                     onclick="showWindowOnRight('user-info-box')">
             </div>
             <div class="menu-head-info">
                 <h3 class="menu-head-nickname">${login.name}</h3>
@@ -94,16 +96,17 @@
             <div class="menu-option-item">
                 <div id="moment" onclick="showWindowOnLeft('moment-list')" class="menu-option-button">朋友圈</div>
             </div>
+
         </div>
         <!--BEGIN——聊天列表-->
-        <div id="menu-body" class="menu-body" data-window="chat-list">
-            <div id="chat-list" style="display: none"></div>
+        <div id="menu-body" class="menu-body" data-window="chat-list" onload="document.getElementById('chat').click()">
+            <div id="chat-list" style="display: block"></div>
             <div id="friend-list" style="display: none"></div>
             <div id="article-list" style="display: none"></div>
             <div id="moment-list" style="display: none">
                 <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
                         onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="showWindowOnRight()">
+                        onclick="showWindowOnRight('post-moment-box')">
                     <div class="user-list-block">
                         <div class="user-box">
                             <div class="user-info">
@@ -115,7 +118,7 @@
                 </button>
                 <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
                         onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="showWindowOnRight()">
+                        onclick="loadNews(1)">
                     <div class="user-list-block">
                         <div class="user-box">
                             <div class="user-info">
@@ -147,10 +150,9 @@
 
     <!--BEGIN——右边窗口-->
     <div id="right-page" data-window="0">
-        <div class="info-box" id="info-box" style="display: none"></div>
 
         <!--BEGIN——聊天窗口-->
-        <div id="0" class="chat-box">
+        <div id="0" class="chat-box" style="display:none;background: transparent;">
             <div class="chat-box-head">   
                 <div class="chat-box-title">       
                     <div class="chat-box-title-box">           
@@ -159,6 +161,7 @@
                 </div>
             </div>
             <div id="${param.chat_id}accept-message" class="chat-output-box">   
+
                 <div class="chat-output-content-left">       
                     <img src="/upload/photo/system.jpg" alt="头像" class="chat-output-head-photo-left">     
                     <h4 class="chat-output-meta-left">系统消息</h4>
@@ -169,10 +172,144 @@
             </div>
         </div>
         <!--END——聊天窗口-->
-        <!--BEGIN——搜索结果列表窗口-->
+        <!--BEGIN——用户信息窗口-->
+        <div id="user-info-box" class="info-box" style="display: none">
+            <div class="info-box-head">   
+                <div class="info-box-title">       
+                    <div class="info-box-title-box"><a class="info-box-title-text">个人信息</a></div>
+                    <button id="update-user" onclick="updateUserInfo()"
+                            style="float: right" contenteditable="false">更新
+                    </button>
+                </div>
+            </div>
+            <div id="${login.id}info" class="info-detail-box" onclick="enterClick(update-user)">
+                   
+                <div class="info-outline">
+                    <div class="info-head-photo">
+                        <img id="user-preview" src="/upload/photo/${login.photo}" class="info-head-img"
+                             onclick="document.getElementById('user-photo').click()">
+                        <input type="file" name="file" id="user-photo"
+                               accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
+                               oninput="imgPreview(document.getElementById('user-photo'),'user-preview')"
+                               style="display: none">
 
+                    </div>
+                    <div class="info-head-info">
+                        <h3 class="info-head-nickname">${login.name}</h3>
+                    </div>
+                </div>
+                <div class="info-detail">
+                    <div class="info-detail-block">
+                        <div class="info-detail-item" contenteditable="false">昵称:</div>
+                        <div class="info-detail-value" id="name" contenteditable="true">${login.name}</div>
+                    </div>
+                    <div class="info-detail-block">
+                        <div class="info-detail-item">个性签名:</div>
+                        <div class="info-detail-value" id="signature" contenteditable="true">${login.signature}</div>
+                    </div>
+                    <div class="info-detail-block">
+                        <div class="info-detail-item">微信号:</div>
+                        <div class="info-detail-value" id="wechat_id" contenteditable="true">${login.wechatId}</div>
+                    </div>
+                    <div class="info-detail-block">
+                        <div class="info-detail-item">性别:</div>
+                        <div class="info-detail-value" id="gender" contenteditable="true">${login.gender}</div>
+                    </div>
+                    <div class="info-detail-block">
+                        <div class="info-detail-item">地区:</div>
+                        <div class="info-detail-value" id="location" contenteditable="true">${login.location}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--END——用户信息窗口-->
+        <!--BEGIN——搜索结果列表窗口-->
+        <div id="search-result-box" class="info-box" style="display: none"></div>
         <!--END——搜索结果列表窗口-->
+        <!--BEGIN——发朋友圈窗口-->
+        <div id="post-moment-box" class="info-box" style="display: none">
+            <div class="info-box-head">   
+                <div class="info-box-title">       
+                    <div class="info-box-title-box"><a class="info-box-title-text">写朋友圈</a></div>
+                    <button id="post-moment" onclick="postMoment()"
+                            style="float: right" contenteditable="false">发布
+                    </button>
+                </div>
+            </div>
+            <div id="${login.id}info" class="info-detail-box">
+                <div class="info-outline">
+                    <div class="info-head-photo">
+                        <img id="moment-preview" src="/upload/photo/upload.jpg" class="info-head-img"
+                             onclick="document.getElementById('moment-photo').click()">
+                        <input type="file" name="file" id="moment-photo"
+                               accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
+                               oninput="imgPreview(document.getElementById('moment-photo'),'moment-preview')"
+                               style="display: none">
+                    </div>
+                    <div class="info-head-info">
+                        <h3 class="info-head-nickname">单击左侧上传图片</h3>
+                    </div>
+                </div>
+                <div class="info-detail">
+                    <div class="info-detail-block" style="margin-left: 20px">
+                        <label for="moment-content"></label>
+                        <textarea class="input-text-content" id="moment-content" autofocus="autofocus" cols="100"
+                                  contenteditable="true" onchange="enterClick('post-moment')" placeholder="分享自己的动态..."
+                                  required="required" maxlength="300" oninput="enterClick('post-moment')"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--END——发朋友圈窗口-->
+        <!--BEGIN——查看朋友圈窗口-->
+        <div id="news-box" class="info-box" style="display: block">
+            <div class="info-box-head">   
+                <div class="info-box-title">       
+                    <div class="info-box-title-box"><a class="info-box-title-text">查看朋友圈</a></div>
+                    <button id="see-moment" onclick="postMoment()"
+                            style="float: right" contenteditable="false">
+                    </button>
+                </div>
+            </div>
+            <div id="${login.id}info" class="info-detail-box">
+                <div id="news-box-content" class="info-detail">
+                    <div class="info-detail-block" style="margin-left: 20px">
+                        <label for="moment-content">
+                            <div class="info-detail-block">               
+                                <div class="user-box" style="border-top: 1px solid;">
+                                    <div class="user-photo">
+                                        <img src="/upload/photo/user.photo" alt="用户头像" class="my-photo">
+                                    </div>
+                                    <div class="user-info" style="height: fit-content">
+                                        <h3 class="my-name" style="color: #333">userName 发布于 2019-10-10</h3>
+                                        <div> Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+                                            ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+                                            amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+                                            odio. Curabitur malesuada. Vestibulum a velit eu ante scele
+                                        </div>
+                                    </div>
+                                    <button onclick="addFriend(  user.id  )" style="float: left"
+                                            contenteditable="false">点赞()
+                                    </button>
+                                    <button onclick="addFriend(  user.id  )" style="float: left"
+                                            contenteditable="false">评论()
+                                    </button>
+                                    <button onclick="addFriend(  user.id  )" style="float: left"
+                                            contenteditable="false">收藏()
+                                    </button>
+                                    <button onclick="addFriend(  user.id  )" style="float: left"
+                                            contenteditable="false">转发()
+                                    </button>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--END——查看朋友圈窗口-->
     </div>
+
     <!--END——右边窗口-->
 
 
@@ -291,10 +428,29 @@
         };
         postRequest(url, request, function (result) {
             var messages = result.data;
-            for (var i = messages.length-1; i>=0 ; i--) {
+            for (var i = messages.length - 1; i >= 0; i--) {
                 addMessageToChat(messages[i]);
             }
         });
+    }
+
+    //加载朋友圈动态
+    function loadNews(page) {
+        var url = "http://localhost:8080/wechat/moment";
+        var request = {
+            method: "news.do",
+            user_id: "${login.id}",
+            page: page
+        };
+        postRequest(url, request, function (result) {
+            var news = result.data;
+            //加载之前先将之前的清空
+            document.getElementById('news-box-content').innerHTML='';
+            for (var i = news.length - 1; i >= 0; i--) {
+                addMomentBlockHtml(news[i]);
+            }
+        });
+        showWindowOnRight('news-box');
     }
 
     //加好友
@@ -319,19 +475,46 @@
             gender: document.getElementById("gender").innerText,
             location: document.getElementById("location").innerText
         });
+        //更新基本信息
         var url = "http://localhost:8080/wechat/user?method=update.do";
         ajaxJsonRequest(url, jsonStr, function (result) {
             if ("SUCCESS" === result.status) {
             } else {
             }
         });
+        //更新头像
+        url = "http://localhost:8080/wechat/upload?method=uploadphoto.do&id=${login.id}&table=user";
+        uploadPhoto(url, 'user-photo');
     }
 
-    //更新个人头像
-    function updateUserPhoto() {
+    //发布朋友圈
+    function postMoment() {
+        var content = document.getElementById("moment-content").value;
+        var jsonStr = JSON.stringify({
+            user_id: "${login.id}",
+            content: content
+        });
+        var url = "http://localhost:8080/wechat/moment?method=add.do";
+        if (!('' === content)) {
+            ajaxJsonRequest(url, jsonStr, function (result) {
+                if ("SUCCESS" === result.status) {
+                    //成功之后上传图片
+                    url = "http://localhost:8080/wechat/upload?method=uploadphoto.do&id=" + result.data.id + "&table=moment";
+                    uploadPhoto(url, 'moment-photo');
+                } else {
+                }
+            });
+            document.getElementById("moment-content").value = '';
+        } else {
+            alert("发送内容不能为空");
+            return;
+        }
+    }
+
+    //上传图片
+    function uploadPhoto(url, photo_id) {
         var formData = new FormData();
-        formData.append('photo', $('#input_file')[0].files[0]);  //添加图片信息的参数
-        var url = "http://localhost:8080/wechat/upload?method=uploadphoto.do&id=${login.id}&table=user";
+        formData.append('photo', $(document.getElementById(photo_id))[0].files[0]);  //添加图片信息的参数
         $.ajax({
             url: url,
             type: 'POST',
@@ -351,18 +534,9 @@
 <!--END——程序执行脚本-->
 <!--BEGIN——预加载脚本-->
 <script>
-    preLoadSearchResult();
-
-
-    //预加载搜索结果页面，不显示
-    function preLoadSearchResult() {
-        var html = '<div id="search-result" class="info-box" style="display: none"></div>';
-        document.getElementById("right-page").innerHTML += html;
-    }
-
-    //预加载聊天窗口，不显示
+    //动态加载聊天窗口，不显示
     function loadChatBox(chat) {
-        var html = '<div id="' + chat.id + '" class="chat-box" style="display: none">\n' +
+        var html = '<div id="' + chat.id + '" class="chat-box" style="display: none;background: transparent;">\n' +
             '<div class="chat-box-head">\n' +
             '            <div class="chat-box-title">\n' +
             '                <div class="chat-box-title-box">\n' +
@@ -372,21 +546,16 @@
             '                </div>\n' +
             '            </div>\n' +
             '        </div>\n' +
-            '        <div id="' + chat.id + 'accept-message" class="chat-output-box">\n' +
-
+            '        <div id="' + chat.id + 'accept-message" class="chat-output-box" style="background: transparent;">\n' +
             '        </div>\n' +
-            '        <div class="chat-input-box" >\n' +
+            '        <div class="chat-input-box" style="background-color:#eee;" >\n' +
             '            <button id="' + chat.id + 'send-button" onclick="sendMessage(\'' + chat.id + '\',\'user\')">发送</button>\n' +
             '            <textarea id="' + chat.id + 'send-message" class="text-area" autofocus="autofocus" cols="100"\n' +
             '                      required="required" maxlength="300" oninput="enterClick(\'' + chat.id + 'send-button\')"></textarea>\n' +
             '        </div></div>';
         document.getElementById("right-page").innerHTML += html;
     }
-</script>
-<!--END——预加载脚本-->
 
-<!--BEGIN——加载网页脚本-->
-<script>
     //加载聊天列表
     function loadChatListOnMenu(chat) {
         var chat_html = '<button class="user-list-block-href"  onmouseover="this.style.backgroundColor=\'#3A3F45\';" ' +
@@ -409,23 +578,31 @@
     function loadFriendOnMenu(friend) {
         var chat_html = '<button class="user-list-block-href"  onmouseover="this.style.backgroundColor=\'#3A3F45\';" ' +
             'onmouseout="this.style.backgroundColor=\'#2e3238\';"' +
-            'onclick="showWindowOnRight(\'' + chat.id + '\')"><div class="user-list-block">\n' +
+            'onclick="showWindowOnRight()"><div class="user-list-block">\n' +
             '                <div class="user-box">\n' +
             '                    <div class="user-photo">\n' +
             '                        <img src="/upload/photo/' + friend.photo + '" alt="用户头像" class="my-photo">\n' +
             '                    </div>\n' +
             '                    <div class="user-info">\n' +
             '                        <h3 class="my-name">' + friend.alias + '</h3>\n' +
-            '                        <p class="my-message">' + friend.signature + '</p>\n' +
+            '                        <p class="my-message">' + friend.description + '</p>\n' +
             '                    </div>\n' +
             '                </div>\n' +
             '            </div></button>';
         document.getElementById("friend-list").innerHTML += chat_html;
     }
 
+
+</script>
+<!--END——预加载脚本-->
+
+<!--BEGIN——加载网页脚本-->
+<script>
+
+
     //加载搜索结果页面，并显示
     function loadSearchResult() {
-        document.getElementById("search-result").innerHTML =
+        document.getElementById("search-result-box").innerHTML =
             '            <div class="info-box-head">          \n' +
             '                <div class="info-box-title">                  \n' +
             '                    <div class="info-box-title-box"><a class="info-box-title-text">搜索结果</a></div>\n' +
@@ -437,81 +614,69 @@
             '                </div>\n' +
             '            </div>\n';
 
-        showWindowOnRight("search-result");
+        showWindowOnRight("search-result-box");
     }
 
     //让该id对应的窗口显示出来，并把之前的隐藏起来
     function showWindowOnRight(window_id) {
         var current_window = document.getElementById("right-page").dataset.window;
+        console.log("隐藏窗口id : " + current_window);
         document.getElementById(current_window).style.display = "none";
         document.getElementById(window_id).style.display = "";
         document.getElementById("right-page").dataset.window = window_id;
-        console.log("当前窗口id" + document.getElementById("right-page").dataset.window);
+        console.log("当前窗口id : " + document.getElementById("right-page").dataset.window);
     }
 
     //让该id对应的窗口显示出来，并把之前的隐藏起来
     function showWindowOnLeft(window_id) {
         var current_window = document.getElementById("menu-body").dataset.window;
+        console.log("隐藏窗口id : " + current_window);
         document.getElementById(current_window).style.display = "none";
         document.getElementById(window_id).style.display = "";
         document.getElementById("menu-body").dataset.window = window_id;
-        console.log("当前窗口id" + document.getElementById("menu-body").dataset.window);
+        console.log("当前窗口id : " + document.getElementById("menu-body").dataset.window);
     }
 
 
-    //加载个人信息窗口
-    function loadUserInfoHtml() {
-        document.getElementById("info-box").innerHTML =
-            '        <div class="info-box-head">   \n' +
-            '            <div class="info-box-title">       \n' +
-            '                <div class="info-box-title-box"><a class="info-box-title-text">个人信息</a></div>\n' +
-            '                <button id="send-button" onclick="updateUserInfo()"\n' +
-            '                        style="float: right" contenteditable="false">更新\n' +
-            '                </button>\n' +
-            '            </div>\n' +
-            '        </div>\n' +
-            '        <div id="${login.id}info" class="info-detail-box">\n' +
-            '               \n' +
-            '            <div class="info-outline">\n' +
-            '                <div class="info-head-photo">\n' +
-            '                    <img id="preview" src="/upload/photo/${login.photo}" class="info-head-img" onclick="document.getElementById(\'input_file\').click()">\n' +
-            '                    <input type="file" name="file" id="input_file"\n' +
-            '                           accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"\n' +
-            '                           oninput="imgPreview(document.getElementById(\'input_file\'))" style="display: none">\n' +
-            '\n' +
-            '                </div>\n' +
-            '                <div class="info-head-info">\n' +
-            '                    <h3 class="info-head-nickname">${login.name}</h3>\n' +
+    //加载发朋友圈窗口
+    function loadPostMomentBox() {
+        var html = '<div class="info-box" id="info-box">\n' +
+            '            <div class="info-box-head">   \n' +
+            '                <div class="info-box-title">       \n' +
+            '                    <div class="info-box-title-box"><a class="info-box-title-text">写朋友圈</a></div>\n' +
+            '                    <button id="post-moment" onclick="postMoment()"\n' +
+            '                            style="float: right" contenteditable="false">发布\n' +
+            '                    </button>\n' +
             '                </div>\n' +
             '            </div>\n' +
-            '            <div class="info-detail">\n' +
-            '                <div class="info-detail-block">\n' +
-            '                    <div class="info-detail-item" contenteditable="false">昵称:</div>\n' +
-            '                    <div class="info-detail-value" id="name" contenteditable="true">${login.name}</div>\n' +
+            '            <div id="${login.id}info" class="info-detail-box">\n' +
+            '                <div class="info-outline">\n' +
+            '                    <div class="info-head-photo">\n' +
+            '                        <img id="preview" src="/upload/photo/upload.jpg" class="info-head-img"\n' +
+            '                             onclick="document.getElementById(\'input_file\').click()">\n' +
+            '                        <input type="file" name="file" id="input_file"\n' +
+            '                               accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"\n' +
+            '                               oninput="imgPreview(document.getElementById(\'input_file\'))" style="display: none">\n' +
+            '                    </div>\n' +
+            '                    <div class="info-head-info">\n' +
+            '                        <h3 class="info-head-nickname">单击左侧上传图片</h3>\n' +
+            '                    </div>\n' +
             '                </div>\n' +
-            '                <div class="info-detail-block">\n' +
-            '                    <div class="info-detail-item">个性签名:</div>\n' +
-            '                    <div class="info-detail-value" id="signature" contenteditable="true">${login.signature}</div>\n' +
-            '                </div>\n' +
-            '                <div class="info-detail-block">\n' +
-            '                    <div class="info-detail-item">微信号:</div>\n' +
-            '                    <div class="info-detail-value" id="wechat_id" contenteditable="true">${login.wechatId}</div>\n' +
-            '                </div>\n' +
-            '                <div class="info-detail-block">\n' +
-            '                    <div class="info-detail-item">性别:</div>\n' +
-            '                    <div class="info-detail-value" id="gender" contenteditable="true">${login.gender}</div>\n' +
-            '                </div>\n' +
-            '                <div class="info-detail-block">\n' +
-            '                    <div class="info-detail-item">地区:</div>\n' +
-            '                    <div class="info-detail-value" id="location" contenteditable="true">${login.location}</div>\n' +
+            '                <div class="info-detail">\n' +
+            '                    <div class="info-detail-block" style="margin-left: 20px">\n' +
+            '                        <label for="moment-content"></label>\n' +
+            '                        <textarea class="input-text-content" id="moment-content" autofocus="autofocus" cols="100"\n' +
+            '                                  contenteditable="true" onchange="enterClick(\'post-moment\')" placeholder="分享自己的动态..."\n' +
+            '                                  required="required" maxlength="300" oninput="enterClick(\'post-moment\')"></textarea>\n' +
+            '                    </div>\n' +
             '                </div>\n' +
             '            </div>\n' +
-            '    </div>';
-        showWindowOnRight("info-box");
+            '        </div>\n';
+        document.getElementById("info-box").innerHTML = html;
     }
 
     //加载图片
-    function imgPreview(fileDom) {
+    function imgPreview(fileDom, preview) {
         //判断是否支持FileReader
         if (window.FileReader) {
             var reader = new FileReader();
@@ -529,12 +694,12 @@
         //读取完成
         reader.onload = function (e) {
             //获取图片dom
-            var img = document.getElementById("preview");
+            var img = document.getElementById(preview);
             //图片路径设置为读取的图片
             img.src = e.target.result;
         };
         reader.readAsDataURL(file);
-        updateUserPhoto();
+
     }
 
     //插入一个搜索用户的结果
@@ -554,6 +719,42 @@
             '                        </div>\n' +
             '                    </div>';
         document.getElementById("content").innerHTML += html;
+    }
+
+    //插入一条用户的朋友圈
+    function addMomentBlockHtml(moment) {
+        var time =new Date(moment.time).toLocaleString();
+        var html = '           <div class="info-detail-block" style="margin-left: 20px">\n' +
+            '                        <label for="moment-content">\n' +
+            '                            <div class="info-detail-block">               \n' +
+            '                                <div class="user-box" style="border-top: 1px solid;">\n' +
+            '                                    <div class="user-photo">\n' +
+            '                                        <img src="/upload/photo/'+moment.userPhoto+'" alt="用户头像" class="my-photo">\n' +
+            '                                    </div>\n' +
+            '                                    <div class="user-info" style="height: fit-content">\n' +
+            '                                        <h3 class="my-name" style="color: #333">' + moment.userName + ' 发布于 ' + time + '</h3>\n' +
+            '                                        <div>' + moment.content + '</div>\n' +
+            '                                    </div>\n' +
+            '                                    <button onclick="" style="float: left"\n' +
+            '                                            contenteditable="false">点赞\(' + moment.love + '\)\n' +
+            '                                    </button>\n' +
+            '                                    <button onclick="" style="float: left"\n' +
+            '                                            contenteditable="false">评论\(' + moment.remark + '\)\n' +
+            '                                    </button>\n' +
+            '                                    <button onclick="" style="float: left"\n' +
+            '                                            contenteditable="false">收藏\(' + moment.collect + '\)\n' +
+            '                                    </button>\n' +
+            '                                    <button onclick="" style="float: left"\n' +
+            '                                            contenteditable="false">转发\(' + moment.share + '\)\n' +
+            '                                    </button>\n' +
+            '                                    <button onclick="" style="float: left"\n' +
+            '                                            contenteditable="false">浏览量\(' + moment.view + '\)\n' +
+            '                                    </button>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                        </label>\n' +
+            '                    </div>';
+        document.getElementById("news-box-content").innerHTML += html;
     }
 
     //将消息显示在消息对应的聊天窗口上,并在聊天列表对应位置显示
@@ -742,6 +943,23 @@
         white-space: nowrap;
     }
 
+    .input-text-content {
+        border-top: 1px solid #d6d6d6;
+        height: 200px;
+        width: 90%;
+        margin-left: 30px;
+        margin-right: 30px;
+        margin-bottom: 15px;
+        resize: none;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-left: 20px;
+        outline: solid;
+        border: 0;
+        font-size: 25px;
+        background-color: #eee
+    }
+
     .info-submit-box {
         position: fixed;
         height: 250px;
@@ -841,14 +1059,6 @@
         color: white;
     }
 
-    .menu-option-button {
-        padding: 13px;
-        float: right;
-        height: 39px;
-        width: 70px;
-        background-color: #3A3F45;
-        color: white;
-    }
 
     .menu-search-bar {
         height: 50px;
@@ -875,6 +1085,16 @@
         width: 25%;
         position: relative;
     }
+
+    .menu-option-button {
+        padding: 13px;
+        margin: auto;
+        height: 39px;
+        width: 90px;
+        background-color: #3A3F45;
+        color: white;
+    }
+
 
     .menu-option-chat {
         display: block;
@@ -960,7 +1180,9 @@
         top: 0;
         left: 0;
         right: 0;
-        line-height: 40px
+        line-height: 40px;
+        background-color: #eee;
+
     }
 
     .chat-box-title {
@@ -1017,6 +1239,7 @@
     }
 
     .chat-output-box {
+        background: transparent;
         position: relative;
         margin-bottom: 0px;
         margin-right: 0px;

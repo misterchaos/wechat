@@ -31,7 +31,7 @@ import java.util.List;
  */
 public interface MomentDao extends BaseDao {
     String TABLE = "moment";
-    String ALL_FIELD = "user_id,content,time,love,remark,share,view,collect," + BASE_FIELD;
+    String ALL_FIELD = "user_id,content,photo,time,love,remark,share,view,collect," + BASE_FIELD;
 
     /**
      * 通过朋友圈id查询一个朋友圈
@@ -45,6 +45,19 @@ public interface MomentDao extends BaseDao {
     @Result(entity = Moment.class, returns = ResultType.OBJECT)
     @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where id = ? ")
     Moment getMomentById(Object id);
+
+    /**
+     * 通过用户id和状态查询一个朋友圈
+     *
+     * @param userId 用户id
+     * @param stauts 状态
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/8
+     */
+    @Result(entity = Moment.class, returns = ResultType.OBJECT)
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where user_id = ? and status = ? ")
+    Moment getMomentByUserIdAndStatus(Object userId,Object stauts);
 
 
     /**

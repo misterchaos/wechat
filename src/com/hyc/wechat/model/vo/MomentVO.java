@@ -28,12 +28,28 @@ import java.math.BigInteger;
  */
 public class MomentVO extends Moment {
 
+    private String userName;
     private Boolean loved;
     private Boolean shared;
     private Boolean viewed;
     private Boolean collected;
+    private String userPhoto;
 
+    public String getUserPhoto() {
+        return userPhoto;
+    }
 
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public boolean getLoved() {
         return loved;

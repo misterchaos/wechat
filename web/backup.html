@@ -1,0 +1,105 @@
+<!--
+  ~ Copyright (c) 2019.  黄钰朝
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+//发朋友圈
+<div class="info-box" id="info-box">
+    <div class="info-box-head">   
+        <div class="info-box-title">       
+            <div class="info-box-title-box"><a class="info-box-title-text">写朋友圈</a></div>
+            <button id="post-moment" onclick="postMoment()"
+                    style="float: right" contenteditable="false">发布
+            </button>
+        </div>
+    </div>
+    <div id="${login.id}info" class="info-detail-box">
+        <div class="info-outline">
+            <div class="info-head-photo">
+                <img id="preview" src="/upload/photo/upload.jpg" class="info-head-img"
+                     onclick="document.getElementById('input_file').click()">
+                <input type="file" name="file" id="input_file"
+                       accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
+                       oninput="imgPreview(document.getElementById('input_file'))" style="display: none">
+            </div>
+            <div class="info-head-info">
+                <h3 class="info-head-nickname">单击左侧上传图片</h3>
+            </div>
+        </div>
+        <div class="info-detail">
+            <div class="info-detail-block" style="margin-left: 20px">
+                <label for="moment-content"></label>
+                <textarea class="input-text-content" id="moment-content" autofocus="autofocus" cols="100"
+                          contenteditable="true" onchange="enterClick('post-moment')" placeholder="分享自己的动态..."
+                          required="required" maxlength="300" oninput="enterClick('post-moment')"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+//查看朋友圈
+
+<div class="info-box" id="info-box" style="display: block">
+
+    <div class="info-box-head">   
+        <div class="info-box-title">       
+            <div class="info-box-title-box"><a class="info-box-title-text">查看朋友圈</a></div>
+            <button id="see-moment" onclick="postMoment()"
+                    style="float: right" contenteditable="false">
+            </button>
+        </div>
+    </div>
+    <div id="${login.id}info" class="info-detail-box">
+
+        <div class="info-detail">
+            <div class="info-detail-block" style="margin-left: 20px">
+                <label for="moment-content">
+                    <div class="info-detail-block">               
+                        <div class="user-box" style="border-top: 1px solid;">
+                            <div class="user-photo">
+                                <img src="/upload/photo/user.photo" alt="用户头像" class="my-photo">
+                            </div>
+                            <div class="user-info" style="height: fit-content">
+                                <h3 class="my-name" style="color: #333">userName 发布于 2019-10-10</h3>
+                                <div></div>
+                            </div>
+                            <button onclick="addFriend(  user.id  )" style="float: left"
+                                    contenteditable="false">点赞()
+                            </button>
+                            <button onclick="addFriend(  user.id  )" style="float: left"
+                                    contenteditable="false">评论()
+                            </button>
+                            <button onclick="addFriend(  user.id  )" style="float: left"
+                                    contenteditable="false">收藏()
+                            </button>
+                            <button onclick="addFriend(  user.id  )" style="float: left"
+                                    contenteditable="false">转发()
+                            </button>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

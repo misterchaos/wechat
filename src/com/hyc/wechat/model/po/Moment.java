@@ -21,6 +21,7 @@ import com.hyc.wechat.dao.annotation.Table;
 import com.hyc.wechat.model.po.abs.BaseEntity;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -32,11 +33,30 @@ public class Moment extends BaseEntity {
     @JSONField(name = "user_id")
     private BigInteger userId;
     private String content;
+    private String photo;
+    private Timestamp time;
     private Long love;
     private Long remark;
     private Long share;
     private Long view;
     private Long collect;
+
+
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 
     public BigInteger getUserId() {
         return userId;

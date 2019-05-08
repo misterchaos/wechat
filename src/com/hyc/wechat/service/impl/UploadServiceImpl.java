@@ -16,10 +16,12 @@
 
 package com.hyc.wechat.service.impl;
 
+import com.hyc.wechat.dao.MomentDao;
 import com.hyc.wechat.dao.UserDao;
 import com.hyc.wechat.exception.DaoException;
 import com.hyc.wechat.factory.DaoProxyFactory;
 import com.hyc.wechat.model.dto.ServiceResult;
+import com.hyc.wechat.model.po.Moment;
 import com.hyc.wechat.model.po.User;
 import com.hyc.wechat.service.UploadService;
 import com.hyc.wechat.service.constants.Status;
@@ -41,7 +43,7 @@ import static com.hyc.wechat.util.UploadUtils.toPhotoName;
 public class UploadServiceImpl implements UploadService {
 
     private UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
-
+    private MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);
     /**
      * 负责将文件写入文件，并将数据库表对应的记录上的photo属性值修改为文件名
      *
@@ -66,6 +68,15 @@ public class UploadServiceImpl implements UploadService {
                 if (userDao.update(user) != 1) {
                     return new ServiceResult(Status.ERROR, UPDATE_USER_FAILED.message, user);
                 }
+            }else if("moment".equalsIgnoreCase(tableName)){
+                Moment moment = new Moment();
+                moment.setId(new BigInteger(String.valueOf(id)));
+                moment.setPhoto(fileName);
+                if(momentDao.update(moment)!=1){
+                    return new ServiceResult(Status.ERROR,DATABASE_ERROR.message, moment);
+                }
+            }else {
+                return new ServiceResult(Status.ERROR,UNSUPPROT_TABLE.message,tableName);
             }
         } catch (DaoException e) {
             e.printStackTrace();
