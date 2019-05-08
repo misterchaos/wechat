@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, user);
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, user);
         }
         return new ServiceResult(Status.SUCCESS, REGISTER_INFO_VALID.message, user);
     }
@@ -87,14 +87,14 @@ public class UserServiceImpl implements UserService {
                 user.setName(user.getEmail().trim() + "的昵称");
             }
             if (userDao.insert(user) != 1) {
-                return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, user);
+                return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, user);
             }
             user = userDao.getUserByEmail(user.getEmail());
             //插入后销毁用户对象中的密码数据
             user.setPassword(null);
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, user);
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, user);
         }
         return new ServiceResult(Status.SUCCESS, REGISTER_SUCCESS.message, user);
     }
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
             user.setId(realUser.getId());
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, user);
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, user);
 
         }
         return new ServiceResult(Status.SUCCESS, LOGIN_SUCCESS.message, user);
@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, wechatId);
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, wechatId);
         }
         return new ServiceResult(Status.SUCCESS, WECHAT_ID_VALID.message, wechatId);
     }
@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, user);
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, user);
         }
         return new ServiceResult(Status.SUCCESS, GET_INFO_SUCCESS.message, user);
     }
@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, user);
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, user);
         }
         return new ServiceResult(Status.SUCCESS, UPDATE_INFO_SUCCESS.message, user);
     }
@@ -222,7 +222,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, list);
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, list);
         }
         return new ServiceResult(Status.SUCCESS, OPERATE_SUCCESS.message, list);
 

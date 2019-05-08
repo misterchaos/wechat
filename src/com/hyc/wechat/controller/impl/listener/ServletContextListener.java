@@ -47,6 +47,8 @@ public class ServletContextListener implements javax.servlet.ServletContextListe
         providerMap.put("chatProvider", new ChatProvider());
         providerMap.put("uploadProvider", new UploadProvider());
         providerMap.put("friendProvider", new FriendProvider());
+        providerMap.put("momentProvider",new MomentProvider());
+        providerMap.put("messageProvider",new MessageProvider());
         //将controllerMap注入ServletContext
         ServletContext sc = sce.getServletContext();
         sc.setAttribute("providerMap", providerMap);

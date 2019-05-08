@@ -353,7 +353,7 @@ public class SQLRunnerImpl implements SQLRunner {
                          */
                         for (Method ms : methods) {
                             if (ms.getName().equalsIgnoreCase(setters[i])) {
-                                //TODO
+                                //TODO 跟踪从数据库到实体类的映射
 //                                System.out.println("[执行方法]： "+ms.getName()+"[属性值]："+rs.getObject(columns[i]));
                                 ms.invoke(obj, rs.getObject(columns[i]));
                             }

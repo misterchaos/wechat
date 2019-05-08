@@ -121,7 +121,7 @@
         function add_chat_html(chat) {
             var chat_html = '<button class="user-list-block-href"  onmouseover="this.style.backgroundColor=\'#3A3F45\';" ' +
                 'onmouseout="this.style.backgroundColor=\'#2e3238\';"' +
-                'onclick="load_chat_box(\'' + chat.name + '\',\'' + chat.id + '\')"><div class="user-list-block">\n' +
+                'onclick="showWindowOnRight(\'' + chat.name + '\',\'' + chat.id + '\')"><div class="user-list-block">\n' +
                 '                <div class="user-box">\n' +
                 '                    <div class="user-photo">\n' +
                 '                        <img src="/upload/photo/' + chat.photo + '" alt="用户头像" class="my-photo">\n' +

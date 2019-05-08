@@ -69,7 +69,7 @@ public class UploadServiceImpl implements UploadService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, id);
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, id);
         } catch (IOException e) {
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, UPLOAD_FAILED.message, id);

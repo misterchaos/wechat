@@ -22,8 +22,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.hyc.wechat.controller.constant.RequestMethod" %>
-<%@ page import="com.hyc.wechat.controller.constant.WebPage" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <html>
 <head>
@@ -40,7 +38,7 @@
     <div class="login-head" style="height: 100px">
         <div class="jumbotron" style="padding-bottom: 20px;padding-top:20px;margin:0px">
             <div class="logo">
-                <a href="${WebPage.INDEX_JSP.toString()}" style="color: #999;font-size: 44px;text-decoration: none"><img
+                <a href="${pageContext.request.contextPath}/index.jsp" style="color: #999;font-size: 44px;text-decoration: none"><img
                         src="/static/img/logo.png" alt="logo" style="width: 100px;margin: 10px">微信，是一种生活方式</h2>
                 </a>
             </div>
@@ -54,7 +52,7 @@
     <div class="input-box">
         <div class="color-input-field">
             <h2 class="input-box-title">邮箱登陆</h2>
-            <form action="${pageContext.request.contextPath}/wechat/user?method=${RequestMethod.LOGIN_DO.toString()}"
+            <form action="${pageContext.request.contextPath}/wechat/user?method=login.do"
                   method="post">
                 <c:if test="${data!=null}">
                     <input type="text" required="required" class="form-control" name="email"
@@ -74,7 +72,7 @@
             </form>
             <br>
             <div class="switch-button">
-                <a href="${WebPage.REGISTER_JSP.toString()}">立即注册</a>
+                <a href="/register.jsp">立即注册</a>
             </div>
         </div>
     </div>

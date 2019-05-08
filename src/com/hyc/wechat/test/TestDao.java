@@ -17,10 +17,13 @@
 package com.hyc.wechat.test;
 
 import com.hyc.wechat.dao.ChatDao;
+import com.hyc.wechat.dao.MessageDao;
 import com.hyc.wechat.dao.MomentDao;
 import com.hyc.wechat.dao.UserDao;
 import com.hyc.wechat.factory.DaoProxyFactory;
+import com.hyc.wechat.model.po.Message;
 import com.hyc.wechat.model.po.Moment;
+import com.hyc.wechat.model.po.News;
 import com.hyc.wechat.model.po.User;
 
 import java.math.BigInteger;
@@ -32,7 +35,7 @@ import java.util.List;
  * @description 测试SQLHandler
  * @date 2019-05-01 17:50
  */
-public class TestSQlHandler {
+public class TestDao {
     public static void main(String[] args) {
         UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
         User user = new User();
@@ -49,5 +52,10 @@ public class TestSQlHandler {
         moment.setLove(10L);
         MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);
         momentDao.insert(moment);
+
+        MessageDao messageDao = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
+        messageDao.listMessageByUserIdAndChatId("0","0",10,1000);
+
+        News news = new News();
     }
 }

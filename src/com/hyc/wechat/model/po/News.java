@@ -24,19 +24,19 @@ import java.math.BigInteger;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
- * @description 朋友圈实体类
- * @date 2019-05-07 11:36
+ * @description 动态表的实体类
+ * @date 2019-05-07 18:44
  */
-@Table(name = "moment")
-public class Moment extends BaseEntity {
+@Table(name = "news")
+public class News extends BaseEntity {
     @JSONField(name = "user_id")
     private BigInteger userId;
-    private String content;
-    private Long love;
-    private Long remark;
-    private Long share;
-    private Long view;
-    private Long collect;
+    @JSONField(name = "moment_Id")
+    private BigInteger momentId;
+    private Boolean loved;
+    private Boolean shared;
+    private Boolean viewed;
+    private Boolean collected;
 
     public BigInteger getUserId() {
         return userId;
@@ -46,51 +46,43 @@ public class Moment extends BaseEntity {
         this.userId = userId;
     }
 
-    public String getContent() {
-        return content;
+    public BigInteger getMomentId() {
+        return momentId;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setMomentId(BigInteger momentId) {
+        this.momentId = momentId;
     }
 
-    public Long getLove() {
-        return love;
+    public Boolean getLoved() {
+        return loved;
     }
 
-    public void setLove(Long love) {
-        this.love = love;
+    public void setLoved(Boolean loved) {
+        this.loved = loved;
     }
 
-    public Long getRemark() {
-        return remark;
+    public Boolean getShared() {
+        return shared;
     }
 
-    public void setRemark(Long remark) {
-        this.remark = remark;
+    public void setShared(Boolean shared) {
+        this.shared = shared;
     }
 
-    public Long getShare() {
-        return share;
+    public Boolean getViewed() {
+        return viewed;
     }
 
-    public void setShare(Long share) {
-        this.share = share;
+    public void setViewed(Boolean viewed) {
+        this.viewed = viewed;
     }
 
-    public Long getView() {
-        return view;
+    public Boolean getCollected() {
+        return collected;
     }
 
-    public void setView(Long view) {
-        this.view = view;
-    }
-
-    public Long getCollect() {
-        return collect;
-    }
-
-    public void setCollect(Long collect) {
-        this.collect = collect;
+    public void setCollected(Boolean collected) {
+        this.collected = collected;
     }
 }

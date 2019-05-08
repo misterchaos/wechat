@@ -142,6 +142,8 @@ public class ChatServer {
 
     @OnError
     public void onError(Session session, Throwable error) {
+        //先将消息队列存入数据库
+        this.messageTask.run();
         System.out.println("发生错误");
         error.printStackTrace();
     }
@@ -171,6 +173,7 @@ public class ChatServer {
         public void enQueue(Message message) {
             this.messageQueue.add(message);
         }
+
         @Override
         public void run() {
             for (Message message : this.messageQueue) {

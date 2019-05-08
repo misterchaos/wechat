@@ -34,7 +34,7 @@
     <!--BEGIN——发送请求脚本-->
     <script>
         //post方法
-        function postToJson(url, request, callback) {
+        function postRequest(url, request, callback) {
             $.post(url, request, function (data, status) {
                 var result = eval("(" + data + ")");
                 alert("系统提示：" + result.message);
@@ -43,7 +43,7 @@
         }
 
         //ajax方法
-        function ajaxGetJson(url, data, callback) {
+        function ajaxJsonRequest(url, data, callback) {
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -51,6 +51,7 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (data) {
+                    alert("错误");
                     alert("系统提示：" + data.message);
                     callback(data);
                 },
@@ -67,9 +68,9 @@
 <div class="page-body">
     <!--BEGIN——菜单列表-->
     <div class="menu">
-        <div class="menu-head" onclick="loadUserInfoHtml()">
+        <div class="menu-head">
             <div class="menu-head-photo">
-                <img src="/upload/photo/${login.photo}" class="menu-head-img">
+                <img src="/upload/photo/${login.photo}" class="menu-head-img" onclick="loadUserInfoHtml()">
             </div>
             <div class="menu-head-info">
                 <h3 class="menu-head-nickname">${login.name}</h3>
@@ -77,34 +78,79 @@
         </div>
         <div class="menu-search">
             <i class="menu-search-icon"></i>
-            <input id="keyword" type="text" placeholder="请输入关键词" class="menu-search-bar">
+            <input id="keyword" type="text" placeholder="请输入关键词" class="menu-search-bar" oninput="enterClick('search')">
             <div id="search" onclick="searchUser()" class="search-button">搜索</div>
         </div>
         <div class="menu-option">
             <div class="menu-option-item">
-                <a class="menu-option-chat">聊天</a>
+                <div id="chat" onclick="showWindowOnLeft('chat-list')" class="menu-option-button">聊天</div>
             </div>
             <div class="menu-option-item">
-                <a class="menu-option-friend">好友</a>
+                <div id="friend" onclick="showWindowOnLeft('friend-list')" class="menu-option-button">好友</div>
             </div>
             <div class="menu-option-item">
-                <a class="menu-option-article">文章</a>
+                <div id="notify" onclick="showWindowOnLeft('notify-list')" class="menu-option-button">通知</div>
             </div>
             <div class="menu-option-item">
-                <a class="menu-option-moment">朋友圈</a>
+                <div id="moment" onclick="showWindowOnLeft('moment-list')" class="menu-option-button">朋友圈</div>
             </div>
         </div>
         <!--BEGIN——聊天列表-->
-        <div id="menu-body" class="menu-body">
+        <div id="menu-body" class="menu-body" data-window="chat-list">
+            <div id="chat-list" style="display: none"></div>
+            <div id="friend-list" style="display: none"></div>
+            <div id="article-list" style="display: none"></div>
+            <div id="moment-list" style="display: none">
+                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                        onmouseout="this.style.backgroundColor='#2e3238';"
+                        onclick="showWindowOnRight()">
+                    <div class="user-list-block">
+                        <div class="user-box">
+                            <div class="user-info">
+                                <h3 class="my-name">发朋友圈</h3>
+                                <p class="my-message">发布一条自己的朋友圈分享自己的动态</p>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                        onmouseout="this.style.backgroundColor='#2e3238';"
+                        onclick="showWindowOnRight()">
+                    <div class="user-list-block">
+                        <div class="user-box">
+                            <div class="user-info">
+                                <h3 class="my-name">查看朋友圈</h3>
+                                <p class="my-message">查看自己和朋友发的朋友圈</p>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                        onmouseout="this.style.backgroundColor='#2e3238';"
+                        onclick="showWindowOnRight()">
+                    <div class="user-list-block">
+                        <div class="user-box">
+                            <div class="user-info">
+                                <h3 class="my-name">我的朋友圈</h3>
+                                <p class="my-message">查看自己发布的朋友圈</p>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+            <div id="notify-list" style="display: none"></div>
+            <div id="setting-list" style="display: none"></div>
         </div>
         <!--END——聊天列表-->
     </div>
     <!--END——菜单列表-->
 
     <!--BEGIN——右边窗口-->
-    <div id="right-page">
+    <div id="right-page" data-window="0">
+        <div class="info-box" id="info-box" style="display: none"></div>
+
         <!--BEGIN——聊天窗口-->
-        <div id="chat-box" class="chat-box">
+        <div id="0" class="chat-box">
             <div class="chat-box-head">   
                 <div class="chat-box-title">       
                     <div class="chat-box-title-box">           
@@ -128,163 +174,40 @@
         <!--END——搜索结果列表窗口-->
     </div>
     <!--END——右边窗口-->
-    <style>
-        .info-box {
-            position: relative;
-            background-color: #eee;
-            overflow: hidden
-        }
-
-        .info-box-head {
-            text-align: center;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            line-height: 40px
-        }
-
-        .info-head-img {
-            width: 220px;
-            height: 220px;
-            margin: 62px;
-            border-radius: 14px;
-            float: left;
-        }
-
-        .info-head-info {
-            float: left;
-            margin-top: 89px;
-            max-width: 360px;
-            overflow: hidden
-        }
-
-        .info-head-nickname {
-            font-size: 53px;
-            max-height: 200px;
-            overflow: hidden;
-            word-wrap: break-word;
-            word-break: break-all;
-        }
-
-        .info-box-title {
-            position: relative;
-            padding: 10px 0;
-            margin: 0 19px;
-            border-bottom: 1px solid #d6d6d6;
-            background-color: #eee;
-            z-index: 1024
-        }
-
-        .info-box-title-box {
-            font-weight: 400;
-            height: 25px;
-            display: inline-block;
-            font-size: 23px;
-            float: left
-        }
-
-        .info-box-title-text {
-            display: inline-block;
-            vertical-align: middle;
-            max-width: 300px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            word-wrap: normal;
-            text-decoration: none;
-            color: #000;
-            font-weight: 400;
-        }
-
-        .info-outline {
-            float: left;
-            height: fit-content;
-            width: 100%;
-        }
-
-        .info-detail {
-            float: left;
-            height: fit-content;
-            width: 100%;
-        }
-
-        .info-detail-block {
-            float: left;
-            height: fit-content;
-            width: 100%;
-            margin-bottom: 20px;
-            min-width: 850px;
-        }
-
-        .info-detail-item {
-            height: 50px;
-            font-size: 34px;
-            padding-left: 62px;
-            text-align: left;
-            position: absolute;
-            width: 255px;
-        }
-
-        .info-detail-value {
-            text-align: left;
-            width: 800px;
-            font-size: 34px;
-            height: 50px;
-            position: relative;
-            margin-left: 300px;
-            border-bottom: solid 2px #ccc;
-            outline: none;
-            white-space: nowrap;
-        }
-
-        .info-submit-box {
-            position: fixed;
-            height: 250px;
-            bottom: 0;
-            min-height: 250px;
-            border-top: 1px solid #d6d6d6;
-        }
-
-        .info-detail-box {
-            overflow: scroll;
-            position: relative;
-            margin-bottom: 0px;
-            margin-right: 0px;
-            margin-top: 80px;
-            min-height: 682px;
-            max-height: 682px;
-        }
-    </style>
 
 
 </div>
 <!--BEGIN——监听键盘-->
 <script>
-
-    document.onkeydown = function (event) {
-        var e = event || window.event || arguments.callee.caller.arguments[0];
-        if (e && e.keyCode == 13) { // enter 键
-            event.cancelBubble = true;
-            event.preventDefault();
-            event.stopPropagation();
-            document.getElementById("send-button").click();
-        }
-    };
+    function enterClick(button_id) {
+        document.onkeydown = function (event) {
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            if (e && e.keyCode === 13) {
+                event.cancelBubble = true;
+                event.preventDefault();
+                event.stopPropagation();
+                document.getElementById(button_id).click();
+            }
+        };
+    }
 </script>
 <!--END——监听键盘-->
 
 <!--BEGIN——程序执行脚本-->
 <script>
+    //请求聊天列表
+    loadChatListAndBox();
+    loadFriendList();
+    loadUnReadMessage(1);
 
     //发送消息
     function sendMessage(chat_id, type) {
-        if(websocket===''){
+        if (websocket === '') {
             alert("当前没有连接服务器，请刷新界面重试");
             return;
         }
         var content = document.getElementById(chat_id + 'send-message').value;
-        if(!('' === content)){
+        if (!('' === content)) {
             var user_id = "${login.id}";
             var time = new Date().getTime();
             websocket.send(JSON.stringify({
@@ -296,7 +219,7 @@
             }));
             //发送完之后将消息清空
             document.getElementById(chat_id + 'send-message').value = '';
-        }else {
+        } else {
             alert("发送内容不能为空");
             return;
         }
@@ -304,50 +227,86 @@
 
     //请求搜索用户结果
     function searchUser() {
-        var name=document.getElementById("keyword").value;
-        console.log("keyword:"+name);
+        var name = document.getElementById("keyword").value;
+        if (name === '') {
+            alert("请输入关键词");
+            return;
+        }
         var url = "http://localhost:8080/wechat/user";
-        var request={
-            method:"list.do",
-            name:name
+        var request = {
+            method: "list.do",
+            name: name
         };
-        postToJson(url,request,function (result) {
-            showSearchPage();
-            var users=result.data;
-            for (var i=0;i<users.length;i++){
+        postRequest(url, request, function (result) {
+            var users = result.data;
+            if (users.length == 0) {
+                return;
+            }
+            loadSearchResult();
+            for (var i = 0; i < users.length; i++) {
                 addSearchUserResultHtml(users[i]);
             }
         })
     }
 
-    //请求聊天列表
-    load_chat_list();
 
-
-    function load_chat_list() {
+    //加载聊天列表，并且每个聊天加载隐藏的聊天窗口
+    function loadChatListAndBox() {
         var url = "http://localhost:8080/wechat/chat";
         var request = {
             method: "list.do",
             id: "${login.id}"
         };
-        postToJson(url, request, function (result) {
+        postRequest(url, request, function (result) {
             var chats = result.data;
             for (var i = 0; i < chats.length; i++) {
-                add_chat_html(chats[i]);
+                loadChatListOnMenu(chats[i]);
+                loadChatBox(chats[i]);
+            }
+        });
+    }
+
+    //加载加载好友列表
+    function loadFriendList() {
+        var url = "http://localhost:8080/wechat/friend";
+        var request = {
+            method: "list.do",
+            user_id: "${login.id}"
+        };
+        postRequest(url, request, function (result) {
+            var friends = result.data;
+            for (var i = 0; i < friends.length; i++) {
+                loadFriendOnMenu(friends[i]);
+            }
+        });
+    }
+
+    //加载未读消息
+    function loadUnReadMessage(page) {
+        var url = "http://localhost:8080/wechat/message";
+        var request = {
+            method: "unread.do",
+            user_id: "${login.id}",
+            page: page
+        };
+        postRequest(url, request, function (result) {
+            var messages = result.data;
+            for (var i = messages.length-1; i>=0 ; i--) {
+                addMessageToChat(messages[i]);
             }
         });
     }
 
     //加好友
     function addFriend(friend_id) {
-        var url = "http://localhost:8080/wechat/friend";
-        var request = {
-            method: "add.do",
-            userId: "${login.id}",
-            friendId: friend_id,
-        };
-        postToJson(url, request, function (result) {
+        var url = "http://localhost:8080/wechat/friend?method=add.do";
+        var request = JSON.stringify({
+            user_id: "${login.id}",
+            friend_id: friend_id,
         });
+        ajaxJsonRequest(url, request, function (result) {
+
+        })
     }
 
     //更新个人信息
@@ -361,7 +320,7 @@
             location: document.getElementById("location").innerText
         });
         var url = "http://localhost:8080/wechat/user?method=update.do";
-        ajaxGetJson(url, jsonStr, function (result) {
+        ajaxJsonRequest(url, jsonStr, function (result) {
             if ("SUCCESS" === result.status) {
             } else {
             }
@@ -373,10 +332,6 @@
         var formData = new FormData();
         formData.append('photo', $('#input_file')[0].files[0]);  //添加图片信息的参数
         var url = "http://localhost:8080/wechat/upload?method=uploadphoto.do&id=${login.id}&table=user";
-        var request = {
-            id: "${login.id}",
-            table: "user",
-        };
         $.ajax({
             url: url,
             type: 'POST',
@@ -394,29 +349,83 @@
     }
 </script>
 <!--END——程序执行脚本-->
+<!--BEGIN——预加载脚本-->
+<script>
+    preLoadSearchResult();
+
+
+    //预加载搜索结果页面，不显示
+    function preLoadSearchResult() {
+        var html = '<div id="search-result" class="info-box" style="display: none"></div>';
+        document.getElementById("right-page").innerHTML += html;
+    }
+
+    //预加载聊天窗口，不显示
+    function loadChatBox(chat) {
+        var html = '<div id="' + chat.id + '" class="chat-box" style="display: none">\n' +
+            '<div class="chat-box-head">\n' +
+            '            <div class="chat-box-title">\n' +
+            '                <div class="chat-box-title-box">\n' +
+            '                    <a class="chat-box-title-text">\n' +
+            '                        ' + chat.name + '\n' +
+            '                    </a>\n' +
+            '                </div>\n' +
+            '            </div>\n' +
+            '        </div>\n' +
+            '        <div id="' + chat.id + 'accept-message" class="chat-output-box">\n' +
+
+            '        </div>\n' +
+            '        <div class="chat-input-box" >\n' +
+            '            <button id="' + chat.id + 'send-button" onclick="sendMessage(\'' + chat.id + '\',\'user\')">发送</button>\n' +
+            '            <textarea id="' + chat.id + 'send-message" class="text-area" autofocus="autofocus" cols="100"\n' +
+            '                      required="required" maxlength="300" oninput="enterClick(\'' + chat.id + 'send-button\')"></textarea>\n' +
+            '        </div></div>';
+        document.getElementById("right-page").innerHTML += html;
+    }
+</script>
+<!--END——预加载脚本-->
+
 <!--BEGIN——加载网页脚本-->
 <script>
     //加载聊天列表
-    function add_chat_html(chat) {
+    function loadChatListOnMenu(chat) {
         var chat_html = '<button class="user-list-block-href"  onmouseover="this.style.backgroundColor=\'#3A3F45\';" ' +
             'onmouseout="this.style.backgroundColor=\'#2e3238\';"' +
-            'onclick="load_chat_box(\'' + chat.name + '\',\'' + chat.id + '\')"><div class="user-list-block">\n' +
+            'onclick="showWindowOnRight(\'' + chat.id + '\')"><div class="user-list-block">\n' +
             '                <div class="user-box">\n' +
             '                    <div class="user-photo">\n' +
             '                        <img src="/upload/photo/' + chat.photo + '" alt="用户头像" class="my-photo">\n' +
             '                    </div>\n' +
             '                    <div class="user-info">\n' +
             '                        <h3 class="my-name">' + chat.name + '</h3>\n' +
-            '                        <p class="my-message">[666条新消息]你半夜还在打码，夸你,你半夜还在打码，夸你,你半夜还在打码，夸你</p>\n' +
+            '                        <p class="my-message" id="' + chat.id + 'new-message">没有新消息</p>\n' +
             '                    </div>\n' +
             '                </div>\n' +
             '            </div></button>';
-        document.getElementById("menu-body").innerHTML += chat_html;
+        document.getElementById("chat-list").innerHTML += chat_html;
     }
 
-    //显示搜索结果页面
-    function showSearchPage() {
-        document.getElementById("right-page").innerHTML='        <div class="info-box">   \n' +
+    //加载好友列表
+    function loadFriendOnMenu(friend) {
+        var chat_html = '<button class="user-list-block-href"  onmouseover="this.style.backgroundColor=\'#3A3F45\';" ' +
+            'onmouseout="this.style.backgroundColor=\'#2e3238\';"' +
+            'onclick="showWindowOnRight(\'' + chat.id + '\')"><div class="user-list-block">\n' +
+            '                <div class="user-box">\n' +
+            '                    <div class="user-photo">\n' +
+            '                        <img src="/upload/photo/' + friend.photo + '" alt="用户头像" class="my-photo">\n' +
+            '                    </div>\n' +
+            '                    <div class="user-info">\n' +
+            '                        <h3 class="my-name">' + friend.alias + '</h3>\n' +
+            '                        <p class="my-message">' + friend.signature + '</p>\n' +
+            '                    </div>\n' +
+            '                </div>\n' +
+            '            </div></button>';
+        document.getElementById("friend-list").innerHTML += chat_html;
+    }
+
+    //加载搜索结果页面，并显示
+    function loadSearchResult() {
+        document.getElementById("search-result").innerHTML =
             '            <div class="info-box-head">          \n' +
             '                <div class="info-box-title">                  \n' +
             '                    <div class="info-box-title-box"><a class="info-box-title-text">搜索结果</a></div>\n' +
@@ -426,36 +435,33 @@
             '                <div id="content" class="info-detail">           \n' +
             '                    <div></div>\n' +
             '                </div>\n' +
-            '            </div>\n' +
-            '        </div>';
+            '            </div>\n';
+
+        showWindowOnRight("search-result");
     }
 
-    //加载聊天窗口
-    function load_chat_box(chat_name, chat_id) {
-        document.getElementById("right-page").innerHTML =
-            '<div id="chat-box" class="chat-box">\n' +
-            '<div class="chat-box-head">\n' +
-            '            <div class="chat-box-title">\n' +
-            '                <div class="chat-box-title-box">\n' +
-            '                    <a class="chat-box-title-text">\n' +
-            '                        ' + chat_name + '\n' +
-            '                    </a>\n' +
-            '                </div>\n' +
-            '            </div>\n' +
-            '        </div>\n' +
-            '        <div id="' + chat_id + 'accept-message" class="chat-output-box">\n' +
-
-            '        </div>\n' +
-            '        <div class="chat-input-box" >\n' +
-            '            <button id="send-button" onclick="sendMessage(\'' + chat_id + '\',\'user\')">发送</button>\n' +
-            '            <textarea id="' + chat_id + 'send-message" class="text-area" autofocus="autofocus" cols="100"\n' +
-            '                      required="required" maxlength="300"></textarea>\n' +
-            '        </div></div>';
+    //让该id对应的窗口显示出来，并把之前的隐藏起来
+    function showWindowOnRight(window_id) {
+        var current_window = document.getElementById("right-page").dataset.window;
+        document.getElementById(current_window).style.display = "none";
+        document.getElementById(window_id).style.display = "";
+        document.getElementById("right-page").dataset.window = window_id;
+        console.log("当前窗口id" + document.getElementById("right-page").dataset.window);
     }
+
+    //让该id对应的窗口显示出来，并把之前的隐藏起来
+    function showWindowOnLeft(window_id) {
+        var current_window = document.getElementById("menu-body").dataset.window;
+        document.getElementById(current_window).style.display = "none";
+        document.getElementById(window_id).style.display = "";
+        document.getElementById("menu-body").dataset.window = window_id;
+        console.log("当前窗口id" + document.getElementById("menu-body").dataset.window);
+    }
+
 
     //加载个人信息窗口
     function loadUserInfoHtml() {
-        document.getElementById("right-page").innerHTML = ' <div class="info-box">\n' +
+        document.getElementById("info-box").innerHTML =
             '        <div class="info-box-head">   \n' +
             '            <div class="info-box-title">       \n' +
             '                <div class="info-box-title-box"><a class="info-box-title-text">个人信息</a></div>\n' +
@@ -500,8 +506,8 @@
             '                    <div class="info-detail-value" id="location" contenteditable="true">${login.location}</div>\n' +
             '                </div>\n' +
             '            </div>\n' +
-            '        </div>\n' +
             '    </div>';
+        showWindowOnRight("info-box");
     }
 
     //加载图片
@@ -550,16 +556,16 @@
         document.getElementById("content").innerHTML += html;
     }
 
-    //将消息显示在网页上
+    //将消息显示在消息对应的聊天窗口上,并在聊天列表对应位置显示
     //TODO 发送者头像，发送者昵称
-    function addMessageToBox(message) {
+    function addMessageToChat(message) {
         var right_bubble_html = '<div class="chat-output-content-right">\n' +
             '    <img src="/upload/photo/${login.photo}" alt="头像" class="chat-output-head-photo-right">\n' +
             '    <div class="chat-output-bubble-right">\n' +
             '        <div class="chat-output-bubble-inner">\n' +
             '            <pre class="chat-output-bubble-pre-right">' + message.content + '</pre></div></div></div>';
         var left_bubble_html = '<div class="chat-output-content-left">\n' +
-            '    <img src="/upload/photo/'+message.sender_photo+'" alt="头像" class="chat-output-head-photo-left">\n' +
+            '    <img src="/upload/photo/' + message.sender_photo + '" alt="头像" class="chat-output-head-photo-left">\n' +
             '    <h4 class="chat-output-meta-left">' + message.sender_name + '</h4>\n' +
             '    <div class="chat-output-bubble-left">\n' +
             '        <div class="chat-output-bubble-inner">\n' +
@@ -570,6 +576,8 @@
             document.getElementById(message.chat_id + "accept-message").innerHTML += '<br/>' + left_bubble_html;
         }
         document.getElementById(message.chat_id + "accept-message").scrollTop = document.getElementById(message.chat_id + "accept-message").scrollHeight;
+        //显示在列表上
+        document.getElementById(message.chat_id + "new-message").innerText = message.content;
     }
 
 </script>
@@ -598,15 +606,15 @@
 
     //接收到消息的回调方法
     websocket.onmessage = function (event) {
-        alert("收到服务器的新消息"+event.data);
+        alert("收到服务器的新消息" + event.data);
         var message = eval("(" + event.data + ")");
-        addMessageToBox(message);
+        addMessageToChat(message);
     }
 
     //连接关闭的回调方法
     websocket.onclose = function () {
         alert("WebSocket连接关闭");
-        websocket='';
+        websocket = '';
     }
 
     //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
@@ -625,6 +633,135 @@
 </script>
 <!--END——websocket脚本-->
 <style>
+    .info-box {
+        position: relative;
+        background-color: #eee;
+        overflow: hidden
+    }
+
+    .info-box-head {
+        text-align: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        line-height: 40px
+    }
+
+    .info-head-img {
+        width: 220px;
+        height: 220px;
+        margin: 62px;
+        border-radius: 14px;
+        float: left;
+    }
+
+    .info-head-info {
+        float: left;
+        margin-top: 89px;
+        max-width: 360px;
+        overflow: hidden
+    }
+
+    .info-head-nickname {
+        font-size: 53px;
+        max-height: 200px;
+        overflow: hidden;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+    .info-box-title {
+        position: relative;
+        padding: 10px 0;
+        margin: 0 19px;
+        border-bottom: 1px solid #d6d6d6;
+        background-color: #eee;
+        z-index: 1024
+    }
+
+    .info-box-title-box {
+        font-weight: 400;
+        height: 25px;
+        display: inline-block;
+        font-size: 23px;
+        float: left
+    }
+
+    .info-box-title-text {
+        display: inline-block;
+        vertical-align: middle;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: normal;
+        text-decoration: none;
+        color: #000;
+        font-weight: 400;
+    }
+
+    .info-outline {
+        float: left;
+        height: fit-content;
+        width: 100%;
+    }
+
+    .info-detail {
+        float: left;
+        height: fit-content;
+        width: 100%;
+    }
+
+    .info-detail-block {
+        float: left;
+        height: fit-content;
+        width: 100%;
+        margin-bottom: 20px;
+        min-width: 850px;
+    }
+
+    .info-detail-item {
+        height: 50px;
+        font-size: 34px;
+        padding-left: 62px;
+        text-align: left;
+        position: absolute;
+        width: 255px;
+    }
+
+    .info-detail-value {
+        text-align: left;
+        width: 800px;
+        font-size: 34px;
+        height: 50px;
+        position: relative;
+        margin-left: 300px;
+        border-bottom: solid 2px #ccc;
+        outline: none;
+        white-space: nowrap;
+    }
+
+    .info-submit-box {
+        position: fixed;
+        height: 250px;
+        bottom: 0;
+        min-height: 250px;
+        border-top: 1px solid #d6d6d6;
+    }
+
+    .info-detail-box {
+        overflow: scroll;
+        position: relative;
+        margin-bottom: 0px;
+        margin-right: 0px;
+        margin-top: 80px;
+        min-height: 682px;
+        max-height: 682px;
+    }
+</style>
+
+<style>
     .page-body {
         min-width: 800px;
         margin: 0 auto;
@@ -637,7 +774,7 @@
     .menu {
         width: 30%;
         position: relative;
-        height: 760px;
+        height: 750px;
         float: left;
         background: #2e3238;
         display: block;
@@ -700,6 +837,15 @@
         float: right;
         height: 50px;
         width: 55px;
+        background-color: #3A3F45;
+        color: white;
+    }
+
+    .menu-option-button {
+        padding: 13px;
+        float: right;
+        height: 39px;
+        width: 70px;
         background-color: #3A3F45;
         color: white;
     }
@@ -804,7 +950,7 @@
     .chat-box {
         position: relative;
         background-color: #eee;
-        height: -webkit-fill-available;
+        height: 750px;
         overflow: hidden
     }
 
@@ -848,7 +994,7 @@
     }
 
     .chat-input-box {
-        position: fixed;
+        position: relative;
         height: 200px;
         bottom: 0;
         min-height: 200px;
@@ -877,7 +1023,7 @@
         margin-top: 80px;
         min-height: 443px;
         max-height: 473px;
-        height: -webkit-fill-available;
+        height: 473px;
         overflow: scroll;
     }
 

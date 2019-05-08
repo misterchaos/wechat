@@ -27,6 +27,8 @@ import com.hyc.wechat.provider.annotation.Action;
 import com.hyc.wechat.provider.annotation.ActionProvider;
 import com.hyc.wechat.service.ChatService;
 import com.hyc.wechat.service.FriendService;
+import com.hyc.wechat.service.constants.ServiceMessage;
+import com.hyc.wechat.service.constants.Status;
 import com.hyc.wechat.service.impl.ChatServiceImpl;
 import com.hyc.wechat.service.impl.FriendServiceImpl;
 import com.hyc.wechat.util.BeanUtils;
@@ -35,8 +37,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigInteger;
 
 import static com.hyc.wechat.service.constants.Status.ERROR;
+import static com.hyc.wechat.util.BeanUtils.jsonToJavaObject;
 import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
 
 /**
@@ -51,7 +55,7 @@ public class FriendProvider extends Provider {
 
     @Action(method = RequestMethod.ADD_DO)
     public void addFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Friend friend = (Friend) BeanUtils.toObject(req.getParameterMap(), Friend.class);
+        Friend friend = (Friend) jsonToJavaObject(req.getInputStream(),Friend.class);
         ServiceResult result;
         //如果重复添加，这里将插入失败
         result = friendService.addFriend(friend);
@@ -79,18 +83,27 @@ public class FriendProvider extends Provider {
 
     @Action(method = RequestMethod.LIST_DO)
     public void listFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
+        String userId = req.getParameter("user_id");
         ServiceResult result;
-        result = friendService.listFriend(user.getId());
+        result = friendService.listFriend(new BigInteger(userId));
         returnJsonObject(resp, result);
     }
 
     @Action(method = RequestMethod.DELETE_DO)
     public void deleteFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Friend friend = (Friend) BeanUtils.toObject(req.getParameterMap(), Friend.class);
+        String friendId = req.getParameter("friend_id");
+        String userId = req.getParameter("user_id");
         ServiceResult result;
         //删除好友之前将聊天关系移除,请求中的好友对象只含有userId和friendId，所以需要重新获取
-        friend = friendService.getByUidAndFriendId(friend.getUserId(), friend.getFriendId());
+        Friend friend = friendService.getByUidAndFriendId(new BigInteger(userId) ,new BigInteger(friendId));
+        if(friend==null){
+            result= new ServiceResult();
+            result.setMessage(ServiceMessage.FRIEND_NOT_EXIST.message);
+            result.setStatus(ERROR);
+            returnJsonObject(resp,result);
+            return;
+        }
+        //调用聊天服务将聊天关系解除
         Chat chat = new Chat();
         chat.setId(friend.getChatId());
         chatService.removeChat(chat);

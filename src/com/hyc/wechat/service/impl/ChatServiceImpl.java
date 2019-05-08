@@ -78,7 +78,7 @@ public class ChatServiceImpl implements ChatService {
             chat=chatDao.getByChatNumber(chat.getNumber());
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, ServiceMessage.SYSTEM_EXECEPTION.message, chat);
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, chat);
         }
         return new ServiceResult(Status.SUCCESS, ServiceMessage.CREATE_CHAT_SUCCESS.message, chat);
     }
@@ -123,7 +123,7 @@ public class ChatServiceImpl implements ChatService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, ServiceMessage.SYSTEM_EXECEPTION.message, members);
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, members);
         }
         return new ServiceResult(Status.SUCCESS, ServiceMessage.JOIN_CHAT_SUCCESS.message, members);
     }
@@ -158,7 +158,7 @@ public class ChatServiceImpl implements ChatService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, ServiceMessage.SYSTEM_EXECEPTION.message, members);
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, members);
         }
         return new ServiceResult(Status.SUCCESS, ServiceMessage.QUIT_CHAT_SUCCESS.message, members);
     }
@@ -195,7 +195,7 @@ public class ChatServiceImpl implements ChatService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, ServiceMessage.SYSTEM_EXECEPTION.message, list);
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, list);
         }
         return new ServiceResult(Status.SUCCESS, ServiceMessage.LIST_CHAT_SUCCESS.message, chats);
     }

@@ -20,6 +20,7 @@ import com.hyc.wechat.dao.annotation.Query;
 import com.hyc.wechat.dao.annotation.Result;
 import com.hyc.wechat.dao.annotation.ResultType;
 import com.hyc.wechat.model.po.Friend;
+import com.hyc.wechat.model.po.Member;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -65,4 +66,19 @@ public interface FriendDao extends BaseDao {
     @Query(value = "select f.id,f.user_id,f.friend_id,f.chat_id,f.group_id,f.alias,f.description,u.photo as photo,f.status,f.gmt_create,f.gmt_modified " +
             "from " + TABLE + " as f,user as u where f.user_id = ? and u.id = f.friend_id ")
     List listByUserId(Object userId);
+
+
+    /**
+     * 通过朋友关系id查询一个朋友关系
+     *
+     * @param id 朋友id
+     * @name getFriendById
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/7
+     */
+    @Result(entity = Friend.class, returns = ResultType.OBJECT)
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where id = ? ")
+    Friend getFriendById(Object id);
+
 }

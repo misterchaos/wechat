@@ -17,6 +17,7 @@
 package com.hyc.wechat.service.impl;
 
 import com.hyc.wechat.dao.FriendDao;
+import com.hyc.wechat.dao.UserDao;
 import com.hyc.wechat.exception.DaoException;
 import com.hyc.wechat.factory.DaoProxyFactory;
 import com.hyc.wechat.model.dto.ServiceResult;
@@ -36,6 +37,7 @@ import static com.hyc.wechat.service.constants.ServiceMessage.*;
  */
 public class FriendServiceImpl implements FriendService {
     FriendDao friendDao = (FriendDao) DaoProxyFactory.getInstance().getProxyInstance(FriendDao.class);
+    UserDao userDao = (UserDao)DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
 
     /**
      * 添加好友关系
@@ -54,13 +56,21 @@ public class FriendServiceImpl implements FriendService {
             if (friendDao.gerFriendByUIDAndFriendId(friend.getUserId(), friend.getFriendId()) != null) {
                 return new ServiceResult(Status.ERROR, ALREADY_ADD_FRIEND.message, friend);
             }
+            //检查好友是否存在
+            if(userDao.getUserById(friend.getFriendId())==null){
+                return new ServiceResult(Status.ERROR, FRIEND_NOT_EXIST.message, friend);
+            }
+            //检查用户是否存在
+            if(userDao.getUserById(friend.getUserId())==null){
+                return new ServiceResult(Status.ERROR, ACCOUNT_NOT_FOUND.message, friend);
+            }
             //添加好友
             if (friendDao.insert(friend) != 1) {
-                return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, friend);
+                return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, friend);
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, friend);
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, friend);
         }
         return new ServiceResult(Status.SUCCESS, ADD_FRIEND_SUCCESS.message, friend);
     }
@@ -85,7 +95,7 @@ public class FriendServiceImpl implements FriendService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, ServiceMessage.SYSTEM_EXECEPTION.message, list);
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, list);
         }
         return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, list);
     }
@@ -107,12 +117,12 @@ public class FriendServiceImpl implements FriendService {
             if (friendDao.gerFriendByUIDAndFriendId(friend.getUserId(), friend.getFriendId()) != null) {
                 //将该成员从聊天中移除
                 if (friendDao.delete(friend) != 1) {
-                    return new ServiceResult(Status.ERROR, SYSTEM_EXECEPTION.message, friend);
+                    return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, friend);
                 }
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, ServiceMessage.SYSTEM_EXECEPTION.message, friend);
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, friend);
         }
         return new ServiceResult(Status.SUCCESS, ServiceMessage.DELETE_FRIEND_SUCCESS.message, friend);
     }
