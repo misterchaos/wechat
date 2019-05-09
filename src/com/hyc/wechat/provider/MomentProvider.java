@@ -40,48 +40,105 @@ import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
  * @date 2019-05-07 21:33
  */
 @ActionProvider(path = "/moment")
-public class MomentProvider extends Provider{
-    private MomentService momentService = (MomentService) new ServiceProxyFactory().getProxyInstance(new MomentServiceImpl());
+public class MomentProvider extends Provider {
+    private final MomentService momentService = (MomentService) new ServiceProxyFactory().getProxyInstance(new MomentServiceImpl());
 
+    /**
+     * 提供发布朋友圈的业务流程
+     *
+     * @name postMoment
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.ADD_DO)
     public void postMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Moment moment = (Moment) jsonToJavaObject(req.getInputStream(),Moment.class);
+        Moment moment = (Moment) jsonToJavaObject(req.getInputStream(), Moment.class);
         ServiceResult result;
         result = momentService.insertMoment(moment);
         returnJsonObject(resp, result);
     }
 
+    /**
+     * 提供删除朋友圈的业务流程
+     *
+     * @name deleteMoment
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.DELETE_DO)
     public void deleteMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String momentId= req.getParameter("moment_id");
+        String momentId = req.getParameter("moment_id");
         ServiceResult result;
         result = momentService.removeMoment(new BigInteger(momentId));
         returnJsonObject(resp, result);
     }
 
+    /**
+     * 提供更新朋友圈的业务流程
+     *
+     * @name updateMoment
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.UPDATE_DO)
     public void updateMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Moment moment = (Moment) jsonToJavaObject(req.getInputStream(),Moment.class);
+        Moment moment = (Moment) jsonToJavaObject(req.getInputStream(), Moment.class);
         ServiceResult result;
         result = momentService.updateMoment(moment);
         returnJsonObject(resp, result);
     }
 
+    /**
+     * 提供获取个人朋友圈的业务流程
+     *
+     * @name listMoment
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.MOMENT_DO)
     public void listMoment(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId= req.getParameter("user_id");
+        String userId = req.getParameter("user_id");
         String page = req.getParameter("page");
         ServiceResult result;
-        result = momentService.listMyMoment(new BigInteger(userId),new Integer(page));
+        result = momentService.listMyMoment(new BigInteger(userId), new Integer(page));
         returnJsonObject(resp, result);
     }
 
+    /**
+     * 提供获取朋友圈动态的业务流程
+     *
+     * @name listNews
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.NEWS_DO)
     public void listNews(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId= req.getParameter("user_id");
+        String userId = req.getParameter("user_id");
         String page = req.getParameter("page");
         ServiceResult result;
-        result = momentService.listNews(new BigInteger(userId),new Integer(page));
+        result = momentService.listNews(new BigInteger(userId), new Integer(page));
+        returnJsonObject(resp, result);
+    }
+
+    /**
+     * 提供朋友圈点赞的服务
+     *
+     * @name love
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Action(method = RequestMethod.LOVE_DO)
+    public void love(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = req.getParameter("user_id");
+        String momentId = req.getParameter("moment_id");
+        ServiceResult result;
+        result = momentService.love(new BigInteger(userId), new BigInteger(momentId));
         returnJsonObject(resp, result);
     }
 }

@@ -22,6 +22,7 @@ import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.provider.annotation.Action;
 import com.hyc.wechat.provider.annotation.ActionProvider;
 import com.hyc.wechat.service.MessageService;
+import com.hyc.wechat.service.constants.ServiceMessage;
 import com.hyc.wechat.service.impl.MessageServiceImpl;
 
 import javax.servlet.ServletException;
@@ -39,9 +40,17 @@ import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
  */
 @ActionProvider(path = "/message")
 public class MessageProvider extends Provider {
-    MessageService messageService = (MessageService) new ServiceProxyFactory().getProxyInstance(new MessageServiceImpl());
+    private final MessageService messageService = (MessageService) new ServiceProxyFactory().getProxyInstance(new MessageServiceImpl());
 
 
+    /**
+     * 提供获取一个聊天的所有聊天记录的服务
+     *
+     * @name listMessage
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.LIST_DO)
     public void listMessage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
@@ -53,6 +62,14 @@ public class MessageProvider extends Provider {
     }
 
 
+    /**
+     * 提供获取所有未读消息的服务
+     *
+     * @name listUnreadMessage
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.UNREAD_DO)
     public void listUnreadMessage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
@@ -61,5 +78,25 @@ public class MessageProvider extends Provider {
         result = messageService.listAllUnreadMessage(new BigInteger(userId), new Integer(page));
         returnJsonObject(resp, result);
     }
+
+
+    /**
+     * 提供将一个聊天中的消息设置为已读的服务
+     *
+     * @name read
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Action(method = RequestMethod.READ_DO)
+    public void read(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = req.getParameter("user_id");
+        String chatId = req.getParameter("chat_id");
+        ServiceResult result = new ServiceResult();
+        result.setMessage(ServiceMessage.ALREADY_READ.message);
+        messageService.setAlreadyRead(new BigInteger(userId), new BigInteger(chatId));
+        returnJsonObject(resp, result);
+    }
+
 
 }

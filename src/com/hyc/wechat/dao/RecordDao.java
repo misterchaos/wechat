@@ -39,6 +39,6 @@ public interface RecordDao extends BaseDao {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
-    @Update("update " + TABLE + " as r inner join message as m set r.status = ? where r.user_id = ? and m.chat_id = ?")
+    @Update("update " + TABLE + " as r inner join message as m set r.status = ? where r.user_id = ? and r.message_id = m.id and m.chat_id = ?")
     void updateStatusInChat(Object status, Object userId ,Object chatId);
 }

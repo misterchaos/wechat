@@ -31,7 +31,10 @@
         <servlet-name>MyServlet</servlet-name>
         <url-pattern>/wechat/*</url-pattern>
     </servlet-mapping>
-
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log4j.properties</param-value>
+    </context-param>
     <jsp-config>
         <taglib>
             <taglib-uri>http://java.sun.com/jsp/jstl/fmt</taglib-uri>

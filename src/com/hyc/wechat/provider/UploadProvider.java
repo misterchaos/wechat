@@ -16,14 +16,12 @@
 
 package com.hyc.wechat.provider;
 
-import com.alibaba.fastjson.JSON;
 import com.hyc.wechat.controller.constant.RequestMethod;
 import com.hyc.wechat.factory.ServiceProxyFactory;
 import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.provider.annotation.Action;
 import com.hyc.wechat.provider.annotation.ActionProvider;
 import com.hyc.wechat.service.UploadService;
-import com.hyc.wechat.service.constants.Status;
 import com.hyc.wechat.service.impl.UploadServiceImpl;
 
 import javax.servlet.ServletException;
@@ -32,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
 
+import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
+
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
  * @description 负责上传文件流程
@@ -39,7 +39,7 @@ import java.io.IOException;
  */
 @ActionProvider(path = "/upload")
 public class UploadProvider extends Provider {
-    UploadService uploadService = (UploadService) new ServiceProxyFactory().getProxyInstance(new UploadServiceImpl());
+    private final UploadService uploadService = (UploadService) new ServiceProxyFactory().getProxyInstance(new UploadServiceImpl());
 
     @Action(method = RequestMethod.UPLOADPHOTO_DO)
     public void uploadPhoto(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
@@ -48,12 +48,6 @@ public class UploadProvider extends Provider {
         String tableName = req.getParameter("table");
         ServiceResult result;
         result = uploadService.uploadPhoto(part, id, tableName);
-        if (Status.ERROR.equals(result.getStatus())) {
-            JSON json = (JSON) JSON.toJSON(result);
-            resp.getWriter().write(json.toJSONString());
-            return;
-        }
-        JSON json = (JSON) JSON.toJSON(result);
-        resp.getWriter().write(json.toJSONString());
+        returnJsonObject(resp, result);
     }
 }

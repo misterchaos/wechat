@@ -30,8 +30,8 @@ import java.sql.Timestamp;
  */
 @Table(name = "moment")
 public class Moment extends BaseEntity {
-    @JSONField(name = "user_id")
-    private BigInteger userId;
+    @JSONField(name = "owner_id")
+    private BigInteger ownerId;
     private String content;
     private String photo;
     private Timestamp time;
@@ -58,12 +58,12 @@ public class Moment extends BaseEntity {
         this.photo = photo;
     }
 
-    public BigInteger getUserId() {
-        return userId;
+    public BigInteger getOwnerId() {
+        return ownerId;
     }
 
-    public void setUserId(BigInteger userId) {
-        this.userId = userId;
+    public void setOwnerId(BigInteger ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getContent() {

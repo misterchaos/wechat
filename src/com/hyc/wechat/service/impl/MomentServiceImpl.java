@@ -63,7 +63,7 @@ public class MomentServiceImpl implements MomentService {
      */
     @Override
     public ServiceResult insertMoment(Moment moment) {
-        StringBuilder message=new StringBuilder();
+        StringBuilder message = new StringBuilder();
         try {
             //判空
             if (moment == null) {
@@ -82,9 +82,9 @@ public class MomentServiceImpl implements MomentService {
                 return new ServiceResult(Status.ERROR, ServiceMessage.PLEASE_REDO.message, moment);
             }
             //获取朋友圈记录，返回id值,
-            moment = momentDao.getMomentByUserIdAndStatus(moment.getUserId(), 1);
+            moment = momentDao.getMomentByOwnerIdAndStatus(moment.getOwnerId(), 1);
             //查找用户的所有朋友，给他们插入news记录
-            List<Friend> friendList = friendDao.listByUserId(moment.getUserId());
+            List<Friend> friendList = friendDao.listByUserId(moment.getOwnerId());
             for (Friend friend : friendList) {
                 News news = new News();
                 news.setMomentId(moment.getId());
@@ -94,7 +94,7 @@ public class MomentServiceImpl implements MomentService {
             //给用户自己插入news记录
             News news = new News();
             news.setMomentId(moment.getId());
-            news.setUserId(moment.getUserId());
+            news.setUserId(moment.getOwnerId());
             newsDao.insert(news);
             //创建一个新对象用于更新状态为0，表示该朋友圈处理完毕
             Moment updateStatus = new Moment();
@@ -188,22 +188,37 @@ public class MomentServiceImpl implements MomentService {
         if (userId == null) {
             throw new ServiceException(ServiceMessage.NOT_NULL.message);
         }
-        List<Moment> list = null;
+
+        List<MomentVO> momentVOList = new LinkedList<>();
         //根据页数信息生成查询参数
         int limit = 10;
         int offset = (page - 1) * limit;
         if (offset < 0) {
-            return new ServiceResult(Status.SUCCESS, ServiceMessage.PAGE_INVALID.message, list);
+            return new ServiceResult(Status.ERROR, ServiceMessage.PAGE_INVALID.message, null);
         }
         try {
-            list = momentDao.listMyMomentByUserId(userId, limit, offset);
-            if (list == null || list.size() == 0) {
-                return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_MOMENT.message, list);
+            List<Moment> momentList = momentDao.listMyMomentByOwnerIdDesc(userId, limit, offset);
+            if (momentList == null || momentList.size() == 0) {
+                return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_MOMENT.message, momentList);
+            }
+            User user = userDao.getUserById(userId);
+            //将朋友圈和用户信息转化成朋友圈视图层对象
+            for (Moment moment : momentList) {
+                News news = null;
+                try {
+                    news = newsDao.getNewsByMomentIdAndUserId(moment.getId(), userId);
+                } catch (DaoException e) {
+                    e.printStackTrace();
+                }
+                if (news == null) {
+                    return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
+                }
+                toMomentVOObject(momentVOList, news, moment, user);
             }
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, list);
+        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, momentVOList);
     }
 
     /**
@@ -226,7 +241,7 @@ public class MomentServiceImpl implements MomentService {
         int limit = 10;
         int offset = (page - 1) * limit;
         if (offset < 0) {
-            return new ServiceResult(Status.SUCCESS, ServiceMessage.PAGE_INVALID.message, null);
+            return new ServiceResult(Status.ERROR, ServiceMessage.PAGE_INVALID.message, null);
         }
         List<MomentVO> momentVOList = new LinkedList<>();
         try {
@@ -237,16 +252,12 @@ public class MomentServiceImpl implements MomentService {
                 return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_NEWS.message, momentVOList);
             }
             //根据动态中的朋友圈id获取朋友圈数据
-            for (News n : newsList) {
-                Moment moment = momentDao.getMomentById(n.getMomentId());
-                User user = userDao.getUserById(n.getUserId());
+            for (News news : newsList) {
+                Moment moment = momentDao.getMomentById(news.getMomentId());
+                //获取朋友圈的发布者的用户信息
+                User user = userDao.getUserById(moment.getOwnerId());
                 //将朋友圈和动态信息转化成朋友圈视图层对象
-                MomentVO momentVO = new MomentVOBuilder().setContent(moment.getContent()).setUserId(moment.getUserId())
-                        .setId(moment.getId()).setRemark(moment.getRemark()).setShare(moment.getShare()).setUserName(user.getName())
-                        .setView(moment.getView()).setCollect(moment.getCollect()).setLove(moment.getLove()).setUserPhoto(user.getPhoto())
-                        .setShared(n.getShared()).setViewed(n.getViewed()).setCollected(n.getCollected()).setPhoto(moment.getPhoto())
-                        .setLoved(n.getLoved()).setTime(moment.getTime()).build();
-                momentVOList.add(momentVO);
+                toMomentVOObject(momentVOList, news, moment, user);
             }
         } catch (DaoException e) {
             e.printStackTrace();
@@ -256,10 +267,68 @@ public class MomentServiceImpl implements MomentService {
     }
 
     /**
+     * 更新一个用户对一条朋友圈的点赞状态
+     *
+     * @param userId   用户id
+     * @param momentId 朋友圈id
+     * @name love
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/8
+     */
+    @Override
+    public ServiceResult love(BigInteger userId, BigInteger momentId) {
+        if (userId == null || momentId == null) {
+            throw new ServiceException(ServiceMessage.NOT_NULL.message);
+        }
+        News news;
+        try {
+            news = newsDao.getNewsByMomentIdAndUserId(momentId, userId);
+            //检查news是否存在
+            if (news == null) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
+            }
+            Moment moment = momentDao.getMomentById(news.getMomentId());
+            if (moment == null) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
+            }
+            //从非点赞到点赞状态，该朋友圈点赞数加一,否则减一
+            moment.setLove(!news.getLoved() ? moment.getLove() + 1 : moment.getLove() - 1);
+            momentDao.update(moment);
+            //修改状态,如果是ture则改为false,是false则改为ture
+            news.setLoved(!news.getLoved());
+            newsDao.update(news);
+        } catch (DaoException e) {
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
+        }
+        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, news.getLoved());
+    }
+
+    /**
+     * 建造一个朋友圈试图层对象集合，需要一个持久化对象集合，和一条动态记录，和该用户的信息
+     *
+     * @param momentVOList 试图层对象集合
+     * @param news         动态记录
+     * @param moment       朋友圈
+     * @param user         该用户的信息
+     * @name toMomentVOObject
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/8
+     */
+    private void toMomentVOObject(List<MomentVO> momentVOList, News news, Moment moment, User user) {
+        MomentVO momentVO = new MomentVOBuilder().setContent(moment.getContent()).setUserId(moment.getOwnerId())
+                .setId(moment.getId()).setRemark(moment.getRemark()).setShare(moment.getShare()).setUserName(user.getName())
+                .setView(moment.getView()).setCollect(moment.getCollect()).setLove(moment.getLove()).setUserPhoto(user.getPhoto())
+                .setShared(news.getShared()).setViewed(news.getViewed()).setCollected(news.getCollected()).setPhoto(moment.getPhoto())
+                .setLoved(news.getLoved()).setTime(moment.getTime()).build();
+        momentVOList.add(momentVO);
+    }
+
+    /**
      * 检查一段内容是否合法
      *
-     * @param content
-     * @return
+     * @param content 朋友圈内容
      */
     private boolean isValidContent(String content) {
         if (content == null || content.trim().isEmpty()) {

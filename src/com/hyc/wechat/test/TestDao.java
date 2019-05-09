@@ -21,7 +21,6 @@ import com.hyc.wechat.dao.MessageDao;
 import com.hyc.wechat.dao.MomentDao;
 import com.hyc.wechat.dao.UserDao;
 import com.hyc.wechat.factory.DaoProxyFactory;
-import com.hyc.wechat.model.po.Message;
 import com.hyc.wechat.model.po.Moment;
 import com.hyc.wechat.model.po.News;
 import com.hyc.wechat.model.po.User;
@@ -47,7 +46,7 @@ public class TestDao {
         ChatDao chatDao = (ChatDao) DaoProxyFactory.getInstance().getProxyInstance(ChatDao.class);
         chatDao.toFriendChat("4", "123");
         Moment moment = new Moment();
-        moment.setUserId(BigInteger.valueOf(0));
+        moment.setOwnerId(BigInteger.valueOf(0));
         moment.setContent("一条朋友圈");
         moment.setLove(10L);
         MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);

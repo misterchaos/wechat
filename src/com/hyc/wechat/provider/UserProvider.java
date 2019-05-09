@@ -16,7 +16,6 @@
 
 package com.hyc.wechat.provider;
 
-import com.alibaba.fastjson.JSON;
 import com.hyc.wechat.controller.constant.RequestMethod;
 import com.hyc.wechat.controller.constant.WebPage;
 import com.hyc.wechat.factory.ServiceProxyFactory;
@@ -50,9 +49,17 @@ import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
 @ActionProvider(path = "/user")
 public class UserProvider extends Provider {
 
-    private UserService userService = (UserService) new ServiceProxyFactory().getProxyInstance(new UserServiceImpl());
-    private ChatService chatService = (ChatService) new ServiceProxyFactory().getProxyInstance(new ChatServiceImpl());
+    private final UserService userService = (UserService) new ServiceProxyFactory().getProxyInstance(new UserServiceImpl());
+    private final ChatService chatService = (ChatService) new ServiceProxyFactory().getProxyInstance(new ChatServiceImpl());
 
+    /**
+     * 提供用户注册的业务流程
+     *
+     * @name register
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.REGISTER_DO)
     public void register(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
@@ -89,6 +96,15 @@ public class UserProvider extends Provider {
         }
     }
 
+
+    /**
+     * 提供用户登陆的业务流程
+     *
+     * @name login
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.LOGIN_DO)
     public void login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
@@ -109,6 +125,14 @@ public class UserProvider extends Provider {
         }
     }
 
+    /**
+     * 提供获取用户个人信息的业务流程
+     *
+     * @name get
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.GET_DO)
     public void get(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
@@ -126,6 +150,14 @@ public class UserProvider extends Provider {
     }
 
 
+    /**
+     * 提供用户更新个人信息的业务流程
+     *
+     * @name update
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.UPDATE_DO)
     public void update(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) jsonToJavaObject(req.getInputStream(), User.class);
@@ -146,7 +178,14 @@ public class UserProvider extends Provider {
         returnJsonObject(resp, result);
     }
 
-
+    /**
+     * 提供搜索用户的服务
+     *
+     * @name list
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.LIST_DO)
     public void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);

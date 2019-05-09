@@ -30,6 +30,7 @@ import com.hyc.wechat.service.ChatService;
 import com.hyc.wechat.service.constants.ServiceMessage;
 import com.hyc.wechat.service.constants.Status;
 
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,9 +49,10 @@ public class ChatServiceImpl implements ChatService {
     MessageDao messageDao = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
 
     /**
-     * 创建一个聊天
+     * 创建一个聊天,如果是群聊，必须指定外部唯一标识（群号），如果是私聊则自动使用uuid作为唯一标识
      *
-     * @param chat 要创建的聊天对象
+     * @param isGroupChat 是否为群聊
+     * @param chat        要创建的聊天对象
      * @return 返回传入的聊天对象
      * @name createChat
      * @notice none
@@ -58,29 +60,76 @@ public class ChatServiceImpl implements ChatService {
      * @date 2019/5/3
      */
     @Override
-    public ServiceResult createChat(Chat chat) {
-        try {
-            //阻止插入id
-            chat.setId(null);
-            //如果没有设置唯一标识群号，则使用uuid
+    public ServiceResult createChat(Chat chat, boolean isGroupChat) {
+        //检查参数
+        if (chat == null) {
+            return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, chat);
+        }
+        //阻止插入id
+        chat.setId(null);
+        //检查创建用户是否存在
+        if (userDao.getUserById(chat.getOwnerId()) == null) {
+            return new ServiceResult(Status.ERROR, ServiceMessage.ACCOUNT_NOT_FOUND.message, chat);
+        }
+        //判断聊天类型
+        if (isGroupChat) {
+            //检查群号是否合法
+            if (!isValidChatNumber(chat.getNumber())) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.CHAT_NUMBER_INVALID.message, chat);
+            }
+            //检查群号是否已存在
+            if (chatDao.getByChatNumber(chat.getNumber()) != null) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.CHAT_NUMBER_ALREADT_EXIST.message, chat);
+            }
+        } else {
+            //使用uuid作为外部标识
             if (chat.getNumber() == null) {
                 chat.setNumber(getUUID());
             }
-            //检查创建用户是否存在
-            if (userDao.getUserById(chat.getOwnerId()) == null) {
-                return new ServiceResult(Status.ERROR, ServiceMessage.ACCOUNT_NOT_FOUND.message, chat);
-            }
+        }
+        try {
             //将该聊天插入数据库
             if (chatDao.insert(chat) != 1) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.CREATE_CHAT_FAILED.message, chat);
             }
-            //插入成功将其从数据库查出，以便返回id
-            chat=chatDao.getByChatNumber(chat.getNumber());
         } catch (DaoException e) {
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, chat);
         }
+        //插入成功将其从数据库查出，以便返回id
+        chat = chatDao.getByChatNumber(chat.getNumber());
         return new ServiceResult(Status.SUCCESS, ServiceMessage.CREATE_CHAT_SUCCESS.message, chat);
+    }
+
+    /**
+     * 通过群号将一个用户添加到群聊中
+     *
+     * @param userId 用户id
+     * @param number 群号
+     * @name joinChatByNumber
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Override
+    public ServiceResult joinChatByNumber(BigInteger userId, String number) {
+        if(userId==null|number==null){
+            return new ServiceResult(Status.ERROR,ServiceMessage.PARAMETER_NOT_ENOUGHT.message,null);
+        }
+        //通过群号获取群id
+        Chat chat = chatDao.getByChatNumber(number);
+        if(chat==null){
+            return new ServiceResult(Status.ERROR,ServiceMessage.CHAT_NOT_FOUND.message,number);
+        }
+        //通过群id和用户id创建一个成员
+        Member member =new Member();
+        member.setChatId(chat.getId());
+        member.setUserId(userId);
+        ServiceResult result =joinChat(new Member[]{member});
+        if(Status.ERROR.equals(result.getStatus())){
+            return result;
+        }
+        return new ServiceResult(Status.SUCCESS,ServiceMessage.JOIN_GROUP_CHAT_SUCCESS.message,number);
     }
 
     /**
@@ -99,9 +148,9 @@ public class ChatServiceImpl implements ChatService {
             for (Member member : members) {
                 //阻止插入id
                 member.setId(null);
-                Chat chat =chatDao.getChatById(member.getChatId());
+                Chat chat = chatDao.getChatById(member.getChatId());
                 //检查聊天是否存在
-                if ( chat== null) {
+                if (chat == null) {
                     return new ServiceResult(Status.ERROR, ServiceMessage.CHAT_NOT_FOUND.message, members);
                 }
                 //检查用户是否存在
@@ -117,7 +166,7 @@ public class ChatServiceImpl implements ChatService {
                     return new ServiceResult(Status.ERROR, ServiceMessage.JOIN_CHAT_FAILED.message, members);
                 }
                 //将该聊天的成员加一
-                chat.setMember(chat.getMember()+1);
+                chat.setMember(chat.getMember() + 1);
                 chatDao.update(chat);
 
             }
@@ -152,8 +201,8 @@ public class ChatServiceImpl implements ChatService {
                     return new ServiceResult(Status.ERROR, ServiceMessage.QUIT_CHAT_FAILED.message, members);
                 }
                 //将该聊天的成员减一
-                Chat chat =chatDao.getChatById(member.getChatId());
-                chat.setMember(chat.getMember()-1);
+                Chat chat = chatDao.getChatById(member.getChatId());
+                chat.setMember(chat.getMember() - 1);
                 chatDao.update(chat);
             }
         } catch (DaoException e) {
@@ -214,7 +263,7 @@ public class ChatServiceImpl implements ChatService {
     public void removeChat(Chat chat) {
         try {
             chatDao.delete(chat);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             e.printStackTrace();
         }
     }
@@ -233,9 +282,17 @@ public class ChatServiceImpl implements ChatService {
     public void getChatByNumber(Object number) {
         try {
             chatDao.getByChatNumber(number);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isValidChatNumber(String chatNumber) {
+        if (chatNumber == null || chatNumber.trim().isEmpty()) {
+            return false;
+        }
+        String regex = "[0-9]{6,20}$";
+        return chatNumber.matches(regex);
     }
 
 

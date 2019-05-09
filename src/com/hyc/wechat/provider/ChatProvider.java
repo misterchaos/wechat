@@ -27,14 +27,19 @@ import com.hyc.wechat.model.po.User;
 import com.hyc.wechat.provider.annotation.Action;
 import com.hyc.wechat.provider.annotation.ActionProvider;
 import com.hyc.wechat.service.ChatService;
-import com.hyc.wechat.service.impl.ChatServiceImpl;
+import com.hyc.wechat.service.constants.ServiceMessage;
 import com.hyc.wechat.service.constants.Status;
+import com.hyc.wechat.service.impl.ChatServiceImpl;
 import com.hyc.wechat.util.BeanUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigInteger;
+
+import static com.hyc.wechat.util.BeanUtils.jsonToJavaObject;
+import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -44,42 +49,71 @@ import java.io.IOException;
 @ActionProvider(path = "/chat")
 public class ChatProvider extends Provider {
 
-    ChatService chatService = (ChatService) new ServiceProxyFactory().getProxyInstance(new ChatServiceImpl());
+    private final ChatService chatService = (ChatService) new ServiceProxyFactory().getProxyInstance(new ChatServiceImpl());
 
+    /**
+     * 提供用户创建群聊的服务流程，不提供创建个人私聊
+     *
+     * @name createChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.ADD_DO)
-    public void createChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Chat chat = (Chat) BeanUtils.toObject(req.getParameterMap(), Chat.class);
+    public void createGroupChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Chat chat = (Chat) jsonToJavaObject(req.getInputStream(), Chat.class);
         ServiceResult result;
-        result = chatService.createChat(chat);
+        //创建一个群聊
+        result = chatService.createChat(chat, true);
         if (Status.ERROR.equals(result.getStatus())) {
-            req.setAttribute("message", result.getMessage());
-            req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
+            returnJsonObject(resp, result);
             return;
-        } else {
-            resp.getWriter().write(result.getMessage());
         }
-    }
-
-    @Action(method = RequestMethod.JOIN_DO)
-    public void joinChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Member member = (Member) BeanUtils.toObject(req.getParameterMap(), Member.class);
-        ServiceResult result;
+        //从chatService中重新获取chat的信息
+        chat = (Chat) result.getData();
+        //将用户加入群聊
+        Member member = new Member();
+        member.setUserId(chat.getOwnerId());
+        member.setChatId(chat.getId());
         result = chatService.joinChat(new Member[]{member});
         if (Status.ERROR.equals(result.getStatus())) {
-            req.setAttribute("message", result.getMessage());
-            req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
+            returnJsonObject(resp, result);
             return;
-        } else {
-            resp.getWriter().write(result.getMessage());
         }
+        //如果两个操作都成功，返回创建群聊成功和群号，覆盖下层service的消息
+        result.setMessage(ServiceMessage.CREATE_GROUP_CHAT_SUCCESS.message + chat.getNumber() + ServiceMessage.PLEASE_JOIN_CHAT.message);
+        returnJsonObject(resp, result);
     }
 
+    /**
+     * 提供用户加入群聊的服务
+     *
+     * @name joinChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Action(method = RequestMethod.JOIN_DO)
+    public void joinGroupChat(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String number = req.getParameter("number");
+        String userId = req.getParameter("user_id");
+        ServiceResult result;
+        result = chatService.joinChatByNumber(new BigInteger(userId), number);
+        returnJsonObject(resp, result);
+    }
+
+    /**
+     * 提供退出群聊的服务
+     *
+     * @name quitChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.QUIT_DO)
     public void quitChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Member member = (Member) BeanUtils.toObject(req.getParameterMap(), Member.class);
+        Member member = (Member)jsonToJavaObject(req.getInputStream(), Member.class);
         ServiceResult result;
-
-
         result = chatService.quitChat(new Member[]{member});
         if (Status.ERROR.equals(result.getStatus())) {
             req.setAttribute("message", result.getMessage());
@@ -90,6 +124,14 @@ public class ChatProvider extends Provider {
         }
     }
 
+    /**
+     * 提供获取一个用户的聊天列表的服务
+     *
+     * @name listChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
     @Action(method = RequestMethod.LIST_DO)
     public void listChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);

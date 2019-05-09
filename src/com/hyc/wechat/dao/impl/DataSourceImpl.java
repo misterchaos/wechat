@@ -19,6 +19,7 @@ package com.hyc.wechat.dao.impl;
 import com.hyc.wechat.dao.DataSource;
 import com.hyc.wechat.exception.DaoException;
 import com.hyc.wechat.factory.proxy.ConnectionProxy;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -105,7 +106,7 @@ public class DataSourceImpl implements DataSource {
     /**
      * 数据库连接池
      */
-    private LinkedList<Connection> connPool = new LinkedList<>();
+    private final LinkedList<Connection> connPool = new LinkedList<>();
 
     /**
      * 负责提供数据库连接池实例
@@ -150,27 +151,30 @@ public class DataSourceImpl implements DataSource {
      */
     @Override
     public Connection getConnection() throws DaoException {
-        if (connPool.size() > 0) {
-            /**
-             * 先检查连接是否可用，如果不可用，关闭该连接，返回一个新连接
-             */
-            Connection conn = connPool.removeLast();
-
-            try {
-                if (conn.isValid(TIMEOUT)) {
-                    return new ConnectionProxy(this).getProxyInstance(conn);
-                } else {
-                    destroyConnection(conn);
-                    return createConnection();
+        Logger log = Logger.getLogger(DataSourceImpl.class);
+        log.info("连接池已创建连接数" + getCurrentCount() + "空闲连接数" + getfreeCount());
+        synchronized (connPool) {
+            if (connPool.size() > 0) {
+                /**
+                 * 先检查连接是否可用，如果不可用，关闭该连接，返回一个新连接
+                 */
+                Connection conn = connPool.removeLast();
+                try {
+                    if (conn.isValid(TIMEOUT)) {
+                        return new ConnectionProxy(this).getProxyInstance(conn);
+                    } else {
+                        destroyConnection(conn);
+                        return createConnection();
+                    }
+                } catch (SQLException e) {
+                    throw new DaoException("测试数据库连接产生异常", e);
                 }
-            } catch (SQLException e) {
-                throw new DaoException("测试数据库连接产生异常", e);
+            } else if (currentCount < MAX_SIZE) {
+                Connection conn = createConnection();
+                return new ConnectionProxy(this).getProxyInstance(conn);
+            } else {
+                throw new DaoException("数据库连接数已达到最大值");
             }
-        } else if (currentCount < MAX_SIZE) {
-            Connection conn =  createConnection();
-            return new ConnectionProxy(this).getProxyInstance(conn);
-        } else {
-            throw new DaoException("数据库连接数已达到最大值");
         }
     }
 
@@ -253,7 +257,8 @@ public class DataSourceImpl implements DataSource {
         try {
             return DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
-            throw new DaoException("无法创建数据库连接", e);
+            e.printStackTrace();
+            throw new DaoException("无法创建数据库连接："+e.getMessage(), e);
         }
     }
 

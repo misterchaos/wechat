@@ -40,6 +40,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import static com.hyc.wechat.util.StringUtils.toLegalText;
+
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
  * @description 用于提供实时聊天服务
@@ -99,7 +101,7 @@ public class ChatServer {
         }
         //启动一个消息队列缓存
         ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
-        service.schedule(this.messageTask, 1000, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(this.messageTask, 0,3, TimeUnit.SECONDS);
         //加载用户所在的所有聊天中的所有成员
         List<Chat> chatList = CHAT_DAO.listByUserId(userId);
         for (Chat chat : chatList) {
@@ -121,8 +123,14 @@ public class ChatServer {
     @OnMessage
     public void onMessage(String msg, Session session) throws IOException {
         System.out.println("来自客户端的消息:" + msg);
+
         //客户段上传到服务器是Message,服务器发送到客户端是MessageVo
         Message message = JSON.toJavaObject(JSON.parseObject(msg), Message.class);
+        //先过滤消息内容
+        message.setContent(toLegalText(message.getContent()));
+        if(message.getContent().trim().isEmpty()){
+            return;
+        }
         //向消息的接收者发送消息
         sendMessage(message);
         //将po对象加入消息存储队列
@@ -208,7 +216,7 @@ public class ChatServer {
             Member member = memberMap.get(key);
             //当该成员处于消息对应的聊天中时给他发送消息
             if (member.getChatId().equals(message.getChatId())) {
-                ChatServer server = SERVER_MAP.get(member.getUserId());
+                ChatServer server = SERVER_MAP.get(String.valueOf(member.getUserId()));
                 if (server != null) {
                     try {
                         server.session.getBasicRemote().sendText(jsonString);

@@ -27,15 +27,15 @@ import org.apache.log4j.PropertyConfigurator;
  */
 public class TestLog {
     public static void main(String[] args) {
+        log("日志信息");
+
+    }
+
+    public static void log(String logInfo){
         // 1. create log
         Logger log = Logger.getLogger(TestLog.class);
         // 2. get log config file
-        PropertyConfigurator.configure("log4j.properties");
         // 3. start log
-        log.debug("Here is some DEBUG");
-        log.info("Here is some INFO");
-        log.warn("Here is some WARN");
-        log.error("Here is some ERROR");
-        log.fatal("Here is some FATAL");
+        log.debug(logInfo);
     }
 }

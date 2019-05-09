@@ -28,11 +28,13 @@ import java.math.BigInteger;
  */
 public class MomentVO extends Moment {
 
+    @JSONField(name = "user_name")
     private String userName;
     private Boolean loved;
     private Boolean shared;
     private Boolean viewed;
     private Boolean collected;
+    @JSONField(name = "user_photo")
     private String userPhoto;
 
     public String getUserPhoto() {

@@ -49,15 +49,16 @@ public interface NewsDao extends BaseDao {
 
 
     /**
-     * 通过朋友圈id查询一个朋友圈动态
+     * 通过朋友圈id和用户id查询一个朋友圈动态
      *
-     * @param id 朋友圈id
-     * @name geNewsByMomentId
+     * @param momentId 朋友圈id
+     * @param userId 用户id
+     * @name getNewsByMomentId
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
     @Result(entity = News.class, returns = ResultType.OBJECT)
-    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where moment_id = ? ")
-    News getNewsByMomentId(Object id);
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where moment_id = ? and user_id = ? ")
+    News getNewsByMomentIdAndUserId(Object momentId,Object userId);
 }

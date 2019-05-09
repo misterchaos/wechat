@@ -81,7 +81,7 @@ public interface MessageDao extends BaseDao {
     @Result(entity = Message.class, returns = ResultType.LIST)
     @Query(value = "select m.id, m.sender_id, m.chat_id, m.content , m.type , m.time ,m.status , " +
             "m.gmt_create, m.gmt_modified from " + TABLE + " as m , record as r where m.id = r.message_id" +
-            " and r.user_id = ? and m.chat_id = ? and m.status = 0 order by m.time limit ? offset ?  ")
+            " and r.user_id = ? and m.chat_id = ? and r.status = 0 order by m.time limit ? offset ?  ")
     List<Message> listUnreadMessage(Object userId, Object chatId,int limit,int offset);
 
 
@@ -99,7 +99,7 @@ public interface MessageDao extends BaseDao {
     @Result(entity = Message.class, returns = ResultType.LIST)
     @Query(value = "select m.id, m.sender_id, m.chat_id, m.content , m.type , m.time ,m.status , " +
             "m.gmt_create, m.gmt_modified from " + TABLE + " as m , record as r where m.id = r.message_id" +
-            " and r.user_id = ?  and m.status = 0  order by m.time desc  limit ? offset ? ")
+            " and r.user_id = ?  and r.status = 0  order by m.time desc  limit ? offset ? ")
     List<Message> listUnreadMessageByUserId(Object userId,int limit,int offset);
 
 }

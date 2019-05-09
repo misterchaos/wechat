@@ -11,7 +11,7 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 07/05/2019 16:49:36
+ Date: 09/05/2019 04:06:57
 */
 
 SET NAMES utf8mb4;
@@ -28,7 +28,7 @@ CREATE TABLE `article`  (
   `cover` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '封面',
   `content` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '内容',
   `like` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞数',
-  `remark` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '评论数',
+  `comment` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '评论数',
   `share` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '转发数',
   `view` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '浏览量',
   `collect` int(10) UNSIGNED NOT NULL COMMENT '收藏量',
@@ -55,16 +55,7 @@ CREATE TABLE `chat`  (
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 44 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of chat
--- ----------------------------
-INSERT INTO `chat` VALUES (0, '', 0, '聊天总群', 'images.png', 3, 0, '2019-05-06 19:58:06', '2019-05-06 20:41:35');
-INSERT INTO `chat` VALUES (40, '3dc388d088874222b14db4af14dd1ab6', 184, '群聊', 'default_head.jpg', 3, 0, '2019-05-06 23:51:17', '2019-05-07 11:10:28');
-INSERT INTO `chat` VALUES (41, '4cfedd2d689a49668e83db93024f1af3', 0, '群聊', 'default_head.jpg', 0, 0, '2019-05-07 00:28:57', '2019-05-07 00:28:57');
-INSERT INTO `chat` VALUES (42, '6c4d450b123c4428bfeebcc28ca05d65', 0, '群聊', 'default_head.jpg', 0, 0, '2019-05-07 00:30:18', '2019-05-07 00:30:18');
-INSERT INTO `chat` VALUES (43, '5cc538ee9cda4703b248abace616f008', 0, '广工夸夸', 'default_head.jpg', 0, 0, '2019-05-07 00:31:04', '2019-05-07 00:31:04');
+) ENGINE = InnoDB AUTO_INCREMENT = 45 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for friend
@@ -78,7 +69,7 @@ CREATE TABLE `friend`  (
   `photo` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'default_head' COMMENT '好友头像',
   `group_id` bigint(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '所处分组id',
   `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '好友备注',
-  `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '好友描述',
+  `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '未添加好友描述' COMMENT '好友描述',
   `status` smallint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '状态',
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
@@ -89,14 +80,7 @@ CREATE TABLE `friend`  (
   CONSTRAINT `fk_user_id_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_friend_id_1` FOREIGN KEY (`friend_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_group_id_1` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 55 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of friend
--- ----------------------------
-INSERT INTO `friend` VALUES (52, 184, 0, 0, 'default_head', 0, '', '', 0, '2019-05-06 20:24:22', '2019-05-06 20:24:22');
-INSERT INTO `friend` VALUES (53, 0, 184, 0, 'default_head', 0, '', '', 0, '2019-05-06 23:51:17', '2019-05-06 23:51:17');
-INSERT INTO `friend` VALUES (54, 0, 179, 0, 'default_head', 0, '', '', 0, '2019-05-07 10:32:05', '2019-05-07 10:32:05');
+) ENGINE = InnoDB AUTO_INCREMENT = 59 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for group
@@ -112,11 +96,6 @@ CREATE TABLE `group`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of group
--- ----------------------------
-INSERT INTO `group` VALUES (0, 0, '', 0, 0, '2019-05-02 02:08:33', '2019-05-02 02:10:42');
 
 -- ----------------------------
 -- Table structure for member
@@ -137,16 +116,7 @@ CREATE TABLE `member`  (
   INDEX `fk_role_id`(`chat_id`) USING BTREE,
   CONSTRAINT `fk_user_id_6` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_chat_id_2` FOREIGN KEY (`chat_id`) REFERENCES `chat` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 202 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of member
--- ----------------------------
-INSERT INTO `member` VALUES (193, 184, 0, '', 0, '', 0, '2019-05-06 19:59:24', '2019-05-06 19:59:24');
-INSERT INTO `member` VALUES (194, 0, 0, '', 0, '', 0, '2019-05-06 20:00:00', '2019-05-06 20:00:00');
-INSERT INTO `member` VALUES (199, 0, 40, '', 0, '', 0, '2019-05-06 23:51:17', '2019-05-06 23:51:17');
-INSERT INTO `member` VALUES (200, 184, 40, '', 0, '', 0, '2019-05-06 23:51:17', '2019-05-06 23:51:17');
-INSERT INTO `member` VALUES (201, 182, 40, '', 0, '', 0, '2019-05-07 11:10:17', '2019-05-07 11:10:17');
+) ENGINE = InnoDB AUTO_INCREMENT = 204 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for message
@@ -158,7 +128,7 @@ CREATE TABLE `message`  (
   `chat_id` bigint(10) UNSIGNED NOT NULL COMMENT '聊天id',
   `content` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '消息内容',
   `type` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '消息类型',
-  `time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '发送时间',
+  `time` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '发送时间',
   `status` smallint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '状态',
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
@@ -167,15 +137,7 @@ CREATE TABLE `message`  (
   INDEX `fk_chat_id_4`(`chat_id`) USING BTREE,
   CONSTRAINT `fk_user_id_3` FOREIGN KEY (`sender_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_chat_id_4` FOREIGN KEY (`chat_id`) REFERENCES `chat` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 77 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of message
--- ----------------------------
-INSERT INTO `message` VALUES (73, 0, 40, 'JILUL', 'user', '2019-05-07 16:15:03', 0, '2019-05-07 16:15:18', '2019-05-07 16:15:18');
-INSERT INTO `message` VALUES (74, 0, 40, '阿斯蒂', 'user', '2019-05-07 16:23:12', 0, '2019-05-07 16:25:56', '2019-05-07 16:25:56');
-INSERT INTO `message` VALUES (75, 0, 40, '很快就', 'user', '2019-05-07 16:25:45', 0, '2019-05-07 16:25:56', '2019-05-07 16:25:56');
-INSERT INTO `message` VALUES (76, 0, 40, '你好', 'user', '2019-05-07 16:28:18', 0, '2019-05-07 16:44:09', '2019-05-07 16:44:09');
+) ENGINE = InnoDB AUTO_INCREMENT = 202 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for moment
@@ -183,8 +145,9 @@ INSERT INTO `message` VALUES (76, 0, 40, '你好', 'user', '2019-05-07 16:28:18'
 DROP TABLE IF EXISTS `moment`;
 CREATE TABLE `moment`  (
   `id` bigint(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `user_id` bigint(10) UNSIGNED NOT NULL COMMENT '发布者id',
-  `content` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '内容',
+  `owner_id` bigint(10) UNSIGNED NOT NULL COMMENT '发布者id',
+  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '内容',
+  `photo` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'moment.jpg',
   `time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '发布时间',
   `love` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞数',
   `remark` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '评论数',
@@ -195,17 +158,9 @@ CREATE TABLE `moment`  (
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `fk_user_id_4`(`user_id`) USING BTREE,
-  CONSTRAINT `fk_user_id_4` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of moment
--- ----------------------------
-INSERT INTO `moment` VALUES (7, 184, '一条朋友圈', '2019-05-07 14:07:52', 0, 0, 0, 0, 0, 0, '2019-05-07 13:04:34', '2019-05-07 13:04:34');
-INSERT INTO `moment` VALUES (8, 184, '一条朋友圈', '2019-05-07 14:07:52', 0, 0, 0, 0, 0, 0, '2019-05-07 13:04:40', '2019-05-07 13:04:40');
-INSERT INTO `moment` VALUES (9, 0, '一条朋友圈', '2019-05-07 14:07:52', 10, 0, 0, 0, 0, 0, '2019-05-07 13:08:23', '2019-05-07 13:08:23');
-INSERT INTO `moment` VALUES (10, 0, '一条朋友圈', '2019-05-07 16:49:08', 10, 0, 0, 0, 0, 0, '2019-05-07 16:49:08', '2019-05-07 16:49:08');
+  INDEX `fk_user_id_4`(`owner_id`) USING BTREE,
+  CONSTRAINT `fk_user_id_4` FOREIGN KEY (`owner_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 88 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for news
@@ -213,17 +168,21 @@ INSERT INTO `moment` VALUES (10, 0, '一条朋友圈', '2019-05-07 16:49:08', 10
 DROP TABLE IF EXISTS `news`;
 CREATE TABLE `news`  (
   `id` bigint(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `user_id` bigint(10) UNSIGNED NOT NULL COMMENT '用户id',
+  `user_id` bigint(10) UNSIGNED NOT NULL COMMENT '发布者id',
   `moment_id` bigint(10) UNSIGNED NOT NULL COMMENT '朋友圈id',
-  `status` smallint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '状态（0未读，1已读）',
+  `loved` tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否点赞',
+  `shared` tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否转发',
+  `viewed` tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否浏览',
+  `collected` tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否收藏',
+  `status` smallint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '状态',
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `fk_user_id_3`(`user_id`) USING BTREE,
-  INDEX `fk_message_id_2`(`moment_id`) USING BTREE,
-  CONSTRAINT `news_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_moment_1` FOREIGN KEY (`moment_id`) REFERENCES `moment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 87 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用来记录一条朋友圈和可见用户的映射关系' ROW_FORMAT = Dynamic;
+  INDEX `fk_user_id_4`(`user_id`) USING BTREE,
+  INDEX `fk_moment_id_3`(`moment_id`) USING BTREE,
+  CONSTRAINT `fk_user_id_12` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_moment_id_3` FOREIGN KEY (`moment_id`) REFERENCES `moment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 87 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for permission
@@ -255,24 +214,7 @@ CREATE TABLE `record`  (
   INDEX `fk_message_id_2`(`message_id`) USING BTREE,
   CONSTRAINT `record_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_message_id_2` FOREIGN KEY (`message_id`) REFERENCES `message` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 90 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of record
--- ----------------------------
-INSERT INTO `record` VALUES (77, 0, 73, 0, '2019-05-07 16:15:18', '2019-05-07 16:15:18');
-INSERT INTO `record` VALUES (78, 0, 73, 0, '2019-05-07 16:15:18', '2019-05-07 16:15:18');
-INSERT INTO `record` VALUES (79, 184, 73, 0, '2019-05-07 16:15:18', '2019-05-07 16:15:18');
-INSERT INTO `record` VALUES (80, 182, 73, 0, '2019-05-07 16:15:18', '2019-05-07 16:15:18');
-INSERT INTO `record` VALUES (81, 0, 73, 0, '2019-05-07 16:25:56', '2019-05-07 16:25:56');
-INSERT INTO `record` VALUES (82, 184, 73, 0, '2019-05-07 16:25:56', '2019-05-07 16:25:56');
-INSERT INTO `record` VALUES (83, 182, 73, 0, '2019-05-07 16:25:56', '2019-05-07 16:25:56');
-INSERT INTO `record` VALUES (84, 0, 73, 0, '2019-05-07 16:25:56', '2019-05-07 16:25:56');
-INSERT INTO `record` VALUES (85, 184, 73, 0, '2019-05-07 16:25:56', '2019-05-07 16:25:56');
-INSERT INTO `record` VALUES (86, 182, 73, 0, '2019-05-07 16:25:56', '2019-05-07 16:25:56');
-INSERT INTO `record` VALUES (87, 0, 73, 0, '2019-05-07 16:44:09', '2019-05-07 16:44:09');
-INSERT INTO `record` VALUES (88, 184, 73, 0, '2019-05-07 16:44:09', '2019-05-07 16:44:09');
-INSERT INTO `record` VALUES (89, 182, 73, 0, '2019-05-07 16:44:09', '2019-05-07 16:44:09');
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for remark
@@ -281,8 +223,7 @@ DROP TABLE IF EXISTS `remark`;
 CREATE TABLE `remark`  (
   `id` bigint(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` bigint(10) UNSIGNED NOT NULL COMMENT '评论者id',
-  `target_id` bigint(10) UNSIGNED NOT NULL COMMENT '评论对象id',
-  `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '评论类型',
+  `moment_id` bigint(10) UNSIGNED NOT NULL COMMENT '评论对象id',
   `content` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '内容',
   `like` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞数',
   `collect` int(10) UNSIGNED NOT NULL COMMENT '收藏量',
@@ -292,10 +233,10 @@ CREATE TABLE `remark`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_user_id_7`(`user_id`) USING BTREE,
-  INDEX `fk_target_id_2`(`target_id`) USING BTREE,
+  INDEX `fk_target_id_2`(`moment_id`) USING BTREE,
   CONSTRAINT `fk_user_id_7` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_target_id_1` FOREIGN KEY (`target_id`) REFERENCES `moment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_target_id_2` FOREIGN KEY (`target_id`) REFERENCES `article` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_target_id_1` FOREIGN KEY (`moment_id`) REFERENCES `moment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_target_id_2` FOREIGN KEY (`moment_id`) REFERENCES `article` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -385,24 +326,7 @@ CREATE TABLE `user`  (
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '插入时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '最后修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 190 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of user
--- ----------------------------
-INSERT INTO `user` VALUES (0, '1234@qq.com', 'misterchaos3', '', 'Ftek/KdELdo62TyacmWX5A==', '未设置', '我是蔡徐坤', '蔡徐坤', 'da65e244e14649dea1a4b3c08599f983.jpg', '', '中国', '离线', 0, '2019-05-05 04:33:05', '2019-05-06 20:04:47');
-INSERT INTO `user` VALUES (168, 'test3@qq.com', '未设置', '', 'Ftek/KdELdo62TyacmWX5A==', '未设置', '', 'test3@qq.com的昵称', '', '', '', '离线', 0, '2019-05-05 16:12:34', '2019-05-05 16:12:34');
-INSERT INTO `user` VALUES (178, 'test4@qq.com', '未设置', '', 'Ftek/KdELdo62TyacmWX5A==', '未设置', '', 'test4', '', '', '', '离线', 0, '2019-05-06 05:49:52', '2019-05-06 05:53:36');
-INSERT INTO `user` VALUES (179, '', '未设置', '', '1234', '未设置', '', 'testasdf中文', '', '', '', '离线', 0, '2019-05-06 06:22:47', '2019-05-06 06:22:47');
-INSERT INTO `user` VALUES (180, '', '未设置', '', '1234', '未设置', '', 'testasdf中文', '', '', '', '离线', 0, '2019-05-06 06:23:40', '2019-05-06 06:23:40');
-INSERT INTO `user` VALUES (181, '', '未设置', '', '1234', '未设置', '', 'testasdf中文', '', '', '', '离线', 0, '2019-05-06 06:25:37', '2019-05-06 06:25:37');
-INSERT INTO `user` VALUES (182, '', '未设置', '', '1234', '未设置', '', 'testasdf中文', '', '', '', '离线', 0, '2019-05-06 06:25:51', '2019-05-06 06:25:51');
-INSERT INTO `user` VALUES (184, 'test5@qq.com', '未设置', '', 'Ftek/KdELdo62TyacmWX5A==', '未设置', '', 'test5@qq.com的昵称', 'a547ca40b9004db4a376d0c0fb3f99a5.png', '', '', '离线', 0, '2019-05-06 19:59:24', '2019-05-06 20:06:48');
-INSERT INTO `user` VALUES (185, '', '未设置', '', '1234', '未设置', '', 'testasdf中文', '', '', '', '离线', 0, '2019-05-07 11:57:44', '2019-05-07 11:57:44');
-INSERT INTO `user` VALUES (186, '', '未设置', '', '1234', '未设置', '', 'testasdf中文', '', '', '', '离线', 0, '2019-05-07 11:58:25', '2019-05-07 11:58:25');
-INSERT INTO `user` VALUES (187, '', '未设置', '', '1234', '未设置', '', 'testasdf中文', '', '', '', '离线', 0, '2019-05-07 11:59:10', '2019-05-07 11:59:10');
-INSERT INTO `user` VALUES (188, '', '未设置', '', '1234', '未设置', '', 'testasdf中文', '', '', '', '离线', 0, '2019-05-07 13:08:23', '2019-05-07 13:08:23');
-INSERT INTO `user` VALUES (189, '', '未设置', '', '1234', '未设置', '', 'testasdf中文', '', '', '', '离线', 0, '2019-05-07 16:49:08', '2019-05-07 16:49:08');
+) ENGINE = InnoDB AUTO_INCREMENT = 207 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for user_role

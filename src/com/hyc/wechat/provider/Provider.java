@@ -22,6 +22,7 @@ import com.hyc.wechat.exception.ServiceException;
 import com.hyc.wechat.provider.annotation.Action;
 import com.hyc.wechat.provider.annotation.ActionProvider;
 import com.hyc.wechat.util.ControllerUtils;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -71,6 +72,8 @@ public class Provider {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Logger logger  =Logger.getLogger(Provider.class);
+            logger.debug(e.getStackTrace());
             //此处的异常包含细节信息，对客户端隐藏
             toErrorPage("您的请求参数不足或错误，系统无法处理您的请求", req, resp);
         }

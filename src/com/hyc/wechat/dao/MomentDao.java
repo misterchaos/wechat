@@ -31,7 +31,7 @@ import java.util.List;
  */
 public interface MomentDao extends BaseDao {
     String TABLE = "moment";
-    String ALL_FIELD = "user_id,content,photo,time,love,remark,share,view,collect," + BASE_FIELD;
+    String ALL_FIELD = "owner_id,content,photo,time,love,remark,share,view,collect," + BASE_FIELD;
 
     /**
      * 通过朋友圈id查询一个朋友圈
@@ -49,31 +49,46 @@ public interface MomentDao extends BaseDao {
     /**
      * 通过用户id和状态查询一个朋友圈
      *
-     * @param userId 用户id
+     * @param ownerId 用户id
      * @param stauts 状态
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/8
      */
     @Result(entity = Moment.class, returns = ResultType.OBJECT)
-    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where user_id = ? and status = ? ")
-    Moment getMomentByUserIdAndStatus(Object userId,Object stauts);
+    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where owner_id = ? and status = ? ")
+    Moment getMomentByOwnerIdAndStatus(Object ownerId, Object stauts);
 
 
     /**
-     * 通过用户id查询所有自己发布的朋友圈
+     * 通过用户id逆序查询所有自己发布的朋友圈
      *
-     * @param userId 用户id
+     * @param ownerId 用户id
      * @param limit  每页查询记录数
      * @param offset 起始记录数
-     * @name listMyMomentByUserId
+     * @name listMyMomentByOwnerIdDesc
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
     @Result(entity = Moment.class, returns = ResultType.LIST)
-    @Query("select " + ALL_FIELD + " from " + TABLE + " where user_id = ?  order by time limit ? offset ?  ")
-    List<Moment> listMyMomentByUserId(Object userId, int limit, int offset);
+    @Query("select " + ALL_FIELD + " from " + TABLE + " where owner_id = ?  order by time desc limit ? offset ?  ")
+    List<Moment> listMyMomentByOwnerIdDesc(Object ownerId, int limit, int offset);
+
+    /**
+     * 通过用户id查询所有自己发布的朋友圈
+     *
+     * @param ownerId 用户id
+     * @param limit  每页查询记录数
+     * @param offset 起始记录数
+     * @name listMyMomentByOwnerId
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/7
+     */
+    @Result(entity = Moment.class, returns = ResultType.LIST)
+    @Query("select " + ALL_FIELD + " from " + TABLE + " where owner_id = ?  order by time limit ? offset ?  ")
+    List<Moment> listMyMomentByOwnerId(Object ownerId, int limit, int offset);
 
 
 }

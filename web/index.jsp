@@ -80,7 +80,7 @@
         </div>
         <div class="menu-search">
             <i class="menu-search-icon"></i>
-            <input id="keyword" type="text" placeholder="请输入关键词" class="menu-search-bar" oninput="enterClick('search')">
+            <input id="keyword" type="text" placeholder="搜索用户" class="menu-search-bar" oninput="enterClick('search')">
             <div id="search" onclick="searchUser()" class="search-button">搜索</div>
         </div>
         <div class="menu-option">
@@ -88,7 +88,7 @@
                 <div id="chat" onclick="showWindowOnLeft('chat-list')" class="menu-option-button">聊天</div>
             </div>
             <div class="menu-option-item">
-                <div id="friend" onclick="showWindowOnLeft('friend-list')" class="menu-option-button">好友</div>
+                <div id="friend" onclick="showWindowOnLeft('friend-list')" class="menu-option-button">通讯录</div>
             </div>
             <div class="menu-option-item">
                 <div id="notify" onclick="showWindowOnLeft('notify-list')" class="menu-option-button">通知</div>
@@ -98,10 +98,47 @@
             </div>
 
         </div>
-        <!--BEGIN——聊天列表-->
+        <!--BEGIN——功能列表-->
         <div id="menu-body" class="menu-body" data-window="chat-list" onload="document.getElementById('chat').click()">
             <div id="chat-list" style="display: block"></div>
-            <div id="friend-list" style="display: none"></div>
+            <div id="friend-list" style="display: none">
+                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                        onmouseout="this.style.backgroundColor='#2e3238';"
+                        onclick="document.getElementById('search').click()">
+                    <div class="user-list-block">
+                        <div class="user-box">
+                            <div class="user-info">
+                                <h3 class="my-name">添加好友</h3>
+                                <p class="my-message">搜索并添加系统中的用户为好友</p>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                        onmouseout="this.style.backgroundColor='#2e3238';"
+                        onclick="createChat()">
+                    <div class="user-list-block">
+                        <div class="user-box">
+                            <div class="user-info">
+                                <h3 class="my-name">创建群聊</h3>
+                                <p class="my-message">创建一个群聊，邀请好友加入</p>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                        onmouseout="this.style.backgroundColor='#2e3238';"
+                        onclick="document.getElementById('search').click()">
+                    <div class="user-list-block">
+                        <div class="user-box">
+                            <div class="user-info">
+                                <h3 class="my-name">加入群聊</h3>
+                                <p class="my-message">通过群号加入一个群聊</p>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+            </div>
             <div id="article-list" style="display: none"></div>
             <div id="moment-list" style="display: none">
                 <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
@@ -130,7 +167,7 @@
                 </button>
                 <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
                         onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="showWindowOnRight()">
+                        onclick="loadMyMoment(1)">
                     <div class="user-list-block">
                         <div class="user-box">
                             <div class="user-info">
@@ -141,10 +178,14 @@
                     </div>
                 </button>
             </div>
-            <div id="notify-list" style="display: none"></div>
+            <div id="notify-list" style="display: none">
+
+
+            </div>
             <div id="setting-list" style="display: none"></div>
         </div>
-        <!--END——聊天列表-->
+        <!--END——功能列表-->
+
     </div>
     <!--END——菜单列表-->
 
@@ -152,7 +193,7 @@
     <div id="right-page" data-window="0">
 
         <!--BEGIN——聊天窗口-->
-        <div id="0" class="chat-box" style="display:none;background: transparent;">
+        <div id="0" class="chat-box" style="display:block;background: transparent;">
             <div class="chat-box-head">   
                 <div class="chat-box-title">       
                     <div class="chat-box-title-box">           
@@ -182,7 +223,7 @@
                     </button>
                 </div>
             </div>
-            <div id="${login.id}info" class="info-detail-box" onclick="enterClick(update-user)">
+            <div id="${login.id}info" class="info-detail-box" onclick="enterClick('update-user')">
                    
                 <div class="info-outline">
                     <div class="info-head-photo">
@@ -231,8 +272,9 @@
             <div class="info-box-head">   
                 <div class="info-box-title">       
                     <div class="info-box-title-box"><a class="info-box-title-text">写朋友圈</a></div>
-                    <button id="post-moment" onclick="postMoment()"
-                            style="float: right" contenteditable="false">发布
+                    <button id="post-moment" onclick="postMoment()" style="float: right;
+                    background-color:#1AAD19;border: solid 1px;width: 72px;"
+                            contenteditable="false">发布
                     </button>
                 </div>
             </div>
@@ -255,17 +297,17 @@
                         <label for="moment-content"></label>
                         <textarea class="input-text-content" id="moment-content" autofocus="autofocus" cols="100"
                                   contenteditable="true" onchange="enterClick('post-moment')" placeholder="分享自己的动态..."
-                                  required="required" maxlength="300" oninput="enterClick('post-moment')"></textarea>
+                                  required="required" maxlength="800" oninput="enterClick('post-moment')"></textarea>
                     </div>
                 </div>
             </div>
         </div>
         <!--END——发朋友圈窗口-->
         <!--BEGIN——查看朋友圈窗口-->
-        <div id="news-box" class="info-box" style="display: block">
+        <div id="news-box" class="info-box" style="display: none">
             <div class="info-box-head">   
                 <div class="info-box-title">       
-                    <div class="info-box-title-box"><a class="info-box-title-text">查看朋友圈</a></div>
+                    <div class="info-box-title-box"><a class="info-box-title-text">朋友圈</a></div>
                     <button id="see-moment" onclick="postMoment()"
                             style="float: right" contenteditable="false">
                     </button>
@@ -287,8 +329,13 @@
                                             amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
                                             odio. Curabitur malesuada. Vestibulum a velit eu ante scele
                                         </div>
+                                        <img src="/upload/photo/${login.chatBackground}"
+                                             style="position: relative;height: 100%;max-width:500px;width: 100%">
+
                                     </div>
-                                    <button onclick="addFriend(  user.id  )" style="float: left"
+                                    <button onclick="loveMoment('84',function() {
+                                    callback();
+                                    })" style="float: left"
                                             contenteditable="false">点赞()
                                     </button>
                                     <button onclick="addFriend(  user.id  )" style="float: left"
@@ -337,6 +384,37 @@
     loadFriendList();
     loadUnReadMessage(1);
 
+    //创建群聊
+
+    function createChat() {
+        var name = prompt("请输入群聊名称", "广工夸夸群");
+        if (name === '') {
+            alert("您没有设置群聊名称，将使用默认名称");
+        }
+        var number;
+        for (; ;) {
+            number = prompt("请输入群号", "");
+            if (number === '') {
+                alert("群号不可为空，必须由6-20位数字组成");
+            }else {
+                break;
+            }
+        }
+        var url = "http://localhost:8080/wechat/chat?method=add.do";
+        var request = JSON.stringify({
+            owner_id: "${login.id}",
+            name :name,
+            number:number
+        });
+        ajaxJsonRequest(url, request, function (result) {
+            if(result.status==="SUCCESS"){
+                loadChatListAndBox();
+            }
+        })
+
+
+    }
+
     //发送消息
     function sendMessage(chat_id, type) {
         if (websocket === '') {
@@ -366,7 +444,8 @@
     function searchUser() {
         var name = document.getElementById("keyword").value;
         if (name === '') {
-            alert("请输入关键词");
+            alert("请输入好友昵称");
+            document.getElementById('keyword').focus();
             return;
         }
         var url = "http://localhost:8080/wechat/user";
@@ -386,6 +465,18 @@
         })
     }
 
+    //显示聊天窗口
+    function showChatBox(chat_id) {
+        showWindowOnRight(chat_id);
+        var url = "http://localhost:8080/wechat/message";
+        var request = {
+            method: "read.do",
+            user_id: ${login.id},
+            chat_id: chat_id
+        };
+        postRequest(url, request, function (result) {
+        })
+    }
 
     //加载聊天列表，并且每个聊天加载隐藏的聊天窗口
     function loadChatListAndBox() {
@@ -445,12 +536,51 @@
         postRequest(url, request, function (result) {
             var news = result.data;
             //加载之前先将之前的清空
-            document.getElementById('news-box-content').innerHTML='';
+            document.getElementById('news-box-content').innerHTML = '';
             for (var i = news.length - 1; i >= 0; i--) {
-                addMomentBlockHtml(news[i]);
+                addMomentBlockHtml(news[i], function () {
+                    alert("回调");
+                    loadNews(page);
+                });
             }
         });
         showWindowOnRight('news-box');
+    }
+
+    //加载我的朋友圈
+    function loadMyMoment(page) {
+        var url = "http://localhost:8080/wechat/moment";
+        var request = {
+            method: "moment.do",
+            user_id: "${login.id}",
+            page: page
+        };
+        postRequest(url, request, function (result) {
+            var news = result.data;
+            //加载之前先将之前的清空
+            document.getElementById('news-box-content').innerHTML = '';
+            for (var i = 0; i < news.length; i++) {
+                addMomentBlockHtml(news[i], function () {
+                    loadMyMoment(page);
+                });
+            }
+        });
+        showWindowOnRight('news-box');
+    }
+
+    //删除朋友圈
+    function deleteMoment(moment_id) {
+        if (confirm("是否确定要删除这条朋友圈？")) {
+            var url = 'http://localhost:8080/wechat/moment';
+            var request = {
+                method: "delete.do",
+                moment_id: moment_id
+            };
+            postRequest(url, request, function (result) {
+            });
+        } else {
+            return;
+        }
     }
 
     //加好友
@@ -491,7 +621,7 @@
     function postMoment() {
         var content = document.getElementById("moment-content").value;
         var jsonStr = JSON.stringify({
-            user_id: "${login.id}",
+            owner_id: "${login.id}",
             content: content
         });
         var url = "http://localhost:8080/wechat/moment?method=add.do";
@@ -510,6 +640,27 @@
             return;
         }
     }
+
+    //点赞朋友圈
+    function loveMoment(moment_id, callback) {
+        var url = 'http://localhost:8080/wechat/moment';
+        var request = {
+            method: "love.do",
+            moment_id: moment_id,
+            user_id:${login.id},
+        };
+        postRequest(url, request, function (result) {
+            var love = result.data;
+            if (love) {
+                alert("点赞成功！");
+            } else {
+                alert("取消点赞成功");
+            }
+            //闭包回调刷新页面
+            callback();
+        });
+    }
+
 
     //上传图片
     function uploadPhoto(url, photo_id) {
@@ -560,7 +711,7 @@
     function loadChatListOnMenu(chat) {
         var chat_html = '<button class="user-list-block-href"  onmouseover="this.style.backgroundColor=\'#3A3F45\';" ' +
             'onmouseout="this.style.backgroundColor=\'#2e3238\';"' +
-            'onclick="showWindowOnRight(\'' + chat.id + '\')"><div class="user-list-block">\n' +
+            'onclick="showChatBox(\'' + chat.id + '\')"><div class="user-list-block">\n' +
             '                <div class="user-box">\n' +
             '                    <div class="user-photo">\n' +
             '                        <img src="/upload/photo/' + chat.photo + '" alt="用户头像" class="my-photo">\n' +
@@ -573,6 +724,32 @@
             '            </div></button>';
         document.getElementById("chat-list").innerHTML += chat_html;
     }
+
+    //加载通知列表
+
+    function loadNotify(notify) {
+        var html = '        <button class="user-list-block-href" onmouseover="this.style.backgroundColor=#3A3F45;"\n' +
+            '                        onmouseout="this.style.backgroundColor=#2e3238;"\n' +
+            '                        onclick="">\n' +
+            '                    <div class="user-list-block">\n' +
+            '                        <div class="user-box">\n' +
+            '                            <div class="user-photo">\n' +
+            '                                <img src="/upload/photo/friend.photo  " alt="用户头像" class="my-photo">\n' +
+            '                            </div>\n' +
+            '                            <div class="user-info">\n' +
+            '                                <h3 class="my-name"></h3>\n' +
+            '                                <p class="my-message"> friend.description </p>\n' +
+            '                            </div>\n' +
+            '                        </div>\n' +
+            '                    </div>\n' +
+            '                    <button id="" onclick="postMoment()" style="float: right;\n' +
+            '                    background-color:#1AAD19;border: solid 1px;width: 100px;margin-right: 50px"\n' +
+            '                            contenteditable="false">发布\n' +
+            '                    </button>\n' +
+            '                </button>';
+        document.getElementById("notify-list").innerHTML += chat_html;
+    }
+
 
     //加载好友列表
     function loadFriendOnMenu(friend) {
@@ -722,20 +899,24 @@
     }
 
     //插入一条用户的朋友圈
-    function addMomentBlockHtml(moment) {
-        var time =new Date(moment.time).toLocaleString();
+    function addMomentBlockHtml(moment, callback) {
+        var time = new Date(moment.time).toLocaleString();
         var html = '           <div class="info-detail-block" style="margin-left: 20px">\n' +
             '                        <label for="moment-content">\n' +
             '                            <div class="info-detail-block">               \n' +
-            '                                <div class="user-box" style="border-top: 1px solid;">\n' +
+            '                                <div class="user-box" style="border-top: 1px solid;width: 95%;">\n' +
             '                                    <div class="user-photo">\n' +
-            '                                        <img src="/upload/photo/'+moment.userPhoto+'" alt="用户头像" class="my-photo">\n' +
+            '                                        <img src="/upload/photo/' + moment.user_photo + '" alt="用户头像" class="my-photo">\n' +
             '                                    </div>\n' +
-            '                                    <div class="user-info" style="height: fit-content">\n' +
-            '                                        <h3 class="my-name" style="color: #333">' + moment.userName + ' 发布于 ' + time + '</h3>\n' +
-            '                                        <div>' + moment.content + '</div>\n' +
+            '                                    <div class="user-info" style="height: fit-content;margin-bottom: 11px;">\n' +
+            '                                        <h3 class="my-name" style="color: #333">' + moment.user_name + ' 发布于 ' + time + '</h3>\n' +
+            '                                        <div style="word-break: break-all;white-space: normal;">' + moment.content + '</div>\n' +
+            '                                        <img src="/upload/photo/' + moment.photo + '" style="position:relative;height: 100%;' +
+            'max-width:500px;max-height:300px;width: 100%">\n' +
             '                                    </div>\n' +
-            '                                    <button onclick="" style="float: left"\n' +
+            '                                    <button onclick="loveMoment(\'' + moment.id + '\',' + function () {
+                callback();
+            } + ')" style="float: left"\n' +
             '                                            contenteditable="false">点赞\(' + moment.love + '\)\n' +
             '                                    </button>\n' +
             '                                    <button onclick="" style="float: left"\n' +
@@ -749,12 +930,26 @@
             '                                    </button>\n' +
             '                                    <button onclick="" style="float: left"\n' +
             '                                            contenteditable="false">浏览量\(' + moment.view + '\)\n' +
+            '                                    </button>\n';
+
+        var visitorArea =
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                        </label>\n' +
+            '                    </div>';
+        var ownerArea =
+            '                                    <button onclick="deleteMoment(\'' + moment.id + '\')" style="float: right" \n' +
+            '                                            contenteditable="false">删除\n' +
             '                                    </button>\n' +
             '                                </div>\n' +
             '                            </div>\n' +
             '                        </label>\n' +
             '                    </div>';
-        document.getElementById("news-box-content").innerHTML += html;
+        if (moment.owner_id ===${login.id}) {
+            document.getElementById("news-box-content").innerHTML += html + ownerArea;
+        } else {
+            document.getElementById("news-box-content").innerHTML += html + visitorArea;
+        }
     }
 
     //将消息显示在消息对应的聊天窗口上,并在聊天列表对应位置显示
@@ -994,6 +1189,7 @@
         position: relative;
         height: 750px;
         float: left;
+        overflow: hidden;
         background: #2e3238;
         display: block;
     }

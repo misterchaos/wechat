@@ -18,6 +18,7 @@ package com.hyc.wechat.controller.impl.filter;
 
 import com.hyc.wechat.controller.constant.ControllerMessage;
 import com.hyc.wechat.controller.constant.WebPage;
+import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -72,8 +73,8 @@ public class EncodingFilter implements Filter {
                 ex.printStackTrace();
             }
         }
-
-        System.out.println("[请求url] : " + req.getRequestURI() + " [请求参数] ：" + req.getQueryString());
+        Logger logger = Logger.getLogger(EncodingFilter.class);
+        logger.info("[请求url] : " + req.getRequestURI() + " [请求参数] ：" + req.getQueryString());
     }
 }
 

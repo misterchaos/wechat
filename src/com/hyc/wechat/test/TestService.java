@@ -27,7 +27,6 @@ import com.hyc.wechat.service.impl.UserServiceImpl;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,7 +54,7 @@ public class TestService {
 
         MomentService momentService = new MomentServiceImpl();
         Moment moment =new Moment();
-        moment.setUserId(BigInteger.valueOf(0));
+        moment.setOwnerId(BigInteger.valueOf(0));
         moment.setContent("第一条朋友圈");
         momentService.insertMoment(moment);
         momentService.removeMoment(BigInteger.valueOf(8));

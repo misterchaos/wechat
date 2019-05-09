@@ -16,6 +16,7 @@
 
 package com.hyc.wechat.model.po;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.hyc.wechat.dao.annotation.Table;
 import com.hyc.wechat.model.po.abs.BaseEntity;
 
@@ -28,8 +29,11 @@ import java.math.BigInteger;
  */
 @Table(name = "member")
 public class Member extends BaseEntity {
+    @JSONField(name = "user_id")
     private BigInteger userId;
+    @JSONField(name = "chat_id")
     private BigInteger chatId;
+    @JSONField(name = "group_alias")
     private String groupAlias;
     private String background;
     private Integer level;

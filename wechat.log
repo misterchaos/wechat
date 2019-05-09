@@ -1,30 +1,3 @@
-2019-05-02 17:18:24 [ DEBUG ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:35) ] Here is some DEBUG
-2019-05-02 17:18:24 [ INFO ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:36) ] Here is some INFO
-2019-05-02 17:18:24 [ WARN ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:37) ] Here is some WARN
-2019-05-02 17:18:24 [ ERROR ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:38) ] Here is some ERROR
-2019-05-02 17:18:24 [ FATAL ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:39) ] Here is some FATAL
-2019-05-02 17:19:06 [ DEBUG ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:35) ] Here is some DEBUG
-2019-05-02 17:19:06 [ INFO ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:36) ] Here is some INFO
-2019-05-02 17:19:06 [ WARN ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:37) ] Here is some WARN
-2019-05-02 17:19:06 [ ERROR ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:38) ] Here is some ERROR
-2019-05-02 17:19:06 [ FATAL ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:39) ] Here is some FATAL
-2019-05-02 17:20:39 [ DEBUG ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:35) ] Here is some DEBUG
-2019-05-02 17:20:39 [ INFO ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:36) ] Here is some INFO
-2019-05-02 17:20:39 [ WARN ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:37) ] Here is some WARN
-2019-05-02 17:20:39 [ ERROR ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:38) ] Here is some ERROR
-2019-05-02 17:20:39 [ FATAL ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:39) ] Here is some FATAL
-2019-05-02 17:23:18 [ DEBUG ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:35) ] Here is some DEBUG
-2019-05-02 17:23:18 [ INFO ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:36) ] Here is some INFO
-2019-05-02 17:23:18 [ WARN ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:37) ] Here is some WARN
-2019-05-02 17:23:18 [ ERROR ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:38) ] Here is some ERROR
-2019-05-02 17:23:18 [ FATAL ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:39) ] Here is some FATAL
-2019-05-02 17:24:12 [ DEBUG ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:35) ] Here is some DEBUG
-2019-05-02 17:24:12 [ INFO ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:36) ] Here is some INFO
-2019-05-02 17:24:12 [ WARN ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:37) ] Here is some WARN
-2019-05-02 17:24:12 [ ERROR ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:38) ] Here is some ERROR
-2019-05-02 17:24:12 [ FATAL ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:39) ] Here is some FATAL
-2019-05-02 17:25:10 [ DEBUG ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:35) ] Here is some DEBUG
-2019-05-02 17:25:10 [ INFO ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:36) ] Here is some INFO
-2019-05-02 17:25:10 [ WARN ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:37) ] Here is some WARN
-2019-05-02 17:25:10 [ ERROR ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:38) ] Here is some ERROR
-2019-05-02 17:25:10 [ FATAL ] - [ com.hyc.wechat.test.TestLog.main(TestLog.java:39) ] Here is some FATAL
+
+
+2019-05-09 01:52:17 [ DEBUG ] - [ com.hyc.wechat.test.TestLog.log(TestLog.java:39) ] 日志信息

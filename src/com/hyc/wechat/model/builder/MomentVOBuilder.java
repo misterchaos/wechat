@@ -20,7 +20,6 @@ import com.hyc.wechat.model.vo.MomentVO;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -66,7 +65,7 @@ public class MomentVOBuilder {
     }
 
     public MomentVOBuilder setUserId(BigInteger userId) {
-        this.momentVO.setUserId(userId);
+        this.momentVO.setOwnerId(userId);
         return this;
     }
 

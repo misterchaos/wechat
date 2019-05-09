@@ -84,4 +84,19 @@ public interface MomentService {
      * @date 2019/5/7
      */
     ServiceResult listNews(BigInteger userId, int page);
+
+    /**
+     * 更新一个用户对一条朋友圈的点赞状态
+     *
+     * @param userId   用户id
+     * @param momentId 朋友圈id
+     * @name love
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/8
+     */
+    ServiceResult love(BigInteger userId, BigInteger momentId);
+
+
+
 }
