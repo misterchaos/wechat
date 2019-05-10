@@ -50,6 +50,19 @@ public interface FriendService {
     ServiceResult listFriend(Object userId);
 
     /**
+     * 更新好友信息
+     *
+     * @param friend 朋友
+     * @name updateFriend
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/6
+     */
+    ServiceResult updateFriend(Friend friend);
+
+
+
+    /**
      * 移除好友
      *
      * @param friend 要移除的好友关系

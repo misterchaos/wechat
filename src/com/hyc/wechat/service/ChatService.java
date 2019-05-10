@@ -114,4 +114,16 @@ public interface ChatService {
      * @date 2019/5/6
      */
     void getChatByNumber(Object number);
+
+    /**
+     * 查询一个聊天中所有成员的信息
+     *
+     * @param chatId 聊天id
+     * @name listMember
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/10
+     */
+    ServiceResult listMember(BigInteger chatId);
+
 }

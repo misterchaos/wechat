@@ -40,4 +40,19 @@ public interface UploadService {
      * @date 2019/5/6
      */
     ServiceResult uploadPhoto(Part part, Object id, String tableName);
+
+    /**
+     * 负责将文件写入文件，并将数据库表对应聊天背景属性值修改为文件名
+     *
+     * @param part      文件
+     * @param id        记录id
+     * @return
+     * @name uploadBackground
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    ServiceResult uploadBackground(Part part, Object id);
+
+
 }

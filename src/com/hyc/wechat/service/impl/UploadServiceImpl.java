@@ -42,8 +42,9 @@ import static com.hyc.wechat.util.UploadUtils.toPhotoName;
  */
 public class UploadServiceImpl implements UploadService {
 
-    private UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
-    private MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);
+    private final UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
+    private final MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);
+
     /**
      * 负责将文件写入文件，并将数据库表对应的记录上的photo属性值修改为文件名
      *
@@ -68,15 +69,15 @@ public class UploadServiceImpl implements UploadService {
                 if (userDao.update(user) != 1) {
                     return new ServiceResult(Status.ERROR, UPDATE_USER_FAILED.message, user);
                 }
-            }else if("moment".equalsIgnoreCase(tableName)){
+            } else if ("moment".equalsIgnoreCase(tableName)) {
                 Moment moment = new Moment();
                 moment.setId(new BigInteger(String.valueOf(id)));
                 moment.setPhoto(fileName);
-                if(momentDao.update(moment)!=1){
-                    return new ServiceResult(Status.ERROR,DATABASE_ERROR.message, moment);
+                if (momentDao.update(moment) != 1) {
+                    return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, moment);
                 }
-            }else {
-                return new ServiceResult(Status.ERROR,UNSUPPROT_TABLE.message,tableName);
+            } else {
+                return new ServiceResult(Status.ERROR, UNSUPPROT_TABLE.message, tableName);
             }
         } catch (DaoException e) {
             e.printStackTrace();
@@ -86,5 +87,37 @@ public class UploadServiceImpl implements UploadService {
             return new ServiceResult(Status.ERROR, UPLOAD_FAILED.message, id);
         }
         return new ServiceResult(Status.SUCCESS, UPDATE_INFO_SUCCESS.message, fileName);
+    }
+
+    /**
+     * 负责将文件写入文件，并将数据库表对应聊天背景属性值修改为文件名
+     *
+     * @param part 文件
+     * @param id   记录id
+     * @return
+     * @name uploadBackground
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Override
+    public ServiceResult uploadBackground(Part part, Object id) {
+        String fileName;
+        try {
+            fileName = toPhotoName(part);
+            User user = new User();
+            user.setId(new BigInteger(String.valueOf(id)));
+            user.setChatBackground(fileName);
+            if (userDao.update(user) != 1) {
+                return new ServiceResult(Status.ERROR, UPDATE_USER_FAILED.message, user);
+            }
+        } catch (DaoException e) {
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, id);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, UPLOAD_FAILED.message, id);
+        }
+        return new ServiceResult(Status.SUCCESS, UPDATE_BACKGROUND_SUCCESS.message, fileName);
     }
 }

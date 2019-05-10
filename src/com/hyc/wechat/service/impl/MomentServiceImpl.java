@@ -47,10 +47,10 @@ import static com.hyc.wechat.util.StringUtils.toLegalText;
  */
 public class MomentServiceImpl implements MomentService {
 
-    private MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);
-    private NewsDao newsDao = (NewsDao) DaoProxyFactory.getInstance().getProxyInstance(NewsDao.class);
-    private UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
-    private FriendDao friendDao = (FriendDao) DaoProxyFactory.getInstance().getProxyInstance(FriendDao.class);
+    private final MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);
+    private final NewsDao newsDao = (NewsDao) DaoProxyFactory.getInstance().getProxyInstance(NewsDao.class);
+    private final UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
+    private final FriendDao friendDao = (FriendDao) DaoProxyFactory.getInstance().getProxyInstance(FriendDao.class);
 
     /**
      * 插入一条朋友圈
@@ -249,7 +249,10 @@ public class MomentServiceImpl implements MomentService {
             newsList = newsDao.listNewsByUserId(userId, limit, offset);
             //查找朋友圈动态
             if (newsList == null || newsList.size() == 0) {
-                return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_NEWS.message, momentVOList);
+                if(page==1){
+                    return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_NEWS.message, momentVOList);
+                }
+                return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_MORE.message, momentVOList);
             }
             //根据动态中的朋友圈id获取朋友圈数据
             for (News news : newsList) {
@@ -277,7 +280,7 @@ public class MomentServiceImpl implements MomentService {
      * @date 2019/5/8
      */
     @Override
-    public ServiceResult love(BigInteger userId, BigInteger momentId) {
+    synchronized  public ServiceResult love(BigInteger userId, BigInteger momentId) {
         if (userId == null || momentId == null) {
             throw new ServiceException(ServiceMessage.NOT_NULL.message);
         }
@@ -302,6 +305,45 @@ public class MomentServiceImpl implements MomentService {
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
         }
         return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, news.getLoved());
+    }
+
+    /**
+     * 查询一个用户朋友圈中的所有图片
+     *
+     * @param userId 用户id
+     * @param page   页数
+     * @name loadPhoto
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/10
+     */
+    @Override
+    public ServiceResult listPhoto(BigInteger userId, int page) {
+
+        //根据页数信息生成查询参数
+        int limit = 10;
+        int offset = (page - 1) * limit;
+        if (offset < 0) {
+            return new ServiceResult(Status.ERROR, ServiceMessage.PAGE_INVALID.message, null);
+        }
+        //判空
+        if (userId == null) {
+            throw new ServiceException(ServiceMessage.NOT_NULL.message);
+        }
+        List<String> photoList = new LinkedList<>();
+        try {
+                List<Moment> momentList = momentDao.listPhoto(userId,limit,offset);
+                if(momentList==null||momentList.size()==0){
+                    return new ServiceResult(Status.ERROR, ServiceMessage.NO_MOMENT.message, null);
+                }
+            for (Moment moment:momentList) {
+                photoList.add(moment.getPhoto());
+            }
+        } catch (DaoException e) {
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, photoList);
+        }
+        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, photoList);
     }
 
     /**

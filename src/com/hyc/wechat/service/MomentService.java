@@ -97,6 +97,16 @@ public interface MomentService {
      */
     ServiceResult love(BigInteger userId, BigInteger momentId);
 
-
+    /**
+     * 查询一个用户朋友圈中的所有图片
+     *
+     * @param userId 用户id
+     * @param page   页数
+     * @name loadPhoto
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/10
+     */
+    ServiceResult listPhoto(BigInteger userId, int page);
 
 }

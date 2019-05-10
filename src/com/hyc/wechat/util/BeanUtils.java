@@ -17,7 +17,9 @@
 package com.hyc.wechat.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hyc.wechat.dao.impl.SQLRunnerImpl;
 import com.hyc.wechat.model.po.User;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -82,7 +84,8 @@ public class BeanUtils {
                 /**
                  * 某些属性确实没有这种构造器，在这里不需要处理这个问题
                  */
-                System.out.println("该变量没有String类型参数的构造器" + f.getName());
+                Logger logger = Logger.getLogger(BeanUtils.class);
+                logger.debug("从请求参数转化成对象时缺少String类型的构造器 ： " +f.getName() );
             }
             /**
              * 构造属性
@@ -113,7 +116,8 @@ public class BeanUtils {
                     /**
                      * 某些属性可能由于非法输入而无法初始化，这里无需处理
                      */
-                    System.out.println("无法初始化该属性: " + f.getName() + " 属性值：" + param[0]);
+                    Logger logger = Logger.getLogger(BeanUtils.class);
+                    logger.debug("从请求参数转化成对象时无法初始化[属性] ： " +f.getName()+ " [属性值]：" + param[0] );
                 }
             }
         }
@@ -138,7 +142,8 @@ public class BeanUtils {
                 builder.append(jsonData);
             }
             jsonObject = JSONObject.parseObject(builder.toString());
-            System.out.println("json数据："+jsonObject.toJSONString());
+            Logger logger = Logger.getLogger(BeanUtils.class);
+            logger.info("从请求中获得json数据："+jsonObject.toJSONString());
         } catch (Exception e) {
             e.printStackTrace();
         }

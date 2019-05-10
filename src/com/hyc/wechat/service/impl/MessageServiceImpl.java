@@ -45,11 +45,11 @@ import static com.hyc.wechat.service.constants.ServiceMessage.DATABASE_ERROR;
 public class MessageServiceImpl implements MessageService {
 
 
-    private ChatDao chatDao = (ChatDao) DaoProxyFactory.getInstance().getProxyInstance(ChatDao.class);
-    private MessageDao messageDao = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
-    private RecordDao recordDao = (RecordDao) DaoProxyFactory.getInstance().getProxyInstance(RecordDao.class);
-    private MemberDao memberDao = (MemberDao) DaoProxyFactory.getInstance().getProxyInstance(MemberDao.class);
-    private UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
+    private final ChatDao chatDao = (ChatDao) DaoProxyFactory.getInstance().getProxyInstance(ChatDao.class);
+    private final MessageDao messageDao = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
+    private final RecordDao recordDao = (RecordDao) DaoProxyFactory.getInstance().getProxyInstance(RecordDao.class);
+    private final MemberDao memberDao = (MemberDao) DaoProxyFactory.getInstance().getProxyInstance(MemberDao.class);
+    private final UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
 
     /**
      * 将一条消息存入数据库，同时给聊天中的所有成员生成一份聊天记录
@@ -98,7 +98,7 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public ServiceResult listAllMessage(Object userId, Object chatId, int page) {
-        int limit = 10;
+        int limit = 20;
         int offset = (page - 1) * limit;
         //检查页数
         if (offset < 0) {
@@ -117,7 +117,7 @@ public class MessageServiceImpl implements MessageService {
                 return new ServiceResult(Status.ERROR, ServiceMessage.ACCOUNT_NOT_FOUND.message, null);
             }
             //查询数据库
-            List<Message> messageList = messageDao.listMessageByUserIdAndChatId(userId, chatId, limit, offset);
+            List<Message> messageList = messageDao.listMessageByUserIdAndChatIdDesc(userId, chatId, limit, offset);
             //检查数据是否存在
             if (messageList == null || messageList.size() == 0) {
                 return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_RECORD.message, messageList);
@@ -126,7 +126,7 @@ public class MessageServiceImpl implements MessageService {
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, messageVOList);
+        return new ServiceResult(Status.SUCCESS, null, messageVOList);
     }
 
 
@@ -167,7 +167,7 @@ public class MessageServiceImpl implements MessageService {
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, messageVOList);
+        return new ServiceResult(Status.SUCCESS,null, messageVOList);
     }
 
     /**
@@ -209,7 +209,7 @@ public class MessageServiceImpl implements MessageService {
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, list);
+        return new ServiceResult(Status.SUCCESS,null, list);
     }
 
     /**

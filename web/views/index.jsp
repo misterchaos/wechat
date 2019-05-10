@@ -22,7 +22,9 @@
  To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="host" value="localhost:8080"/>
+<%--设置主机名--%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,7 +39,9 @@
         function postRequest(url, request, callback) {
             $.post(url, request, function (data, status) {
                 var result = eval("(" + data + ")");
-                alert("系统提示：" + result.message);
+                if (result.message != null && result.message != '') {
+                    alert("系统提示：" + result.message);
+                }
                 callback(result);
             });
         }
@@ -51,7 +55,9 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function (data) {
-                    alert("系统提示：" + data.message);
+                    if (data.message != null && data.message !== '') {
+                        alert("系统提示：" + data.message);
+                    }
                     callback(data);
                 },
                 Error: function (xhr, error, exception) {
@@ -60,12 +66,15 @@
                 }
             });
         }
+
+
     </script>
     <!--END——发送请求脚本-->
 </head>
 <body>
 <div class="page-body" style="background-color: #eee;">
-    <img src="/upload/photo/${login.chatBackground}" style="position: absolute;height: 100%;width: 100%">
+    <img id="background" src="/upload/photo/${login.chatBackground}"
+         style="position: absolute;height: 100%;width: 100%">
 
     <!--BEGIN——菜单列表-->
     <div class="menu">
@@ -91,7 +100,7 @@
                 <div id="friend" onclick="showWindowOnLeft('friend-list')" class="menu-option-button">通讯录</div>
             </div>
             <div class="menu-option-item">
-                <div id="notify" onclick="showWindowOnLeft('notify-list')" class="menu-option-button">通知</div>
+                <div id="setting" onclick="showWindowOnLeft('setting-list')" class="menu-option-button">设置</div>
             </div>
             <div class="menu-option-item">
                 <div id="moment" onclick="showWindowOnLeft('moment-list')" class="menu-option-button">朋友圈</div>
@@ -128,7 +137,7 @@
                 </button>
                 <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
                         onmouseout="this.style.backgroundColor='#2e3238';"
-                        onclick="document.getElementById('search').click()">
+                        onclick="joinChat()">
                     <div class="user-list-block">
                         <div class="user-box">
                             <div class="user-info">
@@ -177,12 +186,50 @@
                         </div>
                     </div>
                 </button>
+                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                        onmouseout="this.style.backgroundColor='#2e3238';"
+                        onclick="loadPhoto(1)">
+                    <div class="user-list-block">
+                        <div class="user-box">
+                            <div class="user-info">
+                                <h3 class="my-name">朋友圈相册</h3>
+                                <p class="my-message">查看自己朋友圈中的照片</p>
+                            </div>
+                        </div>
+                    </div>
+                </button>
             </div>
-            <div id="notify-list" style="display: none">
-
+            <div id="setting-list" style="display: none">
+                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                        onmouseout="this.style.backgroundColor='#2e3238';"
+                        onclick="updatePassword()">
+                    <div class="user-list-block">
+                        <div class="user-box">
+                            <div class="user-info">
+                                <h3 class="my-name">更新密码</h3>
+                                <p class="my-message">更新账户的登陆密码</p>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+                <button class="user-list-block-href" onmouseover="this.style.backgroundColor='#3A3F45'"
+                        onmouseout="this.style.backgroundColor='#2e3238';"
+                        onclick="document.getElementById('background-upload').click()">
+                    <input type="file" name="file" id="background-upload"
+                           accept="image/gif,image/jpeg,image/jpg,image/png,image/svg"
+                           oninput="updateBackground()"
+                           style="display: none">
+                    <div class="user-list-block">
+                        <div class="user-box">
+                            <div class="user-info">
+                                <h3 class="my-name">更换聊天背景</h3>
+                                <p class="my-message">上传一张自己的图片作为聊天窗口的背景图</p>
+                            </div>
+                        </div>
+                    </div>
+                </button>
 
             </div>
-            <div id="setting-list" style="display: none"></div>
         </div>
         <!--END——功能列表-->
 
@@ -190,10 +237,10 @@
     <!--END——菜单列表-->
 
     <!--BEGIN——右边窗口-->
-    <div id="right-page" data-window="0">
+    <div id="right-page" data-window="-1">
 
         <!--BEGIN——聊天窗口-->
-        <div id="0" class="chat-box" style="display:block;background: transparent;">
+        <div id="-1" class="chat-box" style="display:block;background: transparent;">
             <div class="chat-box-head">   
                 <div class="chat-box-title">       
                     <div class="chat-box-title-box">           
@@ -201,7 +248,8 @@
                     </div>
                 </div>
             </div>
-            <div id="${param.chat_id}accept-message" class="chat-output-box">   
+            <div id="${param.chat_id}accept-message" class="chat-output-box" style="    height: 100%;max-height: unset">
+                   
 
                 <div class="chat-output-content-left">       
                     <img src="/upload/photo/system.jpg" alt="头像" class="chat-output-head-photo-left">     
@@ -218,9 +266,12 @@
             <div class="info-box-head">   
                 <div class="info-box-title">       
                     <div class="info-box-title-box"><a class="info-box-title-text">个人信息</a></div>
+
                     <button id="update-user" onclick="updateUserInfo()"
                             style="float: right" contenteditable="false">更新
                     </button>
+
+
                 </div>
             </div>
             <div id="${login.id}info" class="info-detail-box" onclick="enterClick('update-user')">
@@ -273,7 +324,7 @@
                 <div class="info-box-title">       
                     <div class="info-box-title-box"><a class="info-box-title-text">写朋友圈</a></div>
                     <button id="post-moment" onclick="postMoment()" style="float: right;
-                    background-color:#1AAD19;border: solid 1px;width: 72px;"
+                   border: solid 1px;width: 72px;"
                             contenteditable="false">发布
                     </button>
                 </div>
@@ -308,49 +359,14 @@
             <div class="info-box-head">   
                 <div class="info-box-title">       
                     <div class="info-box-title-box"><a class="info-box-title-text">朋友圈</a></div>
-                    <button id="see-moment" onclick="postMoment()"
-                            style="float: right" contenteditable="false">
+                    <button id="news-page" data-page="1"
+                            onclick="loadNews(document.getElementById('news-page').dataset.page++)"
+                            style="float: right" contenteditable="false">下一页
                     </button>
                 </div>
             </div>
             <div id="${login.id}info" class="info-detail-box">
                 <div id="news-box-content" class="info-detail">
-                    <div class="info-detail-block" style="margin-left: 20px">
-                        <label for="moment-content">
-                            <div class="info-detail-block">               
-                                <div class="user-box" style="border-top: 1px solid;">
-                                    <div class="user-photo">
-                                        <img src="/upload/photo/user.photo" alt="用户头像" class="my-photo">
-                                    </div>
-                                    <div class="user-info" style="height: fit-content">
-                                        <h3 class="my-name" style="color: #333">userName 发布于 2019-10-10</h3>
-                                        <div> Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
-                                            ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
-                                            amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
-                                            odio. Curabitur malesuada. Vestibulum a velit eu ante scele
-                                        </div>
-                                        <img src="/upload/photo/${login.chatBackground}"
-                                             style="position: relative;height: 100%;max-width:500px;width: 100%">
-
-                                    </div>
-                                    <button onclick="loveMoment('84',function() {
-                                    callback();
-                                    })" style="float: left"
-                                            contenteditable="false">点赞()
-                                    </button>
-                                    <button onclick="addFriend(  user.id  )" style="float: left"
-                                            contenteditable="false">评论()
-                                    </button>
-                                    <button onclick="addFriend(  user.id  )" style="float: left"
-                                            contenteditable="false">收藏()
-                                    </button>
-                                    <button onclick="addFriend(  user.id  )" style="float: left"
-                                            contenteditable="false">转发()
-                                    </button>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
                 </div>
             </div>
         </div>
@@ -358,7 +374,6 @@
     </div>
 
     <!--END——右边窗口-->
-
 
 </div>
 <!--BEGIN——监听键盘-->
@@ -379,41 +394,95 @@
 
 <!--BEGIN——程序执行脚本-->
 <script>
-    //请求聊天列表
-    loadChatListAndBox();
-    loadFriendList();
-    loadUnReadMessage(1);
+
 
     //创建群聊
-
     function createChat() {
         var name = prompt("请输入群聊名称", "广工夸夸群");
         if (name === '') {
             alert("您没有设置群聊名称，将使用默认名称");
         }
-        var number;
-        for (; ;) {
-            number = prompt("请输入群号", "");
-            if (number === '') {
-                alert("群号不可为空，必须由6-20位数字组成");
-            }else {
-                break;
-            }
+        var number = prompt("请输入群号", "");
+        if (number === '') {
+            alert("群号不可为空，必须由6-20位数字组成");
+            return;
         }
-        var url = "http://localhost:8080/wechat/chat?method=add.do";
+
+        var url = "http://${host}/wechat/chat?method=add.do";
         var request = JSON.stringify({
             owner_id: "${login.id}",
-            name :name,
-            number:number
+            name: name,
+            number: number
         });
         ajaxJsonRequest(url, request, function (result) {
-            if(result.status==="SUCCESS"){
+            if (result.status === "SUCCESS") {
                 loadChatListAndBox();
             }
         })
-
-
     }
+
+    //修改好友信息
+    function updateFriend(id) {
+        var alias = prompt("请输入好友昵称", "蔡徐坤");
+        if (alias === '') {
+            alias("昵称不能为空");
+            return;
+        }
+        var description = prompt("请输入好友描述", "灵魂篮球练习生");
+        var url = "http://${host}/wechat/friend?method=update.do";
+        var request = JSON.stringify({
+            id: id,
+            alias: alias,
+            description: description
+        });
+        ajaxJsonRequest(url, request, function (result) {
+            if (result.status === "SUCCESS") {
+                loadFriendList();
+            }
+        })
+    }
+
+    //加入群聊
+    function joinChat() {
+        var number = prompt("请输入群号", "");
+        if (number === '') {
+            return;
+        }
+        var url = "http://${host}/wechat/chat";
+        var request = {
+            method: "join.do",
+            user_id: ${login.id},
+            number: number
+        };
+        postRequest(url, request, function (result) {
+            if (result.status === "SUCCESS") {
+                loadChatListAndBox();
+            }
+        });
+    }
+
+    //更新密码
+    function updatePassword() {
+        var old_password = prompt("请输入旧密码", "");
+        if (old_password === '') {
+            return;
+        }
+        var new_password = prompt("请输入新密码", "");
+        if (new_password === '') {
+            alert("密码必须为6-20位英文字母，数字或下划线组成");
+            return;
+        }
+        var url = "http://${host}/wechat/user";
+        var request = {
+            method: "updatepassword.do",
+            user_id: ${login.id},
+            old_password: old_password,
+            new_password: new_password
+        };
+        postRequest(url, request, function (result) {
+        });
+    }
+
 
     //发送消息
     function sendMessage(chat_id, type) {
@@ -444,11 +513,11 @@
     function searchUser() {
         var name = document.getElementById("keyword").value;
         if (name === '') {
-            alert("请输入好友昵称");
+            alert("请在输入框输入用户的昵称进行搜索");
             document.getElementById('keyword').focus();
             return;
         }
-        var url = "http://localhost:8080/wechat/user";
+        var url = "http://${host}/wechat/user";
         var request = {
             method: "list.do",
             name: name
@@ -465,28 +534,51 @@
         })
     }
 
+    //显示群成员
+    function showChatMember(chat_id) {
+        var url = "http://${host}/wechat/chat";
+        var request = {
+            method: "member.do",
+            chat_id: chat_id
+        };
+        postRequest(url, request, function (result) {
+            var members = result.data;
+            if (members.length === 0) {
+                return;
+            }
+            loadChatInfoHead(chat_id);
+            for (var i = 0; i < members.length; i++) {
+                addMemberHtml(members[i]);
+            }
+        })
+    }
+
+
     //显示聊天窗口
     function showChatBox(chat_id) {
         showWindowOnRight(chat_id);
-        var url = "http://localhost:8080/wechat/message";
+
+        var url = "http://${host}/wechat/message";
         var request = {
             method: "read.do",
             user_id: ${login.id},
             chat_id: chat_id
         };
         postRequest(url, request, function (result) {
+
         })
     }
 
     //加载聊天列表，并且每个聊天加载隐藏的聊天窗口
     function loadChatListAndBox() {
-        var url = "http://localhost:8080/wechat/chat";
+        var url = "http://${host}/wechat/chat";
         var request = {
             method: "list.do",
             id: "${login.id}"
         };
         postRequest(url, request, function (result) {
             var chats = result.data;
+            console.log("查询到聊天窗口数量：" + chats.length);
             for (var i = 0; i < chats.length; i++) {
                 loadChatListOnMenu(chats[i]);
                 loadChatBox(chats[i]);
@@ -496,12 +588,48 @@
 
     //加载加载好友列表
     function loadFriendList() {
-        var url = "http://localhost:8080/wechat/friend";
+        var url = "http://${host}/wechat/friend";
         var request = {
             method: "list.do",
             user_id: "${login.id}"
         };
         postRequest(url, request, function (result) {
+            document.getElementById("friend-list").innerHTML = ' <button class="user-list-block-href" onmouseover="this.style.backgroundColor=\'#3A3F45\'"\n' +
+                '                        onmouseout="this.style.backgroundColor=\'#2e3238\';"\n' +
+                '                        onclick="document.getElementById(\'search\').click()">\n' +
+                '                    <div class="user-list-block">\n' +
+                '                        <div class="user-box">\n' +
+                '                            <div class="user-info">\n' +
+                '                                <h3 class="my-name">添加好友</h3>\n' +
+                '                                <p class="my-message">搜索并添加系统中的用户为好友</p>\n' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                </button>\n' +
+                '                <button class="user-list-block-href" onmouseover="this.style.backgroundColor=\'#3A3F45\'"\n' +
+                '                        onmouseout="this.style.backgroundColor=\'#2e3238\';"\n' +
+                '                        onclick="createChat()">\n' +
+                '                    <div class="user-list-block">\n' +
+                '                        <div class="user-box">\n' +
+                '                            <div class="user-info">\n' +
+                '                                <h3 class="my-name">创建群聊</h3>\n' +
+                '                                <p class="my-message">创建一个群聊，邀请好友加入</p>\n' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                </button>\n' +
+                '                <button class="user-list-block-href" onmouseover="this.style.backgroundColor=\'#3A3F45\'"\n' +
+                '                        onmouseout="this.style.backgroundColor=\'#2e3238\';"\n' +
+                '                        onclick="joinChat()">\n' +
+                '                    <div class="user-list-block">\n' +
+                '                        <div class="user-box">\n' +
+                '                            <div class="user-info">\n' +
+                '                                <h3 class="my-name">加入群聊</h3>\n' +
+                '                                <p class="my-message">通过群号加入一个群聊</p>\n' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                </button>';
             var friends = result.data;
             for (var i = 0; i < friends.length; i++) {
                 loadFriendOnMenu(friends[i]);
@@ -511,11 +639,44 @@
 
     //加载未读消息
     function loadUnReadMessage(page) {
-        var url = "http://localhost:8080/wechat/message";
+        var url = "http://${host}/wechat/message";
         var request = {
             method: "unread.do",
             user_id: "${login.id}",
             page: page
+        };
+        postRequest(url, request, function (result) {
+            var messages = result.data;
+            console.log("查询到未读消息 ： " + messages.length)
+            //如果没有未读消息，则加载所有消息的第一页
+            if (messages.length === 0) {
+                url = "http://${host}/wechat/chat";
+                request = {
+                    method: "list.do",
+                    id: "${login.id}",
+                };
+                postRequest(url, request, function (result) {
+                    var chats = result.data;
+                    console.log("查询到聊天窗口数量：" + chats.length);
+                    for (var i = 0; i < chats.length; i++) {
+                        loadAllMessage(1, chats[i].id);
+                    }
+                });
+            }
+            for (var i = messages.length - 1; i >= 0; i--) {
+                addMessageToChat(messages[i]);
+            }
+        });
+    }
+
+    //加载一个聊天中的所有消息
+    function loadAllMessage(page, chat_id) {
+        var url = "http://${host}/wechat/message";
+        var request = {
+            method: "list.do",
+            user_id: "${login.id}",
+            chat_id: chat_id,
+            page: page,
         };
         postRequest(url, request, function (result) {
             var messages = result.data;
@@ -527,7 +688,7 @@
 
     //加载朋友圈动态
     function loadNews(page) {
-        var url = "http://localhost:8080/wechat/moment";
+        var url = "http://${host}/wechat/moment";
         var request = {
             method: "news.do",
             user_id: "${login.id}",
@@ -549,7 +710,7 @@
 
     //加载我的朋友圈
     function loadMyMoment(page) {
-        var url = "http://localhost:8080/wechat/moment";
+        var url = "http://${host}/wechat/moment";
         var request = {
             method: "moment.do",
             user_id: "${login.id}",
@@ -568,10 +729,34 @@
         showWindowOnRight('news-box');
     }
 
+    //查询朋友圈图片
+    function loadPhoto(page) {
+        var url = 'http://${host}/wechat/moment';
+        var request = {
+            method: "photo.do",
+            user_id: ${login.id},
+            page: page
+        };
+        postRequest(url, request, function (result) {
+            var photos = result.data;
+            //加载之前先将之前的清空
+            document.getElementById('news-box-content').innerHTML = '';
+            for (var i = 0; i < photos.length; i++) {
+                addPhotoHtml(photos[i]);
+            }
+        });
+        showWindowOnRight('news-box');
+    }
+
+    //下一页
+    function nextPage(id, callback) {
+        callback(document.getElementById(id).dataset.page++);
+    }
+
     //删除朋友圈
     function deleteMoment(moment_id) {
         if (confirm("是否确定要删除这条朋友圈？")) {
-            var url = 'http://localhost:8080/wechat/moment';
+            var url = 'http://${host}/wechat/moment';
             var request = {
                 method: "delete.do",
                 moment_id: moment_id
@@ -583,16 +768,50 @@
         }
     }
 
+    //删除好友
+    function deleteFriend(friend_id) {
+        if (confirm("是否确定要删除这个好友？")) {
+            var url = 'http://${host}/wechat/friend';
+            var request = {
+                method: "delete.do",
+                user_id: ${login.id},
+                friend_id: friend_id
+            };
+            postRequest(url, request, function (result) {
+                loadFriendList();
+            });
+        } else {
+            return;
+        }
+    }
+
+
     //加好友
     function addFriend(friend_id) {
-        var url = "http://localhost:8080/wechat/friend?method=add.do";
+        var url = "http://${host}/wechat/friend?method=add.do";
         var request = JSON.stringify({
             user_id: "${login.id}",
             friend_id: friend_id,
+            alias: prompt("请输入好友备注", "")
         });
         ajaxJsonRequest(url, request, function (result) {
 
         })
+    }
+
+    //退出群聊
+    function quitChat(chat_id) {
+        if (confirm("是否确定要退出该群聊？")) {
+            var url = "http://${host}/wechat/chat?method=quit.do";
+            var request = JSON.stringify({
+                user_id: "${login.id}",
+                chat_id: chat_id,
+            });
+            ajaxJsonRequest(url, request, function (result) {
+            })
+        } else {
+            return;
+        }
     }
 
     //更新个人信息
@@ -606,15 +825,24 @@
             location: document.getElementById("location").innerText
         });
         //更新基本信息
-        var url = "http://localhost:8080/wechat/user?method=update.do";
+        var url = "http://${host}/wechat/user?method=update.do";
         ajaxJsonRequest(url, jsonStr, function (result) {
             if ("SUCCESS" === result.status) {
             } else {
             }
         });
         //更新头像
-        url = "http://localhost:8080/wechat/upload?method=uploadphoto.do&id=${login.id}&table=user";
+        url = "http://${host}/wechat/upload?method=uploadphoto.do&id=${login.id}&table=user";
         uploadPhoto(url, 'user-photo');
+
+    }
+
+
+    //更新聊天背景
+    function updateBackground() {
+        imgPreview(document.getElementById('background-upload'), 'background');
+        var url = "http://${host}/wechat/upload?method=background.do&id=${login.id}";
+        uploadPhoto(url, 'background-upload');
     }
 
     //发布朋友圈
@@ -624,12 +852,12 @@
             owner_id: "${login.id}",
             content: content
         });
-        var url = "http://localhost:8080/wechat/moment?method=add.do";
+        var url = "http://${host}/wechat/moment?method=add.do";
         if (!('' === content)) {
             ajaxJsonRequest(url, jsonStr, function (result) {
                 if ("SUCCESS" === result.status) {
                     //成功之后上传图片
-                    url = "http://localhost:8080/wechat/upload?method=uploadphoto.do&id=" + result.data.id + "&table=moment";
+                    url = "http://${host}/wechat/upload?method=uploadphoto.do&id=" + result.data.id + "&table=moment";
                     uploadPhoto(url, 'moment-photo');
                 } else {
                 }
@@ -643,7 +871,7 @@
 
     //点赞朋友圈
     function loveMoment(moment_id, callback) {
-        var url = 'http://localhost:8080/wechat/moment';
+        var url = 'http://${host}/wechat/moment';
         var request = {
             method: "love.do",
             moment_id: moment_id,
@@ -674,26 +902,38 @@
             processData: false, // 告诉jQuery不要去处理发送的数据
             contentType: false, // 告诉jQuery不要去设置Content-Type请求头
             success: function (data) {
-                var rs = eval("(" + data + ")");
-                alert(rs);
+                if (data.message != null && data.message !== '') {
+                    alert("系统提示：" + data.message);
+                }
+                callback(data);
             },
-            error: function (data) {
+            Error: function (xhr, error, exception) {
+                alert(exception.toString());
+                callback(data);
             }
         })
     }
 </script>
 <!--END——程序执行脚本-->
-<!--BEGIN——预加载脚本-->
+
+
+<!--BEGIN——加载网页脚本-->
 <script>
+
     //动态加载聊天窗口，不显示
     function loadChatBox(chat) {
         var html = '<div id="' + chat.id + '" class="chat-box" style="display: none;background: transparent;">\n' +
             '<div class="chat-box-head">\n' +
             '            <div class="chat-box-title">\n' +
+            '         <button id="news-page" data-page="1"\n' +
+            '                            onclick="showChatMember(\'' + chat.id + '\')"\n' +
+            '                            style="float: right" contenteditable="false">查看聊天信息\n' +
+            '                    </button>' +
             '                <div class="chat-box-title-box">\n' +
             '                    <a class="chat-box-title-text">\n' +
             '                        ' + chat.name + '\n' +
             '                    </a>\n' +
+
             '                </div>\n' +
             '            </div>\n' +
             '        </div>\n' +
@@ -712,7 +952,7 @@
         var chat_html = '<button class="user-list-block-href"  onmouseover="this.style.backgroundColor=\'#3A3F45\';" ' +
             'onmouseout="this.style.backgroundColor=\'#2e3238\';"' +
             'onclick="showChatBox(\'' + chat.id + '\')"><div class="user-list-block">\n' +
-            '                <div class="user-box">\n' +
+            '                <div class="user-box" >\n' +
             '                    <div class="user-photo">\n' +
             '                        <img src="/upload/photo/' + chat.photo + '" alt="用户头像" class="my-photo">\n' +
             '                    </div>\n' +
@@ -755,8 +995,8 @@
     function loadFriendOnMenu(friend) {
         var chat_html = '<button class="user-list-block-href"  onmouseover="this.style.backgroundColor=\'#3A3F45\';" ' +
             'onmouseout="this.style.backgroundColor=\'#2e3238\';"' +
-            'onclick="showWindowOnRight()"><div class="user-list-block">\n' +
-            '                <div class="user-box">\n' +
+            '><div class="user-list-block">\n' +
+            '                <div class="user-box" onclick="updateFriend(\'' + friend.id + '\')">\n' +
             '                    <div class="user-photo">\n' +
             '                        <img src="/upload/photo/' + friend.photo + '" alt="用户头像" class="my-photo">\n' +
             '                    </div>\n' +
@@ -765,26 +1005,46 @@
             '                        <p class="my-message">' + friend.description + '</p>\n' +
             '                    </div>\n' +
             '                </div>\n' +
+            '            </div>  ' +
+            '<div class="menu-option-item">\n' +
+            '                <div id="chat" onclick="showChatBox(\'' + friend.chat_id + '\')" class="menu-option-button">发消息</div>\n' +
+            '            </div>          ' +
+            '<div class="menu-option-item">\n' +
+            '                <div id="chat"  onclick="deleteFriend(\'' + friend.friend_id + '\')" class="menu-option-button" style="float: right">删除好友</div>\n' +
             '            </div></button>';
         document.getElementById("friend-list").innerHTML += chat_html;
     }
-
-
-</script>
-<!--END——预加载脚本-->
-
-<!--BEGIN——加载网页脚本-->
-<script>
-
 
     //加载搜索结果页面，并显示
     function loadSearchResult() {
         document.getElementById("search-result-box").innerHTML =
             '            <div class="info-box-head">          \n' +
             '                <div class="info-box-title">                  \n' +
-            '                    <div class="info-box-title-box"><a class="info-box-title-text">搜索结果</a></div>\n' +
+            '                    <div class="info-box-title-box"><a class="info-box-title-text">用户列表</a></div>\n' +
             '                </div>\n' +
             '            </div>\n' +
+            '            <div class="info-detail-box">                  \n' +
+            '                <div id="content" class="info-detail">           \n' +
+            '                    <div></div>\n' +
+            '                </div>\n' +
+            '            </div>\n';
+
+        showWindowOnRight("search-result-box");
+    }
+
+    //加载群聊信息
+    function loadChatInfoHead(chat_id) {
+        document.getElementById("search-result-box").innerHTML =
+            '         <div class="chat-box-head">   \n' +
+            '                <div class="chat-box-title">       \n' +
+            '                    <div class="chat-box-title-box">           \n' +
+            '                        <a class="chat-box-title-text">聊天成员列表</a>       \n' +
+            '                    </div>\n' +
+            '                    <button onclick="quitChat(\'' + chat_id + '\')"\n' +
+            '                            style="float: right" contenteditable="false">退出群聊\n' +
+            '                    </button>\n' +
+            '                </div>\n' +
+            '            </div>' +
             '            <div class="info-detail-box">                  \n' +
             '                <div id="content" class="info-detail">           \n' +
             '                    <div></div>\n' +
@@ -882,8 +1142,8 @@
     //插入一个搜索用户的结果
     function addSearchUserResultHtml(user) {
         var html = '                   <div class="info-detail-block">               \n' +
-            '                        <div class="user-box" style="border-top: 1px solid;">\n' +
-            '                            <div class="user-photo">\n' +
+            '                        <div class="user-box" style="border-top: 1px solid;margin: 20px;">\n' +
+            '                            <div class="user-photo" style="margin: 20px">\n' +
             '                                <img src="/upload/photo/' + user.photo + '" alt="用户头像" class="my-photo">\n' +
             '                            </div>\n' +
             '                            <div class="user-info">\n' +
@@ -891,6 +1151,25 @@
             '                                <p class="my-message">' + user.signature + '</p>\n' +
             '                            </div>\n' +
             '                            <button onclick="addFriend(\'' + user.id + '\')" style="float: right"\n' +
+            '                                    contenteditable="false">加好友\n' +
+            '                            </button>\n' +
+            '                        </div>\n' +
+            '                    </div>';
+        document.getElementById("content").innerHTML += html;
+    }
+
+    //插入一个群成员的信息
+    function addMemberHtml(member) {
+        var html = '                   <div class="info-detail-block">               \n' +
+            '                        <div class="user-box" style="border-top: 1px solid;margin: 20px;">\n' +
+            '                            <div class="user-photo" style="margin: 20px">\n' +
+            '                                <img src="/upload/photo/' + member.photo + '" alt="用户头像" class="my-photo">\n' +
+            '                            </div>\n' +
+            '                            <div class="user-info">\n' +
+            '                                <h3 class="my-name" style="color: #333">' + member.name + '</h3>\n' +
+            '                                <p class="my-message">' + member.signature + '</p>\n' +
+            '                            </div>\n' +
+            '                            <button onclick="addFriend(\'' + member.user_id + '\')" style="float: right"\n' +
             '                                    contenteditable="false">加好友\n' +
             '                            </button>\n' +
             '                        </div>\n' +
@@ -952,11 +1231,29 @@
         }
     }
 
+    //插入一条用户的朋友圈
+    function addPhotoHtml(photo) {
+        var html = '           <div class="info-detail-block" style="margin-left: 20px">\n' +
+            '                        <label for="moment-content">\n' +
+            '                            <div class="info-detail-block">               \n' +
+            '                                <div class="user-box" style="border-top: 1px solid;width: 95%;">\n' +
+            '                                    <div class="user-info" style="height: fit-content;margin-bottom: 11px;">\n' +
+            '                                        <img src="/upload/photo/' + photo + '" style="position:relative;height: 100%;' +
+            'max-width:500px;max-height:300px;width: 100%">\n' +
+            '                                    </div>\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                        </label>\n' +
+            '                    </div>';
+
+        document.getElementById("news-box-content").innerHTML += html;
+    }
+
     //将消息显示在消息对应的聊天窗口上,并在聊天列表对应位置显示
     //TODO 发送者头像，发送者昵称
     function addMessageToChat(message) {
         var right_bubble_html = '<div class="chat-output-content-right">\n' +
-            '    <img src="/upload/photo/${login.photo}" alt="头像" class="chat-output-head-photo-right">\n' +
+            '    <img src="/upload/photo/' + message.sender_photo + '" alt="头像" class="chat-output-head-photo-right">\n' +
             '    <div class="chat-output-bubble-right">\n' +
             '        <div class="chat-output-bubble-inner">\n' +
             '            <pre class="chat-output-bubble-pre-right">' + message.content + '</pre></div></div></div>';
@@ -982,7 +1279,7 @@
 <script type="text/javascript">
     var websocket = null;
     //TODO 将param改成login.id,到时使用后台传过来的login对象的email
-    var url = "ws://localhost:8080/server/chat/${login.id}";
+    var url = "ws://${host}/server/chat/${login.id}";
     //判断当前浏览器是否支持WebSocket
     if ('WebSocket' in window) {
         websocket = new WebSocket(url);
@@ -992,8 +1289,9 @@
 
     //连接发生错误的回调方法
     websocket.onerror = function () {
-        alert("WebSocket连接发生错误");
-        websocket = '';
+        alert("WebSocket连接发生错误,正在重连...");
+        WebSocket.init("");
+        // websocket = '';
     };
 
     //连接成功建立的回调方法
@@ -1004,13 +1302,18 @@
     websocket.onmessage = function (event) {
         alert("收到服务器的新消息" + event.data);
         var message = eval("(" + event.data + ")");
+        if (message.type === "system") {
+            alert(message.content);
+            return;
+        }
         addMessageToChat(message);
     }
 
     //连接关闭的回调方法
     websocket.onclose = function () {
-        alert("WebSocket连接关闭");
-        websocket = '';
+        alert("WebSocket连接关闭,正在重连...");
+        WebSocket.init("");
+        // websocket = '';
     }
 
     //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
@@ -1025,7 +1328,12 @@
 
     }
 
-
+    <!--BEGIN——预加载脚本-->
+    //请求聊天列表
+    loadChatListAndBox();
+    loadFriendList();
+    loadUnReadMessage(1);
+    <!--END——预加载脚本-->
 </script>
 <!--END——websocket脚本-->
 <style>
@@ -1189,7 +1497,7 @@
         position: relative;
         height: 750px;
         float: left;
-        overflow: hidden;
+        overflow: scroll;
         background: #2e3238;
         display: block;
     }

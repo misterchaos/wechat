@@ -16,11 +16,9 @@
 
 package com.hyc.wechat.test;
 
-import com.hyc.wechat.dao.ChatDao;
-import com.hyc.wechat.dao.MessageDao;
-import com.hyc.wechat.dao.MomentDao;
-import com.hyc.wechat.dao.UserDao;
+import com.hyc.wechat.dao.*;
 import com.hyc.wechat.factory.DaoProxyFactory;
+import com.hyc.wechat.model.po.Message;
 import com.hyc.wechat.model.po.Moment;
 import com.hyc.wechat.model.po.News;
 import com.hyc.wechat.model.po.User;
@@ -36,10 +34,14 @@ import java.util.List;
  */
 public class TestDao {
     public static void main(String[] args) {
+        MessageDao messageDao = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
+        RecordDao recordDao = (RecordDao) DaoProxyFactory.getInstance().getProxyInstance(RecordDao.class);
+        recordDao.deleteRecord(210,59);
         UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
         User user = new User();
         user.setName("testasdf中文");
         userDao.insert(user);
+        System.out.println(userDao.getLastInsert().getId());
         user = userDao.getUserById("50");
         List list = userDao.listLikeName("%昵称%");
         System.out.println("查询到记录：" + list.size() + "条");
@@ -52,7 +54,6 @@ public class TestDao {
         MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);
         momentDao.insert(moment);
 
-        MessageDao messageDao = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
         messageDao.listMessageByUserIdAndChatId("0","0",10,1000);
 
         News news = new News();

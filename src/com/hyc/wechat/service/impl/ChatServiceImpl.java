@@ -26,6 +26,7 @@ import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.model.po.Chat;
 import com.hyc.wechat.model.po.Member;
 import com.hyc.wechat.model.po.User;
+import com.hyc.wechat.model.vo.MemberVO;
 import com.hyc.wechat.service.ChatService;
 import com.hyc.wechat.service.constants.ServiceMessage;
 import com.hyc.wechat.service.constants.Status;
@@ -43,10 +44,10 @@ import static com.hyc.wechat.util.UUIDUtils.getUUID;
  */
 public class ChatServiceImpl implements ChatService {
 
-    UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
-    ChatDao chatDao = (ChatDao) DaoProxyFactory.getInstance().getProxyInstance(ChatDao.class);
-    MemberDao memberDao = (MemberDao) DaoProxyFactory.getInstance().getProxyInstance(MemberDao.class);
-    MessageDao messageDao = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
+    private final UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
+    private final ChatDao chatDao = (ChatDao) DaoProxyFactory.getInstance().getProxyInstance(ChatDao.class);
+    private final MemberDao memberDao = (MemberDao) DaoProxyFactory.getInstance().getProxyInstance(MemberDao.class);
+    private final MessageDao messageDao = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
 
     /**
      * 创建一个聊天,如果是群聊，必须指定外部唯一标识（群号），如果是私聊则自动使用uuid作为唯一标识
@@ -113,23 +114,65 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public ServiceResult joinChatByNumber(BigInteger userId, String number) {
-        if(userId==null|number==null){
-            return new ServiceResult(Status.ERROR,ServiceMessage.PARAMETER_NOT_ENOUGHT.message,null);
+        if (userId == null | number == null) {
+            return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, null);
         }
         //通过群号获取群id
         Chat chat = chatDao.getByChatNumber(number);
-        if(chat==null){
-            return new ServiceResult(Status.ERROR,ServiceMessage.CHAT_NOT_FOUND.message,number);
+        if (chat == null) {
+            return new ServiceResult(Status.ERROR, ServiceMessage.CHAT_NOT_FOUND.message, number);
         }
         //通过群id和用户id创建一个成员
-        Member member =new Member();
+        Member member = new Member();
         member.setChatId(chat.getId());
         member.setUserId(userId);
-        ServiceResult result =joinChat(new Member[]{member});
-        if(Status.ERROR.equals(result.getStatus())){
+        ServiceResult result = joinChat(new Member[]{member});
+        if (Status.ERROR.equals(result.getStatus())) {
             return result;
         }
-        return new ServiceResult(Status.SUCCESS,ServiceMessage.JOIN_GROUP_CHAT_SUCCESS.message,number);
+        return new ServiceResult(Status.SUCCESS, ServiceMessage.JOIN_GROUP_CHAT_SUCCESS.message, number);
+    }
+
+    /**
+     * 查询一个聊天中所有成员的信息
+     *
+     * @param chatId 聊天id
+     * @name listMember
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/10
+     */
+    @Override
+    public ServiceResult listMember(BigInteger chatId) {
+        if (chatId == null) {
+            return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, chatId);
+        }
+        List<MemberVO> memberVOList;
+        try {
+            //检查聊天是否存在
+            if (chatDao.getChatById(chatId) == null) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.CHAT_NOT_FOUND.message, chatId);
+            }
+            memberVOList = new LinkedList<>();
+            List<Member> memberList = memberDao.listMemberByChatId(chatId);
+            //对每个成员将其用户信息查出来构建memberVO
+            for (Member member : memberList) {
+                User user = userDao.getUserById(member.getUserId());
+                MemberVO memberVO = new MemberVO();
+                memberVO.setName(user.getName());
+                memberVO.setPhoto(user.getPhoto());
+                memberVO.setSignature(user.getSignature());
+                memberVO.setChatId(chatId);
+                memberVO.setUserId(member.getUserId());
+                memberVO.setBackground(member.getBackground());
+                memberVO.setLevel(member.getLevel());
+                memberVOList.add(memberVO);
+            }
+        } catch (DaoException e) {
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, chatId);
+        }
+        return new ServiceResult(Status.SUCCESS, null, memberVOList);
     }
 
     /**
@@ -143,23 +186,28 @@ public class ChatServiceImpl implements ChatService {
      * @date 2019/5/3
      */
     @Override
-    public ServiceResult joinChat(Member[] members) {
+    synchronized public ServiceResult joinChat(Member[] members) {
         try {
             for (Member member : members) {
                 //阻止插入id
                 member.setId(null);
                 Chat chat = chatDao.getChatById(member.getChatId());
+                User user = userDao.getUserById(member.getUserId());
                 //检查聊天是否存在
                 if (chat == null) {
                     return new ServiceResult(Status.ERROR, ServiceMessage.CHAT_NOT_FOUND.message, members);
                 }
                 //检查用户是否存在
-                if (userDao.getUserById(member.getUserId()) == null) {
+                if (user == null) {
                     return new ServiceResult(Status.ERROR, ServiceMessage.ACCOUNT_NOT_FOUND.message, members);
                 }
                 //检查该用户是否已在此聊天
                 if (memberDao.getMemberByUIdAndChatId(member.getUserId(), member.getChatId()) != null) {
                     return new ServiceResult(Status.ERROR, ServiceMessage.MEMBER_ALREADY_EXIST.message, members);
+                }
+                //将群成员昵称设置为用户的额=昵称
+                if(member.getGroupAlias()==null){
+                    member.setGroupAlias(user.getName());
                 }
                 //将该成员插入到此聊天
                 if (memberDao.insert(member) != 1) {
@@ -189,7 +237,7 @@ public class ChatServiceImpl implements ChatService {
      * @date 2019/5/3
      */
     @Override
-    public ServiceResult quitChat(Member[] members) {
+    synchronized public ServiceResult quitChat(Member[] members) {
         try {
             for (Member member : members) {
                 //检查成员是否存在
@@ -225,34 +273,40 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public ServiceResult listChat(User user) {
-        List list = null;
-        List chats;
+        if (user == null) {
+            return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, user);
+        }
+        //检查用户是否存在
+        if (userDao.getUserById(user.getId()) == null) {
+            return new ServiceResult(Status.ERROR, ServiceMessage.ACCOUNT_NOT_FOUND.message, user);
+        }
+        List<Chat> chatVOList = new LinkedList<>();
         try {
-            list = chatDao.listByUserId(user.getId());
-            if (list == null || list.size() == 0) {
-                return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_CHAT_NOW.message, list);
+            List<Chat> chatList = chatDao.listByUserId(user.getId());
+            if (chatList == null || chatList.size() == 0) {
+                return new ServiceResult(Status.SUCCESS, ServiceMessage.NO_CHAT_NOW.message, chatList);
             }
-            //将聊天头像设置未对方头像，如果是群聊则不用设置
-            chats = new LinkedList();
-            for (int i = 0; i < list.size(); i++) {
-                Chat chat = (Chat) list.get(i);
+            for (Chat chat : chatList) {
+                //将聊天头像设置未对方头像，如果是群聊则不用设置
                 if (chat.getMember() == 2) {
-                    chats.add(chatDao.toFriendChat(chat.getId(), user.getId()));
-                } else {
-                    chats.add(list.get(i));
+                    chat = chatDao.toFriendChat(chat.getId(), user.getId());
+                    if (chat == null) {
+                        return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, chatList);
+                    }
                 }
+                chatVOList.add(chat);
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, list);
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, user);
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.LIST_CHAT_SUCCESS.message, chats);
+        return new ServiceResult(Status.SUCCESS, null, chatVOList);
     }
 
     /**
      * 删除一个聊天
      *
-     * @param chat
+     * @param chat 要删除的聊天
      * @return
      * @name removeChat
      * @notice none

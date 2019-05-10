@@ -35,10 +35,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static com.hyc.wechat.util.StringUtils.toLegalText;
 
@@ -67,6 +64,7 @@ public class ChatServer {
      * 用于记录当前系统在线用户人数
      */
     private static int onlineCount = 0;
+    private final String ALREADY_ONLINE = "您已经在一个新的浏览器上登陆，系统将自动断开与本页面的连接，页面将不可用";
 
 
     /*
@@ -101,7 +99,7 @@ public class ChatServer {
         }
         //启动一个消息队列缓存
         ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
-        service.scheduleAtFixedRate(this.messageTask, 0,3, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(this.messageTask, 0, 3, TimeUnit.SECONDS);
         //加载用户所在的所有聊天中的所有成员
         List<Chat> chatList = CHAT_DAO.listByUserId(userId);
         for (Chat chat : chatList) {
@@ -128,7 +126,7 @@ public class ChatServer {
         Message message = JSON.toJavaObject(JSON.parseObject(msg), Message.class);
         //先过滤消息内容
         message.setContent(toLegalText(message.getContent()));
-        if(message.getContent().trim().isEmpty()){
+        if (message.getContent().trim().isEmpty()) {
             return;
         }
         //向消息的接收者发送消息
@@ -201,7 +199,7 @@ public class ChatServer {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
-    private void sendMessage(Message message) throws IOException {
+    synchronized private void sendMessage(Message message) throws IOException {
         //创建vo对象(使用建造者模式的链式调用)
         MessageVO messageVo = new MessageVOBuilder().setSenderId(this.user.getId())
                 .setSenderName(this.user.getName()).setChatId(message.getChatId())
