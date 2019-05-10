@@ -26,14 +26,17 @@ import com.hyc.wechat.provider.annotation.Action;
 import com.hyc.wechat.provider.annotation.ActionProvider;
 import com.hyc.wechat.service.ChatService;
 import com.hyc.wechat.service.UserService;
+import com.hyc.wechat.service.constants.ServiceMessage;
 import com.hyc.wechat.service.constants.Status;
 import com.hyc.wechat.service.impl.ChatServiceImpl;
 import com.hyc.wechat.service.impl.UserServiceImpl;
 import com.hyc.wechat.util.BeanUtils;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigInteger;
 
@@ -49,6 +52,8 @@ import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
 @ActionProvider(path = "/user")
 public class UserProvider extends Provider {
 
+
+    private final int AUTO_LOGIN_AGE = 60 * 60 * 24 * 30;
     private final UserService userService = (UserService) new ServiceProxyFactory().getProxyInstance(new UserServiceImpl());
     private final ChatService chatService = (ChatService) new ServiceProxyFactory().getProxyInstance(new ChatServiceImpl());
 
@@ -81,15 +86,10 @@ public class UserProvider extends Provider {
         if (Status.ERROR.equals(result.getStatus())) {
             req.setAttribute("message", result.getMessage());
             req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
-            return;
         } else {
             //插入用户成功时的处理
             //注册成功后将用户添加到聊天总群中
-            Member member = new Member();
-            user = (User) result.getData();
-            member.setChatId(BigInteger.valueOf(0));
-            member.setUserId(user.getId());
-            chatService.joinChat(new Member[]{member});
+            addToDefaultChat((User) result.getData());
             req.setAttribute("message", result.getMessage());
             req.setAttribute("data", result.getData());
             req.getRequestDispatcher(WebPage.LOGIN_JSP.toString()).forward(req, resp);
@@ -109,20 +109,53 @@ public class UserProvider extends Provider {
     public void login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
         ServiceResult result;
-        //校验密码是否正确
-        result = userService.checkPassword(user);
-        if (Status.ERROR.equals(result.getStatus())) {
-            req.setAttribute("message", result.getMessage());
-            req.setAttribute("data", result.getData());
-            req.getRequestDispatcher(WebPage.LOGIN_JSP.toString()).forward(req, resp);
+        if (user == null) {
+            result = new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, null);
+            returnJsonObject(resp, result);
             return;
+        }
+        HttpSession session = req.getSession();
+        //检查用户是否已经建立会话并且已经具有登陆信息
+        if(session==null||session.getAttribute("login")==null){
+            //检查是不是游客登陆，游客登陆的话先创建个游客账号然后登陆
+            if ("visitor".equals(user.getWechatId())) {
+                result = userService.visitorLogin();
+                User visitor = (User) result.getData();
+                //把游客加入聊天总群
+                addToDefaultChat(visitor);
+                session.setAttribute("login",result.getData());
+                req.setAttribute("login", result.getData());
+                req.getRequestDispatcher(WebPage.INDEX_JSP.toString()).forward(req, resp);
+            }else {
+                //如果是用户登陆，校验密码是否正确
+                result = userService.checkPassword(user);
+                if (Status.ERROR.equals(result.getStatus())) {
+                    req.setAttribute("message", result.getMessage());
+                    req.setAttribute("data", result.getData());
+                    req.getRequestDispatcher(WebPage.LOGIN_JSP.toString()).forward(req, resp);
+                } else {
+                    //校验密码成功时，给会话中添加用户信息
+                    req.setAttribute("message", result.getMessage());
+                    result = userService.getUser(user.getId());
+                    user = (User) result.getData();
+                    req.setAttribute("login", user);
+                    session.setAttribute("login", user);
+                    //如果设置自动登陆，则添加cookie
+                    if ("true".equalsIgnoreCase(req.getParameter("auto_login"))) {
+                        setAutoLoginCookie(resp, String.valueOf(user.getId()));
+                    }
+                    req.getRequestDispatcher(WebPage.INDEX_JSP.toString()).forward(req, resp);
+                }
+            }
+
         } else {
-            //校验密码成功时的处理
-            req.setAttribute("message", result.getMessage());
+            //先从session获取用户信息，再更新用户信息到会话中
+            user = (User) session.getAttribute("login");
             result = userService.getUser(user.getId());
-            req.setAttribute("login", result.getData());
+            session.setAttribute("login",result.getData());
             req.getRequestDispatcher(WebPage.INDEX_JSP.toString()).forward(req, resp);
         }
+
     }
 
     /**
@@ -142,7 +175,6 @@ public class UserProvider extends Provider {
         if (Status.ERROR.equals(result.getStatus())) {
             req.setAttribute("message", result.getMessage());
             req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
-            return;
         } else {
             //获取数据成功时的处理
             resp.getWriter().write(result.getMessage());
@@ -159,7 +191,7 @@ public class UserProvider extends Provider {
      * @date 2019/5/9
      */
     @Action(method = RequestMethod.UPDATE_DO)
-    public void update(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void update(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = (User) jsonToJavaObject(req.getInputStream(), User.class);
         ServiceResult result;
         if (user != null && user.getWechatId() != null) {
@@ -179,6 +211,26 @@ public class UserProvider extends Provider {
     }
 
     /**
+     * 提供用户更新密码的业务流程
+     *
+     * @name updatePwd
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Action(method = RequestMethod.UPDATEPASSWORD_DO)
+    public void updatePwd(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String oldPwd = req.getParameter("old_password");
+        String newPwd = req.getParameter("new_password");
+        String userId= req.getParameter("user_id");
+        ServiceResult result;
+        //更新用户数据
+        result = userService.updatePwd(oldPwd,newPwd,new BigInteger(userId));
+        returnJsonObject(resp, result);
+    }
+
+
+    /**
      * 提供搜索用户的服务
      *
      * @name list
@@ -187,7 +239,7 @@ public class UserProvider extends Provider {
      * @date 2019/5/9
      */
     @Action(method = RequestMethod.LIST_DO)
-    public void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void list(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
         ServiceResult result;
         result = userService.listUserLikeName(user.getName());
@@ -197,5 +249,65 @@ public class UserProvider extends Provider {
         }
         returnJsonObject(resp, result);
     }
+
+    /**
+     * 提供自动登陆的服务
+     *
+     * @name list
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    public void autoLogin(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("user_id".equalsIgnoreCase(cookie.getName())) {
+                    ServiceResult result = userService.getUser(cookie.getValue());
+                    if (Status.SUCCESS.equals(result.getStatus())) {
+                        addToDefaultChat((User) result.getData());
+                        //如果获取用户信息成功则设置‘login’属性
+                        HttpSession session = req.getSession();
+                        session.setAttribute("login",result.getData());
+                        req.setAttribute("login", result.getData());
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 设置用于自动登陆的cookie
+     *
+     * @param userId 用户id
+     * @name setAutoLoginCookie
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    private void setAutoLoginCookie(HttpServletResponse resp, String userId) {
+        Cookie cookie = new Cookie("user_id", userId);
+        cookie.setMaxAge(AUTO_LOGIN_AGE);
+        resp.addCookie(cookie);
+    }
+
+    /**
+     * 将一个用户添加到聊天总群
+     *
+     * @param user 用户
+     * @name addToDefaultChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    private void addToDefaultChat(User user) {
+        Member member = new Member();
+        member.setChatId(BigInteger.valueOf(0));
+        member.setUserId(user.getId());
+        chatService.joinChat(new Member[]{member});
+    }
+
 
 }

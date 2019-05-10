@@ -22,8 +22,10 @@ import com.hyc.wechat.factory.DaoProxyFactory;
 import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.model.po.User;
 import com.hyc.wechat.service.UserService;
+import com.hyc.wechat.service.constants.ServiceMessage;
 import com.hyc.wechat.service.constants.Status;
 
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,8 +40,12 @@ import static com.hyc.wechat.util.StringUtils.toLikeSql;
  * @date 2019-05-02 03:19
  */
 public class UserServiceImpl implements UserService {
+    /**
+     * 游客使用的邮箱
+     */
+    public static final String VISITOR_EMAIL = "visitor@wechat.com";
 
-    private UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
+    private final UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
 
     /**
      * 检查注册用户的信息是否有效
@@ -49,6 +55,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ServiceResult checkRegister(User user) {
+        if(user==null){
+            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
+        }
         try {
             //防止插入id
             user.setId(null);
@@ -79,12 +88,16 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ServiceResult insertUser(User user) {
+
+        if (user == null) {
+            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message, null);
+        }
         try {
             //插入前对用户的密码进行加密
             user.setPassword(getDigest(user.getPassword()));
-            //给用户设置默认昵称
+            //给用户设置默认昵称(邮箱号)
             if (user.getName() == null) {
-                user.setName(user.getEmail().trim() + "的昵称");
+                user.setName(user.getEmail().trim());
             }
             if (userDao.insert(user) != 1) {
                 return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, user);
@@ -107,6 +120,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ServiceResult checkPassword(User user) {
+        if(user==null){
+            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
+        }
         User realUser;
         try {
             realUser = userDao.getUserByEmail(user.getEmail());
@@ -118,7 +134,7 @@ public class UserServiceImpl implements UserService {
             if (user.getPassword() == null || !realUser.getPassword().equals(getDigest(user.getPassword()))) {
                 return new ServiceResult(Status.ERROR, PASSWORD_INCORRECT.message, user);
             }
-            //登陆成功后返回该用户的id信息
+            //成功后返回该用户的id信息
             user.setId(realUser.getId());
         } catch (DaoException e) {
             e.printStackTrace();
@@ -136,10 +152,15 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ServiceResult checkWechatId(String wechatId) {
+        if(wechatId==null){
+            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
+        }
         try {
+            //检查是否合法
             if (!isValidWechatId(wechatId)) {
                 return new ServiceResult(Status.ERROR, WECHAT_ID_INVALID.message, wechatId);
             }
+            //检查是否重复
             if (userDao.getUserByWechatId(wechatId) != null) {
                 return new ServiceResult(Status.ERROR, WECHAT_ID_USED.message, wechatId);
             }
@@ -151,6 +172,45 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 更新用户的个人密码
+     *
+     * @param oldPwd 旧密码
+     * @param newPwd 新密码
+     * @param userId 用户id
+     * @return 返回传入的用户对象，如果由密码信息/邮箱信息，将被清空
+     */
+    @Override
+    public ServiceResult updatePwd(String oldPwd, String newPwd, BigInteger userId) {
+        if(oldPwd==null||newPwd==null||userId==null){
+            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
+        }
+        try {
+            User user = userDao.getUserById(userId);
+            //检查账号是否存在
+            if (user == null) {
+                return new ServiceResult(Status.ERROR, ACCOUNT_NOT_FOUND.message, userId);
+            }
+            //检查旧密码是否正确
+            if (!user.getPassword().equals(getDigest(oldPwd))) {
+                return new ServiceResult(Status.ERROR, PASSWORD_INCORRECT.message, user);
+            }
+            //检查新密码是否合法
+            if(!isValidPassword(newPwd)){
+                return new ServiceResult(Status.ERROR, INVALID_PASSWORD.message, user);
+            }
+            //更新密码
+            user.setPassword(getDigest(newPwd));
+            if(userDao.update(user)!=1){
+                return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, user);
+            }
+        }catch (DaoException e){
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message,userId);
+        }
+        return new ServiceResult(Status.SUCCESS,UPDATE_PASSWORD_SUCCESS.message+newPwd,userId);
+    }
+
+    /**
      * 通过用户id获取用户个人信息
      *
      * @param id 用户id
@@ -158,6 +218,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ServiceResult getUser(Object id) {
+        if(id==null){
+            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
+        }
         User user = null;
         try {
             user = userDao.getUserById(id);
@@ -179,6 +242,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ServiceResult updateUser(User user) {
+        if(user==null){
+            return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message,null);
+        }
         try {
             //阻止更新用户密码
             user.setPassword(null);
@@ -206,18 +272,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ServiceResult listUserLikeName(String name) {
-        List list = new LinkedList();
+        List<User> list = new LinkedList<>();
         try {
             //查找内容判空
-            if(name==null||name.trim().isEmpty()){
-                return new ServiceResult(Status.ERROR, "关键词"+NOT_NULL.message, list);
+            if (name == null || name.trim().isEmpty()) {
+                return new ServiceResult(Status.ERROR, "关键词" + NOT_NULL.message, list);
             }
             //将关键词转换成模糊查询
             String[] likeSql = toLikeSql(name);
             for (String sql : likeSql) {
                 list.addAll(userDao.listLikeName(sql));
             }
-            if (list == null || list.size() == 0) {
+            if (list.size() == 0) {
                 return new ServiceResult(Status.ERROR, NO_SUCH_USER.message, list);
             }
         } catch (DaoException e) {
@@ -228,6 +294,29 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * 创建一个游客账号，并自动通过登陆
+     *
+     * @name visitorLogin
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Override
+    public ServiceResult visitorLogin() {
+        User visitor = new User();
+        //游客统一使用此邮箱，便于将来批量删除游客数据
+        visitor.setEmail(VISITOR_EMAIL);
+        visitor.setName("游客");
+        try {
+            userDao.insert(visitor);
+            visitor = userDao.getLastInsert();
+        }catch (DaoException e){
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, DATABASE_ERROR.message,visitor);
+        }
+        return new ServiceResult(Status.SUCCESS, LOGIN_SUCCESS.message,visitor);
+    }
 
     /*
      **************************************************************

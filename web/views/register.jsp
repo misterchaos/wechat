@@ -18,7 +18,7 @@
   Created by IntelliJ IDEA.
   User: Misterchaos
   Date: 2019/4/17
-  Time: 3:51
+  Time: 21:23
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -27,7 +27,7 @@
 <head>
     <title>wechat</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=1920px, initial-scale=0.8,maximum-scale=0.8,user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -38,7 +38,7 @@
     <div class="login-head" style="height: 100px">
         <div class="jumbotron" style="padding-bottom: 20px;padding-top:20px;margin:0px">
             <div class="logo">
-                <a href="${pageContext.request.contextPath}/index.jsp" style="color: #999;font-size: 44px;text-decoration: none"><img
+                <a href="/views/index.jsp" style="color: #999;font-size: 44px;text-decoration: none"><img
                         src="/static/img/logo.png" alt="logo" style="width: 100px;margin: 10px">微信，是一种生活方式</h2>
                 </a>
             </div>
@@ -51,28 +51,24 @@
     </script>
     <div class="input-box">
         <div class="color-input-field">
-            <h2 class="input-box-title">邮箱登陆</h2>
-            <form action="${pageContext.request.contextPath}/wechat/user?method=login.do"
+            <h2 class="input-box-title">注册账号</h2>
+            <form action="${pageContext.request.contextPath}/wechat/user?method=register.do"
                   method="post">
-                <c:if test="${data!=null}">
-                    <input type="text" required="required" class="form-control" name="email"
-                           value="${data.email}" placeholder="请输入登陆邮箱">
-                </c:if>
-                <c:if test="${data==null}">
-                    <input type="text" required="required" class="form-control" name="email"
-                           placeholder="请输入登陆邮箱">
-                </c:if>
+                <input type="text" required="required" class="form-control" name="email"
+                       value="${data.email}" placeholder="请输入邮箱号">
                 <br/>
                 <input type="password" required="required" class="form-control" name="password"
-                       placeholder="请输入密码">
+                       placeholder="请输入密码(6-20位英文字母，数字或下划线)">
                 <div class="remember-me">
-                    <input type="checkbox" name="auto_login" value="true">记住登陆
+                    <input id="agree" type="checkbox" name="agreement" checked="checked" value="true"
+                           style="margin-bottom: 13px">我已阅读并同意《微信用户协议》
                 </div>
-                <input type="submit" class="submit-button" value="登陆">
+                <input type="submit" class="submit-button" value="注册">
             </form>
             <br>
             <div class="switch-button">
-                <a href="/register.jsp">立即注册</a>
+                已有账号？<a href="/views/login.jsp">请登陆</a>
+                <a href="${pageContext.request.contextPath}/wechat/user?method=login.do&wechatId=visitor">游客模式</a>
             </div>
         </div>
     </div>
@@ -80,6 +76,7 @@
 
 </body>
 <style type="text/css">
+
     .background {
         height: 100%;
         min-height: 750px;
@@ -150,3 +147,5 @@
 
 </style>
 </html>
+
+
