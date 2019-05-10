@@ -146,4 +146,22 @@ public class ChatProvider extends Provider {
             resp.getWriter().write(json.toJSONString());
         }
     }
+
+    /**
+     * 提供查看群成员的服务
+     *
+     * @name listMember
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/10
+     */
+    @Action(method = RequestMethod.MEMBER_DO)
+    public void listMember(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String chatId = req.getParameter("chat_id");
+        ServiceResult result;
+        result = chatService.listMember(new BigInteger(chatId));
+        returnJsonObject(resp, result);
+    }
+
+
 }

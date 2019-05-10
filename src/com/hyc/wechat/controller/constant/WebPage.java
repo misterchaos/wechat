@@ -70,6 +70,6 @@ public enum WebPage {
 
     @Override
     public String toString() {
-        return "/"+super.toString().toLowerCase().replaceAll("_", ".");
+        return "/views/"+super.toString().toLowerCase().replaceAll("_", ".");
     }
 }

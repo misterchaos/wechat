@@ -59,10 +59,10 @@ public class FriendProvider extends Provider {
      * @date 2019/5/9
      */
     @Action(method = RequestMethod.ADD_DO)
-    public void addFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    synchronized public void addFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Friend friend = (Friend) jsonToJavaObject(req.getInputStream(), Friend.class);
         ServiceResult result;
-        //如果重复添加，这里将插入失败
+        //尝试添加好友
         result = friendService.addFriend(friend);
         if (ERROR.equals(result.getStatus())) {
             returnJsonObject(resp, result);
@@ -82,6 +82,14 @@ public class FriendProvider extends Provider {
             member2.setUserId(friend.getFriendId());
             member2.setChatId(chat.getId());
             chatService.joinChat(new Member[]{member1, member2});
+            //添加成功后将聊天id更新到朋友信息中
+            friend = friendService.getByUidAndFriendId(friend.getUserId(), friend.getFriendId());
+            friend.setChatId(chat.getId());
+            friendService.updateFriend(friend);
+            friend = friendService.getByUidAndFriendId(friend.getFriendId(), friend.getUserId());
+            friend.setChatId(chat.getId());
+            friendService.updateFriend(friend);
+
         }
         returnJsonObject(resp, result);
     }
@@ -103,6 +111,22 @@ public class FriendProvider extends Provider {
     }
 
     /**
+     * 提供获取好友列表的服务
+     *
+     * @name listFriend
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Action(method = RequestMethod.UPDATE_DO)
+    public void updateFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Friend friend = (Friend) jsonToJavaObject(req.getInputStream(), Friend.class);
+        ServiceResult result;
+        result = friendService.updateFriend(friend);
+        returnJsonObject(resp, result);
+    }
+
+    /**
      * 提供删除好友的服务
      *
      * @name deleteFriend
@@ -111,7 +135,7 @@ public class FriendProvider extends Provider {
      * @date 2019/5/9
      */
     @Action(method = RequestMethod.DELETE_DO)
-    public void deleteFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    synchronized public void deleteFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String friendId = req.getParameter("friend_id");
         String userId = req.getParameter("user_id");
         ServiceResult result;
@@ -128,6 +152,7 @@ public class FriendProvider extends Provider {
         Chat chat = new Chat();
         chat.setId(friend.getChatId());
         chatService.removeChat(chat);
+        //解除好友关系
         result = friendService.removeFriend(friend);
         returnJsonObject(resp, result);
     }

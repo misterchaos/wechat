@@ -125,6 +125,23 @@ public class MomentProvider extends Provider {
         returnJsonObject(resp, result);
     }
 
+
+    /**
+     * 提供获取朋友圈照片的业务流程
+     *
+     * @name loadPhoto
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/10
+     */
+    @Action(method = RequestMethod.PHOTO_DO)
+    public void listPhoto(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = req.getParameter("user_id");
+        String page = req.getParameter("page");
+        ServiceResult result;
+        result = momentService.listPhoto(new BigInteger(userId), new Integer(page));
+        returnJsonObject(resp, result);
+    }
     /**
      * 提供朋友圈点赞的服务
      *

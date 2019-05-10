@@ -50,4 +50,13 @@ public class UploadProvider extends Provider {
         result = uploadService.uploadPhoto(part, id, tableName);
         returnJsonObject(resp, result);
     }
+
+    @Action(method = RequestMethod.BACKGROUND_DO)
+    public void uploadBackground(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        Part part = req.getPart("photo");
+        Object id = req.getParameter("id");
+        ServiceResult result;
+        result = uploadService.uploadBackground(part, id);
+        returnJsonObject(resp, result);
+    }
 }

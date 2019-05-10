@@ -91,4 +91,18 @@ public interface MomentDao extends BaseDao {
     List<Moment> listMyMomentByOwnerId(Object ownerId, int limit, int offset);
 
 
+    /**
+     * 通过用户id查询所有自己发布的朋友圈中的图片
+     *
+     * @param ownerId 用户id
+     * @param limit  每页查询记录数
+     * @param offset 起始记录数
+     * @name loadPhoto
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/10
+     */
+    @Result(entity = Moment.class, returns = ResultType.LIST)
+    @Query("select photo from " + TABLE + " where owner_id = ?  order by time limit ? offset ?  ")
+    List<Moment> listPhoto(Object ownerId, int limit, int offset);
 }

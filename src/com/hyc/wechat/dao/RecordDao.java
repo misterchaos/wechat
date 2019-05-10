@@ -41,4 +41,18 @@ public interface RecordDao extends BaseDao {
      */
     @Update("update " + TABLE + " as r inner join message as m set r.status = ? where r.user_id = ? and r.message_id = m.id and m.chat_id = ?")
     void updateStatusInChat(Object status, Object userId ,Object chatId);
+
+
+    /**
+     * 一次性删除一个用户在一个聊天中所有记录的状态
+     *
+     * @param userId 用户id
+     * @param chatId 聊天id
+     * @name deleteMessage
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/10
+     */
+    @Update("delete from  " + TABLE + " as r , message as m where r.user_id = ? and r.message_id = m.id and m.chat_id = ?")
+    void deleteRecord(Object userId ,Object chatId);
 }

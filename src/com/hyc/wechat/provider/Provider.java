@@ -30,6 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+import static com.hyc.wechat.controller.constant.ControllerMessage.REQUEST_INVALID;
+import static com.hyc.wechat.controller.constant.ControllerMessage.SYSTEM_EXECEPTION;
+
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
  * @description 所有ActionProvider的父类，提供共有的doAction方法
@@ -54,6 +57,7 @@ public class Provider {
             RequestMethod requestMethod = ControllerUtils.valueOf(req.getParameter("method"));
             if (RequestMethod.INVALID_REQUEST.equals(requestMethod)) {
                 toErrorPage("无效的访问链接，系统无法识别您的请求指向的服务内容：" + req.getRequestURI(), req, resp);
+                return;
             } else {
                 //根据方法上的注解找到对应的Action方法并执行
                 Method[] methods = this.getClass().getMethods();
@@ -66,16 +70,23 @@ public class Provider {
                             //服务层抛出的异常信息与用户的操作有关，不包含底层细节，可以向用户输出
                             e.printStackTrace();
                             toErrorPage(e.getMessage(), req, resp);
+                            return;
                         }
                     }
                 }
             }
+        } catch (ExceptionInInitializerError e) {
+            e.printStackTrace();
+            Logger logger = Logger.getLogger(Provider.class);
+            logger.error(e.getStackTrace());
+            //此处的异常包含细节信息，对客户端隐藏
+            toErrorPage(SYSTEM_EXECEPTION.message, req, resp);
         } catch (Exception e) {
             e.printStackTrace();
-            Logger logger  =Logger.getLogger(Provider.class);
+            Logger logger = Logger.getLogger(Provider.class);
             logger.debug(e.getStackTrace());
             //此处的异常包含细节信息，对客户端隐藏
-            toErrorPage("您的请求参数不足或错误，系统无法处理您的请求", req, resp);
+            toErrorPage(REQUEST_INVALID.message, req, resp);
         }
     }
 

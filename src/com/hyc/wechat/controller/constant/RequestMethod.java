@@ -54,6 +54,10 @@ public enum RequestMethod {
      * 执行退出登陆方法
      */
     LOGOUT_DO,
+    /**
+     * 更新密码
+     */
+    UPDATEPASSWORD_DO,
 
     /*
      **************************************************************
@@ -68,6 +72,11 @@ public enum RequestMethod {
      * 退出聊天
      */
     QUIT_DO,
+    /**
+     * 查找群成员
+     *
+     */
+    MEMBER_DO,
 
 
 
@@ -108,6 +117,10 @@ public enum RequestMethod {
      * 点赞和取消点赞
      */
     LOVE_DO,
+    /**
+     * 朋友圈照片
+     */PHOTO_DO,
+
 
     /*
      **************************************************************
@@ -118,6 +131,10 @@ public enum RequestMethod {
      * 上传
      */
     UPLOADPHOTO_DO,
+    /**
+     * 更新聊天背景
+     */
+    BACKGROUND_DO,
     /**
      * 添加
      */

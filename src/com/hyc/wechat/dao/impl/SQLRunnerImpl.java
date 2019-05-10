@@ -21,6 +21,7 @@ import com.hyc.wechat.dao.SQLMapper;
 import com.hyc.wechat.dao.SQLRunner;
 import com.hyc.wechat.exception.DaoException;
 import com.hyc.wechat.util.JdbcUtils;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -67,10 +68,12 @@ public class SQLRunnerImpl implements SQLRunner {
              * 将ps填入参数后的完整语句赋值给sql
              */
             sql = ps.toString();
-            System.out.println(sql);
+            Logger logger = Logger.getLogger(SQLRunnerImpl.class);
+            logger.info("执行预编译更新语句 ： " + sql);
             return ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(SQLRunnerImpl.class);
+            logger.debug("执行预编译更新语句异常 ： " + sql);
             throw new DaoException("预编译更新语句异常：" + sql, e);
         } finally {
             JdbcUtils.close(conn);
@@ -123,12 +126,13 @@ public class SQLRunnerImpl implements SQLRunner {
              * 将ps填入参数后的完整语句赋值给sql
              */
             sql = ps.toString();
-            //TODO
-            System.out.println(sql);
+            Logger logger = Logger.getLogger(SQLRunnerImpl.class);
+            logger.info("执行预编译更新语句 ： " + sql);
             result = ps.executeUpdate();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            Logger logger = Logger.getLogger(SQLRunnerImpl.class);
+            logger.debug("执行预编译更新语句异常 ： " + sql);
             throw new DaoException("预编译更新语句异常：" + sql, e);
         } finally {
             JdbcUtils.close(conn);
@@ -183,7 +187,7 @@ public class SQLRunnerImpl implements SQLRunner {
      */
     @Override
     public int update(Object obj, String table) {
-        return obj == null ? 0 : executeUpdate(obj, params -> {
+        return (obj == null) ? 0 : executeUpdate(obj, params -> {
             /**
              * updateRunner会传入一个属性值LinkedList
              */
@@ -205,7 +209,6 @@ public class SQLRunnerImpl implements SQLRunner {
                         /**
                          * 此处不能终止循环
                          */
-                        System.out.println("查找父类getId方法...");
                     }
                 }
                 sql.append(" where id = \"" + id + "\"");
@@ -266,6 +269,16 @@ public class SQLRunnerImpl implements SQLRunner {
     public Object executeQuery(String sql, Object[] params, ResultMapper mapper) {
 
         Connection conn = JdbcUtils.getConnection();
+        //如果没有参数不用预编译
+        if (params == null || params.length == 0) {
+            try {
+                Statement st = conn.createStatement();
+                ResultSet rs = st.executeQuery(sql);
+                return mapper.doMap(rs);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             JdbcUtils.setParams(ps, params);
             /**
@@ -276,11 +289,12 @@ public class SQLRunnerImpl implements SQLRunner {
             /**
              * 调用接口中的方法映射结果集，使用时该接口必须有实现类
              */
-            //TODO debug
-            System.out.println(sql);
+            Logger logger = Logger.getLogger(SQLRunnerImpl.class);
+            logger.info("执行预编译查询语句 ： " + sql);
             return mapper.doMap(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger logger = Logger.getLogger(SQLRunnerImpl.class);
+            logger.debug("执行预编译查询语句异常 ： " + sql);
             throw new DaoException("预编译查询语句异常：" + sql, e);
         } finally {
             JdbcUtils.close(conn);

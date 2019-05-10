@@ -19,6 +19,8 @@ package com.hyc.wechat.service;
 import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.model.po.User;
 
+import java.math.BigInteger;
+
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
  * @program wechat
@@ -76,6 +78,16 @@ public interface UserService {
     ServiceResult updateUser(User user);
 
     /**
+     * 更新用户的个人密码
+     *
+     * @param oldPwd 旧密码
+     * @param newPwd 新密码
+     * @param userId 用户id
+     * @return 返回传入的用户对象，如果由密码信息/邮箱信息，将被清空
+     */
+    ServiceResult updatePwd(String oldPwd, String newPwd , BigInteger userId);
+
+    /**
      * 返回昵称与传入参数相似的用户列表
      *
      * @param name 用户昵称
@@ -86,4 +98,16 @@ public interface UserService {
      * @date 2019/5/6
      */
     ServiceResult listUserLikeName(String name);
+
+    /**
+     * 创建一个游客账号，并自动通过登陆
+     *
+     * @name visitorLogin
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    ServiceResult visitorLogin();
+
+
 }
