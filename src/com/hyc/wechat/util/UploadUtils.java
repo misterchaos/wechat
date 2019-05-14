@@ -37,10 +37,10 @@ public class UploadUtils {
 
 
     /**
-     * 用于上传一个文件，返回该文件的文件名
+     * 用于上传一个文件，返回该文件的文件名(写入photo文件夹)
      *
      * @return String 存储的文件名
-     * @name
+     * @name toPhotoName
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/4/19
@@ -51,6 +51,20 @@ public class UploadUtils {
         part.write("photo/"+filename);
         return filename;
     }
-
+    /**
+     * 用于上传一个文件，返回该文件的文件名(写入file文件夹)
+     *
+     * @return String 存储的文件名
+     * @name toFileName
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    public static String toFileName(Part part) throws IOException {
+        String head = part.getHeader("Content-Disposition");
+        String filename = getUUID() + head.substring(head.lastIndexOf("."), head.lastIndexOf("\""));
+        part.write("file/"+filename);
+        return filename;
+    }
 
 }

@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 import static com.hyc.wechat.service.constants.ServiceMessage.*;
+import static com.hyc.wechat.util.UploadUtils.toFileName;
 import static com.hyc.wechat.util.UploadUtils.toPhotoName;
 
 /**
@@ -119,5 +120,26 @@ public class UploadServiceImpl implements UploadService {
             return new ServiceResult(Status.ERROR, UPLOAD_FAILED.message, id);
         }
         return new ServiceResult(Status.SUCCESS, UPDATE_BACKGROUND_SUCCESS.message, fileName);
+    }
+
+    /**
+     * 负责将文件写入文件，并返回文件名
+     *
+     * @param part 文件
+     * @name uploadFile
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    @Override
+    public ServiceResult uploadFile(Part part) {
+        String fileName;
+        try {
+            fileName = toFileName(part);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, UPLOAD_FAILED.message, part);
+        }
+        return new ServiceResult(Status.SUCCESS, UPLOAD_SUCCESS.message, fileName);
     }
 }

@@ -32,9 +32,18 @@ public class Chat extends BaseEntity {
     private String number;
     @JSONField(name = "owner_id")
     private BigInteger ownerId;
+    private String type;
     private String name;
     private Integer member;
     private String photo;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getNumber() {
         return number;

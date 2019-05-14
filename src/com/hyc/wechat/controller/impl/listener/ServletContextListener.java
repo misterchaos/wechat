@@ -23,6 +23,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -34,7 +35,7 @@ import java.util.Map;
 @WebListener
 public class ServletContextListener implements javax.servlet.ServletContextListener {
 
-    private static final Map<String, Provider> providerMap = new HashMap<>();
+    private static final ConcurrentHashMap<String, Provider> providerMap = new ConcurrentHashMap<>();
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -49,6 +50,7 @@ public class ServletContextListener implements javax.servlet.ServletContextListe
         providerMap.put("friendProvider", new FriendProvider());
         providerMap.put("momentProvider",new MomentProvider());
         providerMap.put("messageProvider",new MessageProvider());
+        providerMap.put("remarkProvider",new RemarkProvider());
         //将controllerMap注入ServletContext
         ServletContext sc = sce.getServletContext();
         sc.setAttribute("providerMap", providerMap);

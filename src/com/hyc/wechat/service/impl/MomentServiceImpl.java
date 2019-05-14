@@ -69,10 +69,15 @@ public class MomentServiceImpl implements MomentService {
             if (moment == null) {
                 throw new ServiceException(ServiceMessage.NOT_NULL.message);
             }
+            //检查长度
+            if(moment.getContent().length()>400){
+                return new ServiceResult(Status.ERROR, ServiceMessage.CONTENT_TOO_LONG.message, moment);
+            }
             //检查内容
             if (!isValidContent(moment.getContent())) {
                 message.append(ServiceMessage.CONTENT_ILLEGAL.message);
             }
+
             //过滤非法字符
             moment.setContent(toLegalText(moment.getContent()));
             //插入数据库
@@ -105,7 +110,7 @@ public class MomentServiceImpl implements MomentService {
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, moment);
         }
-        return new ServiceResult(Status.SUCCESS, message.append(ServiceMessage.POST_SUCCESS.message).toString(), moment);
+        return new ServiceResult(Status.SUCCESS, message.append(ServiceMessage.POST_MOMENT_SUCCESS.message).toString(), moment);
     }
 
     /**
@@ -383,4 +388,6 @@ public class MomentServiceImpl implements MomentService {
         }
         return false;
     }
+
+
 }

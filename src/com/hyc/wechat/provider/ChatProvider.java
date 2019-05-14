@@ -23,13 +23,17 @@ import com.hyc.wechat.factory.ServiceProxyFactory;
 import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.model.po.Chat;
 import com.hyc.wechat.model.po.Member;
+import com.hyc.wechat.model.po.Message;
 import com.hyc.wechat.model.po.User;
 import com.hyc.wechat.provider.annotation.Action;
 import com.hyc.wechat.provider.annotation.ActionProvider;
+import com.hyc.wechat.server.ChatServer;
 import com.hyc.wechat.service.ChatService;
+import com.hyc.wechat.service.MessageService;
 import com.hyc.wechat.service.constants.ServiceMessage;
 import com.hyc.wechat.service.constants.Status;
 import com.hyc.wechat.service.impl.ChatServiceImpl;
+import com.hyc.wechat.service.impl.MessageServiceImpl;
 import com.hyc.wechat.util.BeanUtils;
 
 import javax.servlet.ServletException;
@@ -50,6 +54,7 @@ import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
 public class ChatProvider extends Provider {
 
     private final ChatService chatService = (ChatService) new ServiceProxyFactory().getProxyInstance(new ChatServiceImpl());
+    private final MessageService messageService = (MessageService)new ServiceProxyFactory().getProxyInstance(new MessageServiceImpl());
 
     /**
      * 提供用户创建群聊的服务流程，不提供创建个人私聊
@@ -99,6 +104,17 @@ public class ChatProvider extends Provider {
         String userId = req.getParameter("user_id");
         ServiceResult result;
         result = chatService.joinChatByNumber(new BigInteger(userId), number);
+        if (Status.ERROR.equals(result.getStatus())) {
+            returnJsonObject(resp, result);
+            return;
+        }
+        //加群成功后通知群里所有在线用户
+        Member member = (Member) result.getData();
+        //生成打招呼消息
+        Message message = chatService.getHelloMessage(member);
+        messageService.insertMessage(message);
+        ChatServer.addMember(member,message);
+
         returnJsonObject(resp, result);
     }
 
@@ -112,7 +128,7 @@ public class ChatProvider extends Provider {
      */
     @Action(method = RequestMethod.QUIT_DO)
     public void quitChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Member member = (Member)jsonToJavaObject(req.getInputStream(), Member.class);
+        Member member = (Member) jsonToJavaObject(req.getInputStream(), Member.class);
         ServiceResult result;
         result = chatService.quitChat(new Member[]{member});
         if (Status.ERROR.equals(result.getStatus())) {
@@ -137,14 +153,24 @@ public class ChatProvider extends Provider {
         User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
         ServiceResult result;
         result = chatService.listChat(user);
-        if (Status.ERROR.equals(result.getStatus())) {
-            req.setAttribute("message", result.getMessage());
-            req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
-            return;
-        } else {
-            JSON json = (JSON) JSON.toJSON(result);
-            resp.getWriter().write(json.toJSONString());
-        }
+        returnJsonObject(resp,result);
+    }
+
+    /**
+     * 提供获取一个用户的一个聊天的服务
+     *
+     * @name getChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Action(method = RequestMethod.GET_DO)
+    public void getChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String number= req.getParameter("number");
+        String userId = req.getParameter("user_id");
+        ServiceResult result;
+        result = chatService.getChat(number,new BigInteger(userId));
+        returnJsonObject(resp,result);
     }
 
     /**

@@ -59,4 +59,13 @@ public class UploadProvider extends Provider {
         result = uploadService.uploadBackground(part, id);
         returnJsonObject(resp, result);
     }
+
+
+    @Action(method = RequestMethod.UPLOADFILE_DO)
+    public void uploadfile(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        Part part = req.getPart("file");
+        ServiceResult result;
+        result = uploadService.uploadFile(part);
+        returnJsonObject(resp, result);
+    }
 }

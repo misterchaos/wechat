@@ -21,21 +21,29 @@ import com.hyc.wechat.factory.ServiceProxyFactory;
 import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.model.po.Chat;
 import com.hyc.wechat.model.po.Friend;
-import com.hyc.wechat.model.po.Member;
+import com.hyc.wechat.model.po.Message;
 import com.hyc.wechat.provider.annotation.Action;
 import com.hyc.wechat.provider.annotation.ActionProvider;
+import com.hyc.wechat.server.ChatServer;
 import com.hyc.wechat.service.ChatService;
 import com.hyc.wechat.service.FriendService;
+import com.hyc.wechat.service.MessageService;
+import com.hyc.wechat.service.constants.MessageType;
 import com.hyc.wechat.service.constants.ServiceMessage;
+import com.hyc.wechat.service.constants.Status;
 import com.hyc.wechat.service.impl.ChatServiceImpl;
 import com.hyc.wechat.service.impl.FriendServiceImpl;
+import com.hyc.wechat.service.impl.MessageServiceImpl;
+import com.hyc.wechat.service.impl.UserServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 
+import static com.hyc.wechat.service.constants.ServiceMessage.ALREADY_ADD_FRIEND;
 import static com.hyc.wechat.service.constants.Status.ERROR;
 import static com.hyc.wechat.util.BeanUtils.jsonToJavaObject;
 import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
@@ -49,6 +57,7 @@ import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
 public class FriendProvider extends Provider {
     private final FriendService friendService = (FriendService) new ServiceProxyFactory().getProxyInstance(new FriendServiceImpl());
     private final ChatService chatService = (ChatService) new ServiceProxyFactory().getProxyInstance(new ChatServiceImpl());
+    private final MessageService messageService = (MessageService) new ServiceProxyFactory().getProxyInstance(new MessageServiceImpl());
 
     /**
      * 提供添加好友的业务流程
@@ -62,34 +71,34 @@ public class FriendProvider extends Provider {
     synchronized public void addFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Friend friend = (Friend) jsonToJavaObject(req.getInputStream(), Friend.class);
         ServiceResult result;
-        //尝试添加好友
+        //已经是好友不可重复添加
+        if (friendService.isFriend(friend)) {
+            result = new ServiceResult(Status.ERROR, ALREADY_ADD_FRIEND.message, friend);
+            returnJsonObject(resp, result);
+            return;
+        }
+        //加好友
         result = friendService.addFriend(friend);
         if (ERROR.equals(result.getStatus())) {
             returnJsonObject(resp, result);
             return;
         }
+        //添加好友后判断是否对方也将自己添加为好友，如果双向添加，则建立聊天关系，否则发送好友通知
         if (friendService.isFriend(friend)) {
-            //添加好友后判断是否对方也将自己添加为好友，如果双向添加，则建立聊天关系
-            Chat chat = new Chat();
-            //这里查到双向添加好友说明对方先加我为好友，聊天所有者为对方
-            chat.setOwnerId(friend.getFriendId());
-            chat = (Chat) chatService.createChat(chat, false).getData();
-            //创建两个成员，将双方加入聊天中
-            Member member1 = new Member();
-            member1.setUserId(friend.getUserId());
-            member1.setChatId(chat.getId());
-            Member member2 = new Member();
-            member2.setUserId(friend.getFriendId());
-            member2.setChatId(chat.getId());
-            chatService.joinChat(new Member[]{member1, member2});
-            //添加成功后将聊天id更新到朋友信息中
-            friend = friendService.getByUidAndFriendId(friend.getUserId(), friend.getFriendId());
-            friend.setChatId(chat.getId());
-            friendService.updateFriend(friend);
-            friend = friendService.getByUidAndFriendId(friend.getFriendId(), friend.getUserId());
-            friend.setChatId(chat.getId());
-            friendService.updateFriend(friend);
-
+           Chat chat = (Chat) chatService.createFriendChat(friend).getData();
+            //发送打招呼消息
+            Message message = new Message();
+            message.setChatId(chat.getId());
+            message.setSenderId(friend.getUserId());
+            message.setContent(ServiceMessage.AGREE_FRIEND.message);
+            message.setTime(new Timestamp(System.currentTimeMillis()));
+            message.setType(MessageType.USER.toString());
+            messageService.insertMessage(message);
+        } else{
+            //生成的加好友通知，发送实时通知并存到数据库
+            Message message = (Message) result.getData();
+            ChatServer.sendNotify(message, friend.getFriendId());
+            messageService.insertMessage(message);
         }
         returnJsonObject(resp, result);
     }
@@ -135,10 +144,11 @@ public class FriendProvider extends Provider {
      * @date 2019/5/9
      */
     @Action(method = RequestMethod.DELETE_DO)
-    synchronized public void deleteFriend(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    synchronized public void deleteFriend(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String friendId = req.getParameter("friend_id");
         String userId = req.getParameter("user_id");
         ServiceResult result;
+        //系统账号不可删除
         //删除好友之前将聊天关系移除,请求中的好友对象只含有userId和friendId，所以需要重新获取
         Friend friend = friendService.getByUidAndFriendId(new BigInteger(userId), new BigInteger(friendId));
         if (friend == null) {
@@ -146,6 +156,10 @@ public class FriendProvider extends Provider {
             result.setMessage(ServiceMessage.FRIEND_NOT_EXIST.message);
             result.setStatus(ERROR);
             returnJsonObject(resp, result);
+            return;
+        }
+        if(UserServiceImpl.systemId.equals(friend.getFriendId())||UserServiceImpl.systemId.equals(friend.getUserId())){
+            returnJsonObject(resp,new ServiceResult(ERROR,ServiceMessage.CANNOT_DELETE_SYSTEM.message,null));
             return;
         }
         //调用聊天服务将聊天关系解除

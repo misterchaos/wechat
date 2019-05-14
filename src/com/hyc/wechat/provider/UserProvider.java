@@ -20,15 +20,18 @@ import com.hyc.wechat.controller.constant.RequestMethod;
 import com.hyc.wechat.controller.constant.WebPage;
 import com.hyc.wechat.factory.ServiceProxyFactory;
 import com.hyc.wechat.model.dto.ServiceResult;
+import com.hyc.wechat.model.po.Friend;
 import com.hyc.wechat.model.po.Member;
 import com.hyc.wechat.model.po.User;
 import com.hyc.wechat.provider.annotation.Action;
 import com.hyc.wechat.provider.annotation.ActionProvider;
 import com.hyc.wechat.service.ChatService;
+import com.hyc.wechat.service.FriendService;
 import com.hyc.wechat.service.UserService;
 import com.hyc.wechat.service.constants.ServiceMessage;
 import com.hyc.wechat.service.constants.Status;
 import com.hyc.wechat.service.impl.ChatServiceImpl;
+import com.hyc.wechat.service.impl.FriendServiceImpl;
 import com.hyc.wechat.service.impl.UserServiceImpl;
 import com.hyc.wechat.util.BeanUtils;
 
@@ -56,6 +59,7 @@ public class UserProvider extends Provider {
     private final int AUTO_LOGIN_AGE = 60 * 60 * 24 * 30;
     private final UserService userService = (UserService) new ServiceProxyFactory().getProxyInstance(new UserServiceImpl());
     private final ChatService chatService = (ChatService) new ServiceProxyFactory().getProxyInstance(new ChatServiceImpl());
+    private final FriendService friendService = (FriendService) new ServiceProxyFactory().getProxyInstance(new FriendServiceImpl());
 
     /**
      * 提供用户注册的业务流程
@@ -89,7 +93,10 @@ public class UserProvider extends Provider {
         } else {
             //插入用户成功时的处理
             //注册成功后将用户添加到聊天总群中
-            addToDefaultChat((User) result.getData());
+            user = (User) result.getData();
+            addToDefaultChat(user);
+            //与系统账号加好友
+            addToSystemChat(user);
             req.setAttribute("message", result.getMessage());
             req.setAttribute("data", result.getData());
             req.getRequestDispatcher(WebPage.LOGIN_JSP.toString()).forward(req, resp);
@@ -116,17 +123,23 @@ public class UserProvider extends Provider {
         }
         HttpSession session = req.getSession();
         //检查用户是否已经建立会话并且已经具有登陆信息
-        if(session==null||session.getAttribute("login")==null){
+        if (session == null || session.getAttribute("login") == null) {
             //检查是不是游客登陆，游客登陆的话先创建个游客账号然后登陆
             if ("visitor".equals(user.getWechatId())) {
                 result = userService.visitorLogin();
+                if (Status.ERROR.equals(result.getStatus())) {
+                    resp.sendRedirect(WebPage.LOGIN_JSP.toString());
+                    return;
+                }
                 User visitor = (User) result.getData();
                 //把游客加入聊天总群
                 addToDefaultChat(visitor);
-                session.setAttribute("login",result.getData());
+                //与系统账号加好友
+                addToSystemChat(visitor);
+                session.setAttribute("login", result.getData());
                 req.setAttribute("login", result.getData());
                 req.getRequestDispatcher(WebPage.INDEX_JSP.toString()).forward(req, resp);
-            }else {
+            } else {
                 //如果是用户登陆，校验密码是否正确
                 result = userService.checkPassword(user);
                 if (Status.ERROR.equals(result.getStatus())) {
@@ -152,7 +165,7 @@ public class UserProvider extends Provider {
             //先从session获取用户信息，再更新用户信息到会话中
             user = (User) session.getAttribute("login");
             result = userService.getUser(user.getId());
-            session.setAttribute("login",result.getData());
+            session.setAttribute("login", result.getData());
             req.getRequestDispatcher(WebPage.INDEX_JSP.toString()).forward(req, resp);
         }
 
@@ -179,6 +192,24 @@ public class UserProvider extends Provider {
             //获取数据成功时的处理
             resp.getWriter().write(result.getMessage());
         }
+    }
+
+
+    /**
+     * 提供获取用户个人信息的业务流程
+     *
+     * @name logout
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Action(method = RequestMethod.LOGOUT_DO)
+    public void logout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        if (session != null) {
+            session.invalidate();
+        }
+        returnJsonObject(resp,new ServiceResult(Status.SUCCESS,ServiceMessage.LOGOUT_SUCCESS.message,null));
     }
 
 
@@ -222,10 +253,10 @@ public class UserProvider extends Provider {
     public void updatePwd(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String oldPwd = req.getParameter("old_password");
         String newPwd = req.getParameter("new_password");
-        String userId= req.getParameter("user_id");
+        String userId = req.getParameter("user_id");
         ServiceResult result;
         //更新用户数据
-        result = userService.updatePwd(oldPwd,newPwd,new BigInteger(userId));
+        result = userService.updatePwd(oldPwd, newPwd, new BigInteger(userId));
         returnJsonObject(resp, result);
     }
 
@@ -268,7 +299,7 @@ public class UserProvider extends Provider {
                         addToDefaultChat((User) result.getData());
                         //如果获取用户信息成功则设置‘login’属性
                         HttpSession session = req.getSession();
-                        session.setAttribute("login",result.getData());
+                        session.setAttribute("login", result.getData());
                         req.setAttribute("login", result.getData());
                         return;
                     }
@@ -294,7 +325,7 @@ public class UserProvider extends Provider {
     }
 
     /**
-     * 将一个用户添加到聊天总群
+     * 将一个用户添加到聊天总群(id=0)
      *
      * @param user 用户
      * @name addToDefaultChat
@@ -309,5 +340,26 @@ public class UserProvider extends Provider {
         chatService.joinChat(new Member[]{member});
     }
 
-
+    /**
+     * 将一个用户添加到与系统的会话中
+     *
+     * @param user 用户
+     * @name addToSystemChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    private void addToSystemChat(User user) {
+        Friend friend = new Friend();
+        //系统添加用户账号为好友
+        friend.setUserId(UserServiceImpl.systemId);
+        friend.setFriendId(user.getId());
+        friendService.addFriend(friend);
+        //用户添加系统账号为好友
+        friend.setUserId(user.getId());
+        friend.setFriendId(UserServiceImpl.systemId);
+        friendService.addFriend(friend);
+        //将用户和系统账号（id=0）添加到同一个聊天中
+        chatService.createFriendChat(friend);
+    }
 }

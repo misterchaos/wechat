@@ -17,13 +17,21 @@
 package com.hyc.wechat.controller.impl.servlet;
 
 import com.hyc.wechat.controller.annotation.ControllerConfig;
+import com.hyc.wechat.controller.constant.ControllerMessage;
 import com.hyc.wechat.provider.Provider;
+import com.hyc.wechat.util.ControllerUtils;
+import org.apache.log4j.Logger;
 
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+
+import static com.hyc.wechat.provider.Provider.toErrorPage;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -31,11 +39,13 @@ import java.util.Set;
  * @description 接收客户端请求，将其转发到controller
  * @date 2019-05-02 03:28
  */
-@ControllerConfig(path = "/wechat")
+//@MultipartConfig(location = "/home/pan/tomcat/webapps/wechat/upload")
+@MultipartConfig(location = "C:\\Users\\Misterchaos\\Documents\\Java Develop Workplaces\\IDEA workspace\\wechat\\out\\artifacts\\wechat_war_exploded\\upload")
+@WebServlet("/wechat/*")
 public class MyServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         this.doPost(req, resp);
     }
 
@@ -50,18 +60,28 @@ public class MyServlet extends HttpServlet {
      * @date 2019/5/2
      */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Map<String, Provider>providerMap = (Map<String, Provider>) getServletContext().getAttribute("providerMap");
         String url = req.getRequestURI();
-        String contextPath = this.getClass().getAnnotation(ControllerConfig.class).path();
         Set<String> keys = providerMap.keySet();
+        Logger logger = Logger.getLogger(MyServlet.class);
+        logger.info("[请求url:]"+url+"[匹配provider]:"+url.substring(14));
+        boolean isMatch=false;
         for (String key : keys) {
             //解析注解中的path信息，匹配ActionProvider
-            String path = contextPath + providerMap.get(key).getPath();
-            if (url.equalsIgnoreCase(path)) {
+            String path =providerMap.get(key).getPath();
+            if (url.substring(14).equalsIgnoreCase(path)) {
                 providerMap.get(key).doAction(req, resp);
+                logger.info("provider 分发完毕");
+                isMatch=true;
             }
         }
+        if(!isMatch){
+            toErrorPage(ControllerMessage.REQUEST_INVALID.message,req,resp);
+            logger.info("该请求没有匹配provider :"+url.substring(14));
+            return;
+        }
+//        logger.info("响应结果 "+resp.getOutputStream());
     }
 
 

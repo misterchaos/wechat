@@ -25,3 +25,90 @@
 2019-05-09 19:05:47 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:155) ] 连接池已创建连接数3空闲连接数2
 2019-05-10 07:22:28 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:155) ] 连接池已创建连接数3空闲连接数3
 2019-05-10 07:24:13 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:155) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:38:38 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:38:39 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:38:39 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeUpdate(SQLRunnerImpl.java:72) ] 执行预编译更新语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: delete r from  record r inner join message  m on r.message_id = m.id where r.user_id = 210 and m.chat_id = 59  
+2019-05-13 18:38:39 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:38:39 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeUpdate(SQLRunnerImpl.java:130) ] 执行预编译更新语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: insert into user (name) values ('testasdf中文')
+2019-05-13 18:38:39 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:38:39 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数1
+2019-05-13 18:38:39 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:293) ] 执行预编译查询语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: select email,wechat_id,phone,password,gender,signature,name,photo,chat_background,location,online_status,id,status,gmt_create,gmt_modified from user where id = '50' 
+2019-05-13 18:38:39 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数1
+2019-05-13 18:38:40 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:293) ] 执行预编译查询语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: select email,wechat_id,phone,password,gender,signature,name,photo,chat_background,location,online_status,id,status,gmt_create,gmt_modified from user where name love '%昵称%'
+2019-05-13 18:38:40 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数1
+2019-05-13 18:38:40 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:293) ] 执行预编译查询语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: select c.id,c.number,c.owner_id,u.name as name,c.member,u.photo as photo,c.status,c.gmt_create,c.gmt_modified from chat as c,member as m,user as u where c.id = '4' and m.chat_id = c.id and u.id = m.user_id and u.id <> '123'
+2019-05-13 18:38:40 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数1
+2019-05-13 18:38:40 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeUpdate(SQLRunnerImpl.java:130) ] 执行预编译更新语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: insert into moment (owner_Id,content,love) values ('0','一条朋友圈',10)
+2019-05-13 18:38:40 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数1
+2019-05-13 18:38:40 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:293) ] 执行预编译查询语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: select m.id, m.sender_id, m.chat_id, m.content , m.type , m.time ,m.status , m.gmt_create, m.gmt_modified from message as m , record as r where m.id = r.message_id and r.user_id = '0' and m.chat_id = '0' order by m.time limit 10 offset 1000  
+2019-05-13 18:39:02 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:39:02 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:39:02 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeUpdate(SQLRunnerImpl.java:72) ] 执行预编译更新语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: delete r from  record r inner join message  m on r.message_id = m.id where r.user_id = 210 and m.chat_id = 59  
+2019-05-13 18:39:02 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:39:02 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeUpdate(SQLRunnerImpl.java:130) ] 执行预编译更新语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: insert into user (name) values ('testasdf中文')
+2019-05-13 18:39:03 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:39:03 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数1
+2019-05-13 18:39:03 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:293) ] 执行预编译查询语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: select email,wechat_id,phone,password,gender,signature,name,photo,chat_background,location,online_status,id,status,gmt_create,gmt_modified from user where id = '50' 
+2019-05-13 18:39:03 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数1
+2019-05-13 18:39:03 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:293) ] 执行预编译查询语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: select email,wechat_id,phone,password,gender,signature,name,photo,chat_background,location,online_status,id,status,gmt_create,gmt_modified from user where name love '%昵称%'
+2019-05-13 18:39:03 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数1
+2019-05-13 18:39:03 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:293) ] 执行预编译查询语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: select c.id,c.number,c.owner_id,u.name as name,c.member,u.photo as photo,c.status,c.gmt_create,c.gmt_modified from chat as c,member as m,user as u where c.id = '4' and m.chat_id = c.id and u.id = m.user_id and u.id <> '123'
+2019-05-13 18:39:03 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数1
+2019-05-13 18:39:04 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeUpdate(SQLRunnerImpl.java:130) ] 执行预编译更新语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: insert into moment (owner_Id,content,love) values ('0','一条朋友圈',10)
+2019-05-13 18:39:04 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数1
+2019-05-13 18:39:04 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:293) ] 执行预编译查询语句 ： com.mysql.cj.jdbc.ClientPreparedStatement: select m.id, m.sender_id, m.chat_id, m.content , m.type , m.time ,m.status , m.gmt_create, m.gmt_modified from message as m , record as r where m.id = r.message_id and r.user_id = '0' and m.chat_id = '0' order by m.time limit 10 offset 1000  
+2019-05-13 18:39:23 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:40:30 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:40:31 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:41:12 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:41:12 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:42:58 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:42:59 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:44:02 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:44:19 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:45:45 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:45:45 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:45:58 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:45:58 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:45:58 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:45:58 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select email,wechat_id,phone,password,gender,signature,name,photo,chat_background,location,online_status,id,status,gmt_create,gmt_modified from user where id = last_insert_id()  
+2019-05-13 18:47:45 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:48:12 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:48:55 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:48:55 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select email,wechat_id,phone,password,gender,signature,name,photo,chat_background,location,online_status,id,status,gmt_create,gmt_modified from user where id = last_insert_id()  
+2019-05-13 18:49:05 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:49:08 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:49:09 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:50:22 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select email,wechat_id,phone,password,gender,signature,name,photo,chat_background,location,online_status,id,status,gmt_create,gmt_modified from user where id = last_insert_id()  
+2019-05-13 18:50:31 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:50:31 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:50:35 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数2
+2019-05-13 18:50:35 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select email,wechat_id,phone,password,gender,signature,name,photo,chat_background,location,online_status,id,status,gmt_create,gmt_modified from user where id = last_insert_id()  
+2019-05-13 18:51:18 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:51:18 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:51:31 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:51:31 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:51:42 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:51:42 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:55:08 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:55:08 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:55:33 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:55:33 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:55:39 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:55:40 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:55:58 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:55:58 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:56:10 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:56:10 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:56:21 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:56:21 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:56:49 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:56:49 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()  
+2019-05-13 18:59:49 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 18:59:49 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = 238  
+2019-05-13 19:00:27 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 19:00:27 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()
+2019-05-13 19:01:58 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 19:01:58 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = 532
+2019-05-13 19:07:21 [ INFO ] - [ com.hyc.wechat.dao.impl.DataSourceImpl.getConnection(DataSourceImpl.java:160) ] 连接池已创建连接数3空闲连接数3
+2019-05-13 19:07:21 [ INFO ] - [ com.hyc.wechat.dao.impl.SQLRunnerImpl.executeQuery(SQLRunnerImpl.java:278) ] 执行预编译查询语句 ： select sender_id,chat_id,content,type,time,id,status,gmt_create,gmt_modified from message where id = last_insert_id()

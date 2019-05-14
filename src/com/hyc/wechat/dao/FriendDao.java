@@ -42,14 +42,14 @@ public interface FriendDao extends BaseDao {
      * @param userId   用户id
      * @param friendId 朋友id
      * @return
-     * @name gerFriendByUIDAndFriendId
+     * @name getFriendByUIDAndFriendId
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/6
      */
     @Result(entity = Friend.class, returns = ResultType.OBJECT)
     @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where user_id = ? and friend_id = ? ")
-    Friend gerFriendByUIDAndFriendId(Object userId, Object friendId);
+    Friend getFriendByUIDAndFriendId(Object userId, Object friendId);
 
 
     /**

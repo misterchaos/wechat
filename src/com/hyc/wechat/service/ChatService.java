@@ -17,9 +17,7 @@
 package com.hyc.wechat.service;
 
 import com.hyc.wechat.model.dto.ServiceResult;
-import com.hyc.wechat.model.po.Chat;
-import com.hyc.wechat.model.po.Member;
-import com.hyc.wechat.model.po.User;
+import com.hyc.wechat.model.po.*;
 
 import java.math.BigInteger;
 
@@ -42,6 +40,17 @@ public interface ChatService {
      * @date 2019/5/3
      */
     ServiceResult createChat(Chat chat, boolean isGroupChat);
+
+    /**
+     * 给已给好友关系创建一个聊天关系，并把两者加入到此聊天，并更新好友关系上的聊天关系id
+     *
+     * @param friend 好友关系
+     * @name createFriendChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/13
+     */
+    ServiceResult createFriendChat(Friend friend);
 
     /**
      * 把用户添加到聊天中
@@ -93,6 +102,17 @@ public interface ChatService {
     ServiceResult listChat(User user);
 
     /**
+     * 通过用户id和群号获取一个聊天
+     * @name getChat
+     * @param userId 用户id
+     * @param number 聊天id
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    ServiceResult getChat(String number,BigInteger userId);
+
+    /**
      * 删除一个聊天
      *
      * @param chat
@@ -125,5 +145,18 @@ public interface ChatService {
      * @date 2019/5/10
      */
     ServiceResult listMember(BigInteger chatId);
+
+    /**
+     * 获取打招呼消息
+     *
+     * @param member 成员
+     * @name getHelloMessage
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    Message getHelloMessage(Member member);
+
+
 
 }

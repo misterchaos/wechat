@@ -18,8 +18,6 @@ package com.hyc.wechat.util;
 
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -106,14 +104,32 @@ public class StringUtils {
         if (str == null || str.trim().isEmpty()) {
             return "";
         }
+        str = toLegalTextIgnoreTag(str);
+        String htmlLabel = "<[^>]+>";
+        str = str.replaceAll(htmlLabel, "");
+        str = str.replace("\"", "");
+        str = str.replaceAll("\\s*|\t|\r|\n", "");
+        return str.trim();
+    }
+
+    /**
+     * 去除输入中的不合法字符，忽略html标签
+     *
+     * @param str 需要被过滤的字符
+     * @return
+     * @name
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/4/23
+     */
+    public static String toLegalTextIgnoreTag(String str) {
+        if (str == null || str.trim().isEmpty()) {
+            return "";
+        }
         String styleLabel = "<style[^>]*?>[\\s\\S]*?<\\/style>";
         String scriptLabel = "<script[^>]*?>[\\s\\S]*?<\\/script>";
-        String htmlLabel = "<[^>]+>";
         str = str.replaceAll(styleLabel, "");
         str = str.replaceAll(scriptLabel, "");
-        str = str.replaceAll(htmlLabel, "");
-        str = str.replaceAll("\\s*|\t|\r|\n", "");
-        str = str.replace("\"", "");
-        return str.trim();
+        return str;
     }
 }

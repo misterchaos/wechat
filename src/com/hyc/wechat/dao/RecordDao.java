@@ -16,6 +16,7 @@
 
 package com.hyc.wechat.dao;
 
+import com.hyc.wechat.dao.annotation.Delete;
 import com.hyc.wechat.dao.annotation.Update;
 
 /**
@@ -48,11 +49,13 @@ public interface RecordDao extends BaseDao {
      *
      * @param userId 用户id
      * @param chatId 聊天id
-     * @name deleteMessage
+     * @name deleteAllRecordInChat
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/10
      */
-    @Update("delete from  " + TABLE + " as r , message as m where r.user_id = ? and r.message_id = m.id and m.chat_id = ?")
-    void deleteRecord(Object userId ,Object chatId);
+    @Update("delete r from  " + TABLE + " r inner join message  m on r.message_id = m.id where r.user_id = ? and m.chat_id = ?  " )
+    void deleteAllRecordInChat(Object userId , Object chatId);
+
+
 }

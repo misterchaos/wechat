@@ -98,5 +98,39 @@ public class MessageProvider extends Provider {
         returnJsonObject(resp, result);
     }
 
+    /**
+     * 提供将一个聊天中的消息记录清除服务
+     *
+     * @name clear
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Action(method = RequestMethod.CLEAR_DO)
+    public void clear(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = req.getParameter("user_id");
+        String chatId = req.getParameter("chat_id");
+        ServiceResult result;
+        result = messageService.removeAllMessage(new BigInteger(userId), new BigInteger(chatId));
+        returnJsonObject(resp, result);
+    }
+
+    /**
+     * 提供将一个聊天中的消息记录导出的服务
+     *
+     * @name export
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/9
+     */
+    @Action(method = RequestMethod.EXPORT_DO)
+    public void export(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = req.getParameter("user_id");
+        String chatId = req.getParameter("chat_id");
+        ServiceResult result;
+        result = messageService.exportMessage(new BigInteger(userId), new BigInteger(chatId));
+        returnJsonObject(resp, result);
+    }
+
 
 }

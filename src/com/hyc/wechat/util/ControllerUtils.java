@@ -19,6 +19,7 @@ package com.hyc.wechat.util;
 import com.alibaba.fastjson.JSON;
 import com.hyc.wechat.controller.constant.RequestMethod;
 import com.hyc.wechat.model.dto.ServiceResult;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -67,6 +68,8 @@ public class ControllerUtils {
     public static void returnJsonObject(HttpServletResponse resp, ServiceResult result) throws IOException {
         JSON json = (JSON) JSON.toJSON(result);
         resp.getWriter().write(json.toJSONString());
+        Logger logger = Logger.getLogger(ControllerUtils.class);
+        logger.info(json.toJSONString());
     }
 }
 

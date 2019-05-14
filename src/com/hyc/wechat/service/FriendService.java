@@ -37,6 +37,8 @@ public interface FriendService {
      */
     ServiceResult addFriend(Friend friend);
 
+
+
     /**
      * 返回一个用户的好友列表
      *

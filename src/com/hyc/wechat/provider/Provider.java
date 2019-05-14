@@ -59,6 +59,7 @@ public class Provider {
                 toErrorPage("无效的访问链接，系统无法识别您的请求指向的服务内容：" + req.getRequestURI(), req, resp);
                 return;
             } else {
+                boolean isMacth =false;
                 //根据方法上的注解找到对应的Action方法并执行
                 Method[] methods = this.getClass().getMethods();
                 for (Method m : methods) {
@@ -66,6 +67,7 @@ public class Provider {
                     if (action != null && action.method().equals(requestMethod)) {
                         try {
                             m.invoke(this, req, resp);
+                            isMacth=true;
                         } catch (ServiceException e) {
                             //服务层抛出的异常信息与用户的操作有关，不包含底层细节，可以向用户输出
                             e.printStackTrace();
@@ -73,6 +75,11 @@ public class Provider {
                             return;
                         }
                     }
+                }
+                if(!isMacth){
+                    Logger logger = Logger.getLogger(Provider.class);
+                    logger.error("请求的方法没有对应的action方法");
+                    toErrorPage("无效的访问链接，系统无法识别您的请求指向的服务内容"+ req.getRequestURI(), req, resp);
                 }
             }
         } catch (ExceptionInInitializerError e) {
@@ -99,7 +106,7 @@ public class Provider {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
-    private void toErrorPage(String message, HttpServletRequest req, HttpServletResponse resp) {
+    public static void toErrorPage(String message, HttpServletRequest req, HttpServletResponse resp) {
         req.setAttribute("message", message);
         try {
             req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);

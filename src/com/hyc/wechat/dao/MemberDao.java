@@ -31,7 +31,7 @@ import java.util.List;
  */
 public interface MemberDao extends BaseDao {
     String TABLE = "member";
-    String ALL_FIELD = "user_id,chat_id,group_alias,background,level," + BASE_FIELD;
+    String ALL_FIELD = "user_id,chat_id,group_alias,apply,background,level," + BASE_FIELD;
 
     /**
      * 通过成员id查询一个成员

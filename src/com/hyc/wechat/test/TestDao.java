@@ -16,15 +16,11 @@
 
 package com.hyc.wechat.test;
 
-import com.hyc.wechat.dao.*;
+import com.hyc.wechat.dao.MessageDao;
+import com.hyc.wechat.dao.UserDao;
 import com.hyc.wechat.factory.DaoProxyFactory;
 import com.hyc.wechat.model.po.Message;
-import com.hyc.wechat.model.po.Moment;
-import com.hyc.wechat.model.po.News;
 import com.hyc.wechat.model.po.User;
-
-import java.math.BigInteger;
-import java.util.List;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -35,27 +31,28 @@ import java.util.List;
 public class TestDao {
     public static void main(String[] args) {
         MessageDao messageDao = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
-        RecordDao recordDao = (RecordDao) DaoProxyFactory.getInstance().getProxyInstance(RecordDao.class);
-        recordDao.deleteRecord(210,59);
-        UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
-        User user = new User();
-        user.setName("testasdf中文");
-        userDao.insert(user);
-        System.out.println(userDao.getLastInsert().getId());
-        user = userDao.getUserById("50");
-        List list = userDao.listLikeName("%昵称%");
-        System.out.println("查询到记录：" + list.size() + "条");
-        ChatDao chatDao = (ChatDao) DaoProxyFactory.getInstance().getProxyInstance(ChatDao.class);
-        chatDao.toFriendChat("4", "123");
-        Moment moment = new Moment();
-        moment.setOwnerId(BigInteger.valueOf(0));
-        moment.setContent("一条朋友圈");
-        moment.setLove(10L);
-        MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);
-        momentDao.insert(moment);
 
-        messageDao.listMessageByUserIdAndChatId("0","0",10,1000);
-
-        News news = new News();
+//        RecordDao recordDao = (RecordDao) DaoProxyFactory.getInstance().getProxyInstance(RecordDao.class);
+        //
+//        recordDao.deleteAllRecordInChat(210,59);
+//        User user = new User();
+//        user.setName("testasdf中文");
+//        userDao.insert(user);
+//        System.out.println(userDao.getLastInsert().getId());
+//        user = userDao.getUserById("50");
+//        List list = userDao.listLikeName("%昵称%");
+//        System.out.println("查询到记录：" + list.size() + "条");
+//        ChatDao chatDao = (ChatDao) DaoProxyFactory.getInstance().getProxyInstance(ChatDao.class);
+//        chatDao.toFriendChat("4", "123");
+//        Moment moment = new Moment();
+//        moment.setOwnerId(BigInteger.valueOf(0));
+//        moment.setContent("一条朋友圈");
+//        moment.setLove(10L);
+//        MomentDao momentDao = (MomentDao) DaoProxyFactory.getInstance().getProxyInstance(MomentDao.class);
+//        momentDao.insert(moment);
+//
+//        messageDao.listMessageByUserIdAndChatId("0","0",10,1000);
+//
+//        News news = new News();
     }
 }

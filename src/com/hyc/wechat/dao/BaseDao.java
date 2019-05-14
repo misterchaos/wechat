@@ -47,6 +47,8 @@ public interface BaseDao {
     @Insert()
     int insert(Object obj);
 
+
+
     /**
      * 根据传入的表名和id，从该表中更新一条记录
      *

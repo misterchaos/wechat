@@ -35,8 +35,17 @@ public class Member extends BaseEntity {
     private BigInteger chatId;
     @JSONField(name = "group_alias")
     private String groupAlias;
+    private String apply;
     private String background;
     private Integer level;
+
+    public String getApply() {
+        return apply;
+    }
+
+    public void setApply(String apply) {
+        this.apply = apply;
+    }
 
     public Integer getLevel() {
         return level;

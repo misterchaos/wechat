@@ -32,6 +32,7 @@ import java.util.List;
 import static com.hyc.wechat.service.constants.ServiceMessage.*;
 import static com.hyc.wechat.util.Md5Utils.getDigest;
 import static com.hyc.wechat.util.StringUtils.toLikeSql;
+import static com.hyc.wechat.util.UUIDUtils.getUUID;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -46,6 +47,12 @@ public class UserServiceImpl implements UserService {
     public static final String VISITOR_EMAIL = "visitor@wechat.com";
 
     private final UserDao userDao = (UserDao) DaoProxyFactory.getInstance().getProxyInstance(UserDao.class);
+
+    /**
+     * 系统账号id
+     */
+    public static final BigInteger systemId = BigInteger.valueOf(0);
+
 
     /**
      * 检查注册用户的信息是否有效
@@ -308,9 +315,15 @@ public class UserServiceImpl implements UserService {
         //游客统一使用此邮箱，便于将来批量删除游客数据
         visitor.setEmail(VISITOR_EMAIL);
         visitor.setName("游客");
+        visitor.setWechatId(getUUID());
         try {
-            userDao.insert(visitor);
-            visitor = userDao.getLastInsert();
+            if(userDao.insert(visitor)!=1){
+                return new ServiceResult(Status.ERROR,DATABASE_ERROR.message,visitor);
+            }
+            visitor = userDao.getUserByWechatId(visitor.getWechatId());
+            if(visitor==null){
+                return new ServiceResult(Status.ERROR,DATABASE_ERROR.message,null);
+            }
         }catch (DaoException e){
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, DATABASE_ERROR.message,visitor);

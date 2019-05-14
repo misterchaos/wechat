@@ -25,8 +25,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.Properties;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -106,7 +107,7 @@ public class DataSourceImpl implements DataSource {
     /**
      * 数据库连接池
      */
-    private final LinkedList<Connection> connPool = new LinkedList<>();
+    private final Queue<Connection> connPool = new LinkedBlockingQueue<>();
 
     /**
      * 负责提供数据库连接池实例
@@ -117,7 +118,11 @@ public class DataSourceImpl implements DataSource {
      * @date 2019/5/1
      */
     public static DataSourceImpl getInstance() {
-        return instance;
+        if (instance != null) {
+            return instance;
+        }else {
+            return new DataSourceImpl();
+        }
     }
 
     /**
@@ -158,7 +163,7 @@ public class DataSourceImpl implements DataSource {
                 /**
                  * 先检查连接是否可用，如果不可用，关闭该连接，返回一个新连接
                  */
-                Connection conn = connPool.removeLast();
+                Connection conn = connPool.remove();
                 try {
                     if (conn.isValid(TIMEOUT)) {
                         return new ConnectionProxy(this).getProxyInstance(conn);
@@ -189,7 +194,7 @@ public class DataSourceImpl implements DataSource {
      */
     @Override
     public void freeConnection(Connection conn) {
-        this.connPool.addLast(conn);
+        this.connPool.add(conn);
     }
 
     /**
@@ -258,7 +263,7 @@ public class DataSourceImpl implements DataSource {
             return DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DaoException("无法创建数据库连接："+e.getMessage(), e);
+            throw new DaoException("无法创建数据库连接：" + e.getMessage(), e);
         }
     }
 

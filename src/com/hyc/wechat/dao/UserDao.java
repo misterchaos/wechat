@@ -51,18 +51,6 @@ public interface UserDao extends BaseDao {
 
 
     /**
-     * 查询最近插入的一个用户
-     *
-     * @return 用户对象
-     * @notice none
-     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
-     * @date 2019/5/2
-     */
-    @Result(entity = User.class, returns = ResultType.OBJECT)
-    @Query(value = "select " + ALL_FIELD + " from " + TABLE + " where id = last_insert_id()  ")
-    User getLastInsert();
-
-    /**
      * 通过邮箱查询一个用户
      *
      * @param email 账户邮箱

@@ -55,4 +55,16 @@ public interface UploadService {
     ServiceResult uploadBackground(Part part, Object id);
 
 
+    /**
+     * 负责将文件写入文件，并返回文件名
+     *
+     * @param part      文件
+     * @name uploadFile
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    ServiceResult uploadFile(Part part);
+
+
 }

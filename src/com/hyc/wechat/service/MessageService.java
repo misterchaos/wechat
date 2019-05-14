@@ -20,7 +20,6 @@ import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.model.po.Message;
 
 import java.math.BigInteger;
-import java.util.List;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -89,6 +88,46 @@ public interface MessageService {
      * @date 2019/5/7
      */
     ServiceResult removeMessage(BigInteger userId, BigInteger messageId);
+
+
+    /**
+     * 删除一个用户在一个聊天中的所有记录
+     *
+     * @param userId 用户id
+     * @param chatId 要移除的消息记录的聊天id
+     * @name removeAllMessage
+     * @notice 本方法没有将消息删除，只是将该用户的对应这条消息的记录删除，</br>
+     * 其他拥有这条消息的记录的用户依然可以访问这条消息
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/7
+     */
+    ServiceResult removeAllMessage(BigInteger userId, BigInteger chatId);
+
+    /**
+     * 导出一个用户在一个聊天中的所有消息记录，返回文件名
+     *
+     * @param userId 用户id
+     * @param chatId 聊天id
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/7
+     */
+    ServiceResult exportMessage(Object userId, Object chatId);
+
+
+    /**
+     * 撤回一条消息
+     *
+     * @param userId    用户id
+     * @param messageId 消息id
+     * @name drawMessage
+     * @notice 这个方法会将消息删除
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/7
+     */
+    ServiceResult drawBackMessage(BigInteger userId, BigInteger messageId);
+
+
+
 
     /**
      * 将一个用户在一个聊天中收到的消息记录设置为已读

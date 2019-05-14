@@ -31,7 +31,7 @@ import java.util.List;
 public interface ChatDao extends BaseDao {
 
     String TABLE = "chat";
-    String ALL_FIELD = "number,owner_id,name,member,photo," + BASE_FIELD;
+    String ALL_FIELD = "number,owner_id,type,name,member,photo," + BASE_FIELD;
 
     /**
      * 通过聊天id查询一个聊天
@@ -58,7 +58,7 @@ public interface ChatDao extends BaseDao {
      * @date 2019/5/3
      */
     @Result(entity = Chat.class, returns = ResultType.LIST)
-    @Query(value = "select c.id,c.number,c.owner_id,c.name,c.member,c.photo,c.status,c.gmt_create,c.gmt_modified " +
+    @Query(value = "select c.id,c.number,c.owner_id,c.name,c.type,c.member,c.photo,c.status,c.gmt_create,c.gmt_modified " +
             "from " + TABLE + " as c,member as m where c.id = m.chat_id and m.user_id = ?")
     List<Chat> listByUserId(Object userId);
 
@@ -76,7 +76,7 @@ public interface ChatDao extends BaseDao {
      * @date 2019/5/5
      */
     @Result(entity = Chat.class, returns = ResultType.OBJECT)
-    @Query(value = "select c.id,c.number,c.owner_id,u.name as name,c.member,u.photo as photo,c.status,c.gmt_create,c.gmt_modified " +
+    @Query(value = "select c.id,c.number,c.owner_id,u.name as name,c.member,u.photo as photo,c.type,c.status,c.gmt_create,c.gmt_modified " +
             "from " + TABLE + " as c,member as m,user as u where c.id = ? and m.chat_id = c.id and u.id = m.user_id and u.id <> ?")
     Chat toFriendChat(Object chatId, Object userId);
 

@@ -81,6 +81,8 @@ public class SQLRunnerImpl implements SQLRunner {
     }
 
 
+
+
     /**
      * 将一个对象映射成预编译sql语句并执行<br>
      * 需要一个SqlMapper的具体实现
@@ -173,6 +175,7 @@ public class SQLRunnerImpl implements SQLRunner {
             return sql.toString();
         });
     }
+
 
     /**
      * 根据传入的表名和id，从该表中更新一条记录
@@ -274,6 +277,8 @@ public class SQLRunnerImpl implements SQLRunner {
             try {
                 Statement st = conn.createStatement();
                 ResultSet rs = st.executeQuery(sql);
+                Logger logger = Logger.getLogger(SQLRunnerImpl.class);
+                logger.info("执行预编译查询语句 ： " + sql);
                 return mapper.doMap(rs);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -322,7 +327,9 @@ public class SQLRunnerImpl implements SQLRunner {
     @Override
     public LinkedList queryList(String sql, Object[] params, Class clazz) {
         return (LinkedList) executeQuery(sql, params, rs -> {
-            /**
+
+
+             /**
              * ResultMapper的一个实现类，提供将结果集映射为一个List的方法<br>
              * 此类的对象在使用前必须设置一个用于映射结果的实体类
              *
