@@ -1,0 +1,1312 @@
+{
+	"info": {
+		"_postman_id": "a5aee2cd-4b1c-4379-97c2-37957645b6fa",
+		"name": "wechat",
+		"description": "用于测试wechat程序",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "用户注册",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "nickName",
+							"value": "caixukun1",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "phoneNumber",
+							"value": "13536372302",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "idNumber",
+							"value": "440823199912202019",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "balance",
+							"value": "900",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "status",
+							"value": "1",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "userName",
+							"value": "test10",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "newPwd",
+							"value": "test1234",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "payPwd",
+							"value": "1234",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "number",
+							"value": "1030",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "area",
+							"value": "20",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "bedWidth",
+							"value": "4",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "price",
+							"value": "999",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "view",
+							"value": "room",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "number",
+							"value": "0102020",
+							"type": "text"
+						},
+						{
+							"key": "view\n",
+							"value": "room\n",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/user?method=register.do&email=123wr1@qq.com&password=test1234",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"user"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "register.do"
+						},
+						{
+							"key": "name",
+							"value": "test",
+							"disabled": true
+						},
+						{
+							"key": "id",
+							"value": "123",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "123wr1@qq.com"
+						},
+						{
+							"key": "password",
+							"value": "test1234"
+						}
+					]
+				},
+				"description": "测试用户注册功能"
+			},
+			"response": []
+		},
+		{
+			"name": "用户登陆",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/user?method=login.do&email=1231@qq.com&password=test1234",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"user"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "login.do"
+						},
+						{
+							"key": "name",
+							"value": "test",
+							"disabled": true
+						},
+						{
+							"key": "id",
+							"value": "123",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "1231@qq.com"
+						},
+						{
+							"key": "password",
+							"value": "test1234"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取用户个人信息",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/user?method=get.do&email=1231@qq.com&id=88",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"user"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "get.do"
+						},
+						{
+							"key": "email",
+							"value": "1231@qq.com"
+						},
+						{
+							"key": "id",
+							"value": "88"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新用户个人信息",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/user?method=update.do&id=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"user"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "update.do"
+						},
+						{
+							"key": "email",
+							"value": "1231@qq.com",
+							"disabled": true
+						},
+						{
+							"key": "id",
+							"value": "0"
+						},
+						{
+							"key": "wechatId",
+							"value": "asd143asdfasdf",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "加入群聊",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "groupAlias",
+							"value": "大佬",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/chat?method=join.do&number=0002312&user_id=185",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"chat"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "join.do"
+						},
+						{
+							"key": "number",
+							"value": "0002312"
+						},
+						{
+							"key": "user_id",
+							"value": "185"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[json]退出群聊",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"user_id\":\"0\",\n\"chat_id\":\"52\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/chat?method=quit.do&user_id=0&chat_id=33",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"chat"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "quit.do"
+						},
+						{
+							"key": "email",
+							"value": "1231@qq.com",
+							"disabled": true
+						},
+						{
+							"key": "id",
+							"value": "136",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"disabled": true
+						},
+						{
+							"key": "wechatId",
+							"value": "helloworld",
+							"disabled": true
+						},
+						{
+							"key": "user_id",
+							"value": "0"
+						},
+						{
+							"key": "chat_id",
+							"value": "33"
+						},
+						{
+							"key": "groupAlias",
+							"value": "大佬",
+							"disabled": true
+						},
+						{
+							"key": "background",
+							"value": "背景",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[json]创建群聊",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"method\": \"add.do\",\n    \"owner_id\": \"184\",\n    \"name\": \"广工夸夸\",\n    \"number\": \"000219\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/chat?method=add.do&email=1231@qq.com&name=广工夸夸&number=0002312",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"chat"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "add.do"
+						},
+						{
+							"key": "email",
+							"value": "1231@qq.com"
+						},
+						{
+							"key": "id",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"disabled": true
+						},
+						{
+							"key": "wechatId",
+							"value": "helloworld",
+							"disabled": true
+						},
+						{
+							"key": "userId",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "chatId",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "background",
+							"value": "背景",
+							"disabled": true
+						},
+						{
+							"key": "ownerId",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "name",
+							"value": "广工夸夸"
+						},
+						{
+							"key": "groupAlias",
+							"value": "群聊昵称",
+							"disabled": true
+						},
+						{
+							"key": "number",
+							"value": "0002312"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查询用户的所有聊天",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "groupAlias",
+							"value": "大佬",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/chat?method=list.do&id=209",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"chat"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "list.do"
+						},
+						{
+							"key": "email",
+							"value": "1231@qq.com",
+							"disabled": true
+						},
+						{
+							"key": "id",
+							"value": "209",
+							"description": "用户id,用来查询聊天"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"disabled": true
+						},
+						{
+							"key": "wechatId",
+							"value": "helloworld",
+							"disabled": true
+						},
+						{
+							"key": "userId",
+							"value": "133",
+							"disabled": true
+						},
+						{
+							"key": "chatId",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "groupAlias",
+							"value": "大佬",
+							"disabled": true
+						},
+						{
+							"key": "background",
+							"value": "背景",
+							"disabled": true
+						},
+						{
+							"key": "ownerId",
+							"value": "123",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用户昵称模糊查询",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/user?method=list.do&name=昵称",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"user"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "list.do"
+						},
+						{
+							"key": "name",
+							"value": "昵称"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "上传图片",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "photo",
+							"type": "file",
+							"src": ""
+						},
+						{
+							"key": "id",
+							"value": "0",
+							"type": "text"
+						},
+						{
+							"key": "table",
+							"value": "user",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/upload?method=uploadphoto.do",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "uploadphoto.do"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[json]添加好友",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"user_id\":\"209\",\n\t\"friend_id\":\"210\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/friend?method=add.do",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"friend"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "add.do"
+						},
+						{
+							"key": "friend_id",
+							"value": "209",
+							"disabled": true
+						},
+						{
+							"key": "user_id",
+							"value": "210",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查找好友列表",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/friend?method=list.do&user_id=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"friend"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "list.do"
+						},
+						{
+							"key": "user_id",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除好友",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/friend?method=delete.do&user_id=0&friend_id=184",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"friend"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "delete.do"
+						},
+						{
+							"key": "user_id",
+							"value": "0"
+						},
+						{
+							"key": "friend_id",
+							"value": "184"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[json]发朋友圈",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"user_id\":\"0\",\n\"content\":\"第一条朋友圈\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/moment?method=add.do",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"moment"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "add.do",
+							"description": "只能发json"
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除朋友圈",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/moment?method=delete.do&moment_id=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"moment"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "delete.do"
+						},
+						{
+							"key": "moment_id",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查询自己的朋友圈",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/moment?method=moment.do&user_id=0&page=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"moment"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "moment.do"
+						},
+						{
+							"key": "user_id",
+							"value": "0"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查询朋友圈动态",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": [\n        {\n            \"love\": 10,\n            \"shared\": false,\n            \"userPhoto\": \"a547ca40b9004db4a376d0c0fb3f99a5.png\",\n            \"collected\": false,\n            \"remark\": 0,\n            \"userName\": \"test5@qq.com的昵称\",\n            \"content\": \"一条朋友圈\",\n            \"view\": 0,\n            \"loved\": false,\n            \"user_id\": 0,\n            \"viewed\": false,\n            \"share\": 0,\n            \"id\": 11,\n            \"collect\": 0\n        }\n    ],\n    \"message\": \"执行操作成功\",\n    \"status\": \"SUCCESS\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/moment?method=news.do&user_id=184&page=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"moment"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "news.do"
+						},
+						{
+							"key": "user_id",
+							"value": "184"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查询所有未读消息",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/message?method=unread.do&user_id=0&page=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"message"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "unread.do"
+						},
+						{
+							"key": "user_id",
+							"value": "0"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "朋友圈点赞",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/moment?method=love.do&moment_id=82&user_id=179",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"moment"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "love.do"
+						},
+						{
+							"key": "moment_id",
+							"value": "82"
+						},
+						{
+							"key": "user_id",
+							"value": "179"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "把一个聊天的消息设置为已读",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/message?method=read.do&user_id=184&chat_id=44",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"message"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "read.do"
+						},
+						{
+							"key": "user_id",
+							"value": "184"
+						},
+						{
+							"key": "chat_id",
+							"value": "44"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查询一个聊天的所有消息",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/message?method=list.do&user_id=209&page=1&chat_id=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"message"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "list.do"
+						},
+						{
+							"key": "user_id",
+							"value": "209"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "chat_id",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取朋友圈中的图片",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/moment?method=photo.do&user_id=0&page=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"moment"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "photo.do"
+						},
+						{
+							"key": "user_id",
+							"value": "0"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[json]更新好友信息",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\":\"62\",\n\t\"description\":\"好友的描述\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/friend?method=update.do",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"friend"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "update.do"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新用户密码",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/user?method=updatepassword.do&old_password=test1234&new_password=test1234&user_id=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"user"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "updatepassword.do"
+						},
+						{
+							"key": "old_password",
+							"value": "test1234"
+						},
+						{
+							"key": "new_password",
+							"value": "test1234"
+						},
+						{
+							"key": "user_id",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用户更新密码",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/user?method=updatepassword.do&old_password=test1234&new_password=test1234&user_id=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"user"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "updatepassword.do"
+						},
+						{
+							"key": "old_password",
+							"value": "test1234"
+						},
+						{
+							"key": "new_password",
+							"value": "test1234"
+						},
+						{
+							"key": "user_id",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查看群成员",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/wechat/chat?method=member.do&chat_id=59",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wechat",
+						"chat"
+					],
+					"query": [
+						{
+							"key": "method",
+							"value": "member.do"
+						},
+						{
+							"key": "chat_id",
+							"value": "59"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
