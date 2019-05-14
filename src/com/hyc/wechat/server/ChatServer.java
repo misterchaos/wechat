@@ -34,10 +34,14 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static com.hyc.wechat.service.constants.MessageType.FILE;
+import static com.hyc.wechat.service.constants.MessageType.IMG;
 import static com.hyc.wechat.util.StringUtils.toLegalText;
+import static com.hyc.wechat.util.StringUtils.toLegalTextIgnoreTag;
 
 /**
  * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
@@ -59,12 +63,27 @@ public class ChatServer {
     private static final MessageDao MESSAGE_DAO = (MessageDao) DaoProxyFactory.getInstance().getProxyInstance(MessageDao.class);
     private static final MemberDao MEMBER_DAO = (MemberDao) DaoProxyFactory.getInstance().getProxyInstance(MemberDao.class);
     private static final RecordDao RECORD_DAO = (RecordDao) DaoProxyFactory.getInstance().getProxyInstance(RecordDao.class);
-    private static final Map<String, ChatServer> SERVER_MAP = new HashMap<>();
+    /**
+     * 用于装载系统中在线用户的server
+     */
+    private static final ConcurrentHashMap<String, ChatServer> SERVER_MAP = new ConcurrentHashMap<>();
+    /**
+     * 启动一个消息队列缓存
+     */
+    private final ScheduledExecutorService service = new ScheduledThreadPoolExecutor(10);
     /**
      * 用于记录当前系统在线用户人数
      */
     private static int onlineCount = 0;
     private final String ALREADY_ONLINE = "您已经在一个新的浏览器上登陆，系统将自动断开与本页面的连接，页面将不可用";
+    /**
+     * 将消息存入数据库的时间间隔(秒)
+     */
+    private final Long SAVE_PERIOD_SECOND = 1L;
+    /**
+     * 启动消息队列定时器的延迟时间
+     */
+    private final Long INIT_DELAY = 0L;
 
 
     /*
@@ -79,27 +98,33 @@ public class ChatServer {
     /**
      * 这个集合装载所有与该用户具有聊天关系的用户成员集合，onOpen方法执行时装载
      */
-    private final Map<String, Member> memberMap = new HashMap<>();
+    private Map<BigInteger, Member> memberMap = new HashMap<>();
     /**
      * 负责定时将用户的消息队列存入数据库
      */
-    private final MessageTask messageTask = new MessageTask();
+    private MessageTask messageTask = new MessageTask();
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("user") String userId) {
+    public void onOpen(Session session, @PathParam("user") String userId) throws IOException {
+        //检查是否已经建立过连接
+        ChatServer server = SERVER_MAP.get(userId);
+        if (server != null && server.session != null && server.session.isOpen()) {
+            server.session.getBasicRemote().sendText(ALREADY_ONLINE);
+            server.session.close();
+        }
+        server = new ChatServer();
         //装载用户数据，作为缓存
-        this.session = session;
-        this.user = USER_DAO.getUserById(userId);
-        if (user == null) {
+        server.session = session;
+        server.user = USER_DAO.getUserById(userId);
+        if (server.user == null) {
             try {
-                this.session.getBasicRemote().sendText("当前用户不存在");
+                server.session.getBasicRemote().sendText("当前用户不存在");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        //启动一个消息队列缓存
-        ScheduledExecutorService service = new ScheduledThreadPoolExecutor(1);
-        service.scheduleAtFixedRate(this.messageTask, 0, 3, TimeUnit.SECONDS);
+        //启动消息队列的定时器，定时将消息存入数据库
+        service.scheduleAtFixedRate(server.messageTask, INIT_DELAY, SAVE_PERIOD_SECOND, TimeUnit.SECONDS);
         //加载用户所在的所有聊天中的所有成员
         List<Chat> chatList = CHAT_DAO.listByUserId(userId);
         for (Chat chat : chatList) {
@@ -107,51 +132,111 @@ public class ChatServer {
             for (Member member : list) {
                 if (!String.valueOf(member.getUserId()).equals(userId)) {
                     //将除了自己的所有成员加入容器
-                    memberMap.put(String.valueOf(member.getUserId()), member);
+                    server.memberMap.put(member.getId(), member);
                 }
             }
         }
         //将用户id对应的对象装载到Map容器
-        SERVER_MAP.put(userId, this);
+        SERVER_MAP.put(userId, server);
         onlineCount++;
         System.out.println("有新连接加入！当前在线人数为" + onlineCount);
         System.out.println("当前系统用户：" + userId);
     }
 
     @OnMessage
-    public void onMessage(String msg, Session session) throws IOException {
-        System.out.println("来自客户端的消息:" + msg);
-
+    public void onMessage(String msg, Session session, @PathParam("user") String userId) throws IOException {
+        System.out.println("来自客户端的消息:" + msg + " 客户端请求参数 :" + userId + " 客户端session :" + session.toString());
+        //从容器中获取server
+        ChatServer server = SERVER_MAP.get(userId);
         //客户段上传到服务器是Message,服务器发送到客户端是MessageVo
         Message message = JSON.toJavaObject(JSON.parseObject(msg), Message.class);
-        //先过滤消息内容
-        message.setContent(toLegalText(message.getContent()));
+        //先过滤消息内容,如果是文件和图片则不过滤标签
+        if (FILE.toString().equalsIgnoreCase(message.getType()) || IMG.toString().equalsIgnoreCase(message.getType())) {
+            message.setContent(toLegalTextIgnoreTag(message.getContent()));
+        } else {
+            message.setContent(toLegalText(message.getContent()));
+        }
         if (message.getContent().trim().isEmpty()) {
             return;
         }
-        //向消息的接收者发送消息
-        sendMessage(message);
+        //向消息的接收者和自己发送消息
+        sendMessage(message, userId);
         //将po对象加入消息存储队列
-        this.messageTask.enQueue(message);
+        server.messageTask.enQueue(message);
     }
 
 
     @OnClose
-    public void onClose() {
-        //关闭时先将消息队列存入数据库
-        this.messageTask.run();
-        //将用户从Map容器移除
-        SERVER_MAP.remove(this.user.getId());
+    public void onClose(@PathParam("user") String userId) {
+
         onlineCount--;
+        System.out.println(SERVER_MAP.get(userId));
         System.out.println("有一连接关闭！当前在线人数为" + onlineCount);
     }
 
     @OnError
-    public void onError(Session session, Throwable error) {
-        //先将消息队列存入数据库
-        this.messageTask.run();
+    public void onError(Throwable error) {
         System.out.println("发生错误");
         error.printStackTrace();
+    }
+
+
+    /**
+     * 用于向系统中的在线用户发送一条通知
+     *
+     * @param message 消息
+     * @param userId  消息接收者的id
+     * @return
+     * @name sendNotify
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/13
+     */
+    public static void sendNotify(Message message, BigInteger userId) {
+        //从容器中获取server
+        ChatServer server = SERVER_MAP.get(String.valueOf(userId));
+
+        //发送给对应用户
+        if (server != null && server.session != null && server.session.isOpen()) {
+            //创建vo对象(使用建造者模式的链式调用)
+            User sender = USER_DAO.getUserById(message.getSenderId());
+
+            MessageVO messageVo = new MessageVOBuilder().setSenderId(sender.getId())
+                    .setSenderName(sender.getName()).setChatId(message.getChatId())
+                    .setContent(message.getContent()).setSenderPhoto(sender.getPhoto())
+                    .setTime(message.getTime()).setType(message.getType()).build();
+            String jsonString = JSONObject.toJSONString(messageVo);
+            try {
+                server.session.getBasicRemote().sendText(jsonString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * 用于向系统中的在线用户的聊天管理map中添加新成员
+     *
+     * @param member 成员
+     * @param message 加群打招呼信息
+     * @name addMember
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/13
+     */
+    public static void addMember(Member member,Message message) {
+        List<Member> memberList=MEMBER_DAO.listMemberByChatId(member.getChatId());
+        for (Member m:memberList) {
+            //从容器中获取该成员的server,添加成员并发送消息
+            ChatServer server = SERVER_MAP.get(String.valueOf(m.getUserId()));
+            if (server != null && server.session != null && server.session.isOpen()) {
+                server.memberMap.put(member.getId(), member);
+                //向该群成员发送打招呼消息
+                sendNotify(message,member.getUserId());
+            }
+        }
+
     }
 
 
@@ -166,17 +251,17 @@ public class ChatServer {
         /**
          * 消息队列，用户发送的消息先缓存在这里，连接关闭时插入数据库
          */
-        private Queue<Message> messageQueue = new ConcurrentLinkedQueue<>();
+        private Queue<Message> messageQueue = new LinkedBlockingQueue<>();
 
         /**
          * 将一条消息加入到队列中
          *
-         * @param message
+         * @param message 用户发送的消息
          * @name enQueue
          * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
          * @date 2019/5/7
          */
-        public void enQueue(Message message) {
+        private void enQueue(Message message) {
             this.messageQueue.add(message);
         }
 
@@ -199,28 +284,31 @@ public class ChatServer {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/7
      */
-    synchronized private void sendMessage(Message message) throws IOException {
+    synchronized private void sendMessage(Message message, String userId) throws IOException {
+        //从容器中获取server
+        ChatServer server = SERVER_MAP.get(userId);
         //创建vo对象(使用建造者模式的链式调用)
-        MessageVO messageVo = new MessageVOBuilder().setSenderId(this.user.getId())
-                .setSenderName(this.user.getName()).setChatId(message.getChatId())
-                .setContent(message.getContent()).setSenderPhoto(this.user.getPhoto())
+        MessageVO messageVo = new MessageVOBuilder().setSenderId(server.user.getId())
+                .setSenderName(server.user.getName()).setChatId(message.getChatId())
+                .setContent(message.getContent()).setSenderPhoto(server.user.getPhoto())
                 .setTime(message.getTime()).setType(message.getType()).build();
         String jsonString = JSONObject.toJSONString(messageVo);
-        //先发给自己
-        this.session.getBasicRemote().sendText(jsonString);
+        //发送给自己
+        if (server.session.isOpen()) {
+            server.session.getBasicRemote().sendText(jsonString);
+        }
         //遍历与用户具有聊天关系的集合，将消息发给指定用户，如果在线则发送消息
-        Set<String> keys = memberMap.keySet();
-        for (String key : keys) {
-            Member member = memberMap.get(key);
-            //当该成员处于消息对应的聊天中时给他发送消息
-            if (member.getChatId().equals(message.getChatId())) {
-                ChatServer server = SERVER_MAP.get(String.valueOf(member.getUserId()));
-                if (server != null) {
-                    try {
-                        server.session.getBasicRemote().sendText(jsonString);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        Set<BigInteger> keys = server.memberMap.keySet();
+        for (BigInteger key : keys) {
+            Member member = server.memberMap.get(key);
+            //获取接收者server
+            ChatServer receiver = SERVER_MAP.get(String.valueOf(member.getUserId()));
+            //当该成员处于消息对应的聊天中,并且在线时时给他发送消息
+            if (member.getChatId().equals(message.getChatId()) && receiver != null && receiver.session != null && receiver.session.isOpen()) {
+                try {
+                    receiver.session.getBasicRemote().sendText(jsonString);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
