@@ -16,9 +16,7 @@
 
 package com.hyc.wechat.provider;
 
-import com.alibaba.fastjson.JSON;
 import com.hyc.wechat.controller.constant.RequestMethod;
-import com.hyc.wechat.controller.constant.WebPage;
 import com.hyc.wechat.factory.ServiceProxyFactory;
 import com.hyc.wechat.model.dto.ServiceResult;
 import com.hyc.wechat.model.po.Chat;
@@ -54,7 +52,7 @@ import static com.hyc.wechat.util.ControllerUtils.returnJsonObject;
 public class ChatProvider extends Provider {
 
     private final ChatService chatService = (ChatService) new ServiceProxyFactory().getProxyInstance(new ChatServiceImpl());
-    private final MessageService messageService = (MessageService)new ServiceProxyFactory().getProxyInstance(new MessageServiceImpl());
+    private final MessageService messageService = (MessageService) new ServiceProxyFactory().getProxyInstance(new MessageServiceImpl());
 
     /**
      * 提供用户创建群聊的服务流程，不提供创建个人私聊
@@ -102,8 +100,9 @@ public class ChatProvider extends Provider {
     public void joinGroupChat(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String number = req.getParameter("number");
         String userId = req.getParameter("user_id");
+        String apply = req.getParameter("apply");
         ServiceResult result;
-        result = chatService.joinChatByNumber(new BigInteger(userId), number);
+        result = chatService.joinChatByNumber(new BigInteger(userId), number, apply);
         if (Status.ERROR.equals(result.getStatus())) {
             returnJsonObject(resp, result);
             return;
@@ -113,8 +112,7 @@ public class ChatProvider extends Provider {
         //生成打招呼消息
         Message message = chatService.getHelloMessage(member);
         messageService.insertMessage(message);
-        ChatServer.addMember(member,message);
-
+        ChatServer.addMember(member, message);
         returnJsonObject(resp, result);
     }
 
@@ -130,15 +128,32 @@ public class ChatProvider extends Provider {
     public void quitChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Member member = (Member) jsonToJavaObject(req.getInputStream(), Member.class);
         ServiceResult result;
-        result = chatService.quitChat(new Member[]{member});
-        if (Status.ERROR.equals(result.getStatus())) {
-            req.setAttribute("message", result.getMessage());
-            req.getRequestDispatcher(WebPage.ERROR_JSP.toString()).forward(req, resp);
-            return;
-        } else {
-            resp.getWriter().write(result.getMessage());
-        }
+        result = chatService.quitChat(member);
+        returnJsonObject(resp, result);
     }
+
+    /**
+     * 提供将一个聊天成员移除的服务
+     *
+     * @name remove
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    @Action(method = RequestMethod.REMOVE_DO)
+    public void remove(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String memberId = req.getParameter("member_id");
+        ServiceResult result;
+        //检查操作用户
+        User user = (User) req.getSession().getAttribute("login");
+        if (chatService.isOwner(new BigInteger(memberId), user.getId())) {
+            result = chatService.removeFromChat(new BigInteger(memberId));
+        }else{
+            result = new ServiceResult(Status.ERROR,ServiceMessage.NOT_OWNER.message,null);
+        }
+        returnJsonObject(resp, result);
+    }
+
 
     /**
      * 提供获取一个用户的聊天列表的服务
@@ -153,7 +168,7 @@ public class ChatProvider extends Provider {
         User user = (User) BeanUtils.toObject(req.getParameterMap(), User.class);
         ServiceResult result;
         result = chatService.listChat(user);
-        returnJsonObject(resp,result);
+        returnJsonObject(resp, result);
     }
 
     /**
@@ -166,11 +181,11 @@ public class ChatProvider extends Provider {
      */
     @Action(method = RequestMethod.GET_DO)
     public void getChat(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String number= req.getParameter("number");
+        String number = req.getParameter("number");
         String userId = req.getParameter("user_id");
         ServiceResult result;
-        result = chatService.getChat(number,new BigInteger(userId));
-        returnJsonObject(resp,result);
+        result = chatService.getChat(number, new BigInteger(userId));
+        returnJsonObject(resp, result);
     }
 
     /**

@@ -57,4 +57,16 @@ public interface RemarkService {
      */
     ServiceResult listRemark(BigInteger momentId, int page);
 
+    /**
+     * 删除一条评论
+     *
+     * @param remarkId 评论id
+     * @name removeRemark
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    ServiceResult removeRemark(BigInteger remarkId);
+
+
 }

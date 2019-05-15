@@ -77,4 +77,20 @@ public class RemarkProvider extends Provider {
         result = remarkService.listRemark(new BigInteger(momentId), Integer.parseInt(page));
         returnJsonObject(resp, result);
     }
+
+    /**
+     * 提供删除朋友圈评论的业务流程
+     *
+     * @name deleteRemark
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    @Action(method = RequestMethod.DELETE_DO)
+    public void delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String remarkId = req.getParameter("remark_id");
+        ServiceResult result;
+        result = remarkService.removeRemark(new BigInteger(remarkId));
+        returnJsonObject(resp, result);
+    }
 }

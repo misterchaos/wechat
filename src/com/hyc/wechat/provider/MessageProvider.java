@@ -74,8 +74,14 @@ public class MessageProvider extends Provider {
     public void listUnreadMessage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter("user_id");
         String page = req.getParameter("page");
-        ServiceResult result = null;
-        result = messageService.listAllUnreadMessage(new BigInteger(userId), new Integer(page));
+        String chatId = req.getParameter("chat_id");
+        ServiceResult result;
+        //如果没有写chatId，则加载所有未读消息
+        if (chatId == null) {
+            result = messageService.listAllUnreadMessage(new BigInteger(userId), new Integer(page));
+        } else {
+            result = messageService.listUnreadMessage(new BigInteger(userId), new BigInteger(chatId), new Integer(page));
+        }
         returnJsonObject(resp, result);
     }
 

@@ -69,12 +69,13 @@ public interface ChatService {
      *
      * @param userId 用户id
      * @param number 群号
+     * @param apply  加群申请
      * @name joinChatByNumber
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/9
      */
-    ServiceResult joinChatByNumber(BigInteger userId, String number);
+    ServiceResult joinChatByNumber(BigInteger userId, String number, String apply);
 
     /**
      * 把成员从聊天中移除，如果该成员是聊天的最后一个成员</br>
@@ -87,7 +88,18 @@ public interface ChatService {
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/3
      */
-    ServiceResult quitChat(Member[] members);
+    ServiceResult quitChat(Member members);
+
+    /**
+     * 将一个成员从聊天中移除
+     *
+     * @param memberId 成员id
+     * @name removeFromChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    ServiceResult removeFromChat(BigInteger memberId);
 
     /**
      * 返回一个用户的所有聊天
@@ -103,14 +115,15 @@ public interface ChatService {
 
     /**
      * 通过用户id和群号获取一个聊天
-     * @name getChat
+     *
      * @param userId 用户id
      * @param number 聊天id
+     * @name getChat
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/14
      */
-    ServiceResult getChat(String number,BigInteger userId);
+    ServiceResult getChat(String number, BigInteger userId);
 
     /**
      * 删除一个聊天
@@ -157,6 +170,16 @@ public interface ChatService {
      */
     Message getHelloMessage(Member member);
 
-
+    /**
+     * 用来检查一个操作移除群成员的用户是否是群主
+     * @name isOwner
+     * @param memberId 成员
+     * @param userId 操作用户id
+     * @return
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/15
+     */
+    boolean isOwner(BigInteger memberId, BigInteger userId);
 
 }

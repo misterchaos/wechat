@@ -168,7 +168,7 @@ public class ChatServiceImpl implements ChatService {
      * @date 2019/5/9
      */
     @Override
-    public ServiceResult joinChatByNumber(BigInteger userId, String number) {
+    public ServiceResult joinChatByNumber(BigInteger userId, String number, String apply) {
         if (userId == null | number == null) {
             return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, null);
         }
@@ -181,6 +181,7 @@ public class ChatServiceImpl implements ChatService {
         Member member = new Member();
         member.setChatId(chat.getId());
         member.setUserId(userId);
+        member.setApply(apply);
         ServiceResult result = joinChat(new Member[]{member});
         if (Status.ERROR.equals(result.getStatus())) {
             return result;
@@ -221,6 +222,7 @@ public class ChatServiceImpl implements ChatService {
                 memberVO.setUserId(member.getUserId());
                 memberVO.setBackground(member.getBackground());
                 memberVO.setLevel(member.getLevel());
+                memberVO.setId(member.getId());
                 memberVOList.add(memberVO);
             }
         } catch (DaoException e) {
@@ -261,7 +263,7 @@ public class ChatServiceImpl implements ChatService {
                 if (memberDao.getMemberByUIdAndChatId(member.getUserId(), member.getChatId()) != null) {
                     return new ServiceResult(Status.ERROR, ServiceMessage.MEMBER_ALREADY_EXIST.message, members);
                 }
-                //将群成员昵称设置为用户的额=昵称
+                //将群成员昵称设置为用户的昵称
                 if (member.getGroupAlias() == null) {
                     member.setGroupAlias(user.getName());
                 }
@@ -281,10 +283,9 @@ public class ChatServiceImpl implements ChatService {
     }
 
     /**
-     * 把成员从聊天中移除，如果该成员是聊天的最后一个成员</br>
-     * 就将该聊天一并删除
+     * 退出群聊</br>
      *
-     * @param members 要移除的成员对象
+     * @param member 要移除的成员对象
      * @return 返回移除的成员对象
      * @name quitChat
      * @notice none
@@ -292,27 +293,61 @@ public class ChatServiceImpl implements ChatService {
      * @date 2019/5/3
      */
     @Override
-    synchronized public ServiceResult quitChat(Member[] members) {
+    synchronized public ServiceResult quitChat(Member member) {
+        if (member == null) {
+            return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, member);
+        }
         try {
-            for (Member member : members) {
-                //检查成员是否存在
-                if (memberDao.getMemberByUIdAndChatId(member.getUserId(), member.getChatId()) == null) {
-                    return new ServiceResult(Status.ERROR, ServiceMessage.MEMBER_NOT_FOUND.message, members);
-                }
-                //将该成员从聊天中移除
-                if (memberDao.delete(member) != 1) {
-                    return new ServiceResult(Status.ERROR, ServiceMessage.QUIT_CHAT_FAILED.message, members);
-                }
-                //将该聊天的成员减一
-                Chat chat = chatDao.getChatById(member.getChatId());
-                chat.setMember(chat.getMember() - 1);
-                chatDao.update(chat);
+            member = memberDao.getMemberByUIdAndChatId(member.getUserId(), member.getChatId());
+            ServiceResult result;
+            result = removeFromChat(member.getId());
+            if (Status.ERROR.equals(result.getStatus())) {
+                return result;
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, members);
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, member);
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.QUIT_CHAT_SUCCESS.message, members);
+        return new ServiceResult(Status.SUCCESS, ServiceMessage.QUIT_CHAT_SUCCESS.message, member);
+    }
+
+    /**
+     * 将一个成员从聊天中移除
+     *
+     * @param memberId 成员id
+     * @name removeFromChat
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    @Override
+    public ServiceResult removeFromChat(BigInteger memberId) {
+        if(memberId==null){
+            return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, null);
+        }
+        try {
+            //检查成员是否存在
+            if (memberDao.getMemberById(memberId) == null) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.MEMBER_NOT_FOUND.message, null);
+            }
+            Member member = memberDao.getMemberById(memberId);
+
+            //将该成员从聊天中移除
+            if (memberDao.delete(member) != 1) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.REMOVE_MEMBER_FAILED.message, memberId);
+            }
+            //将该聊天的成员减一
+            Chat chat = chatDao.getChatById(member.getChatId());
+            if (chat == null) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.CHAT_NOT_FOUND.message, memberId);
+            }
+            chat.setMember(chat.getMember() - 1);
+            chatDao.update(chat);
+        } catch (DaoException e) {
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, memberId);
+        }
+        return new ServiceResult(Status.SUCCESS, ServiceMessage.REMOVE_MEMBER_SUCCESS.message, memberId);
     }
 
 
@@ -458,6 +493,30 @@ public class ChatServiceImpl implements ChatService {
         message.setType(MessageType.USER.toString());
         message.setContent(member.getApply());
         return message;
+    }
+
+    /**
+     * 用来检查一个操作移除群成员的用户是否是群主
+     * @name isOwner
+     * @param memberId 成员
+     * @param userId 操作用户id
+     * @return
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/15
+     */
+    @Override
+    public boolean isOwner(BigInteger memberId, BigInteger userId) {
+    if (memberId == null || userId == null) {
+            return false;
+        }
+        Member member = memberDao.getMemberById(memberId);
+        Chat chat = chatDao.getChatById(member.getChatId());
+        if (userId.equals(chat.getOwnerId())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean isValidChatNumber(String chatNumber) {

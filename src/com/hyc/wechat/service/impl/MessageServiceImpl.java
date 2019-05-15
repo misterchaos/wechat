@@ -249,7 +249,7 @@ public class MessageServiceImpl implements MessageService {
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, DATABASE_ERROR.message, null);
         }
-        return new ServiceResult(Status.SUCCESS, null, list);
+        return new ServiceResult(Status.SUCCESS, null, messageVOList);
     }
 
     /**

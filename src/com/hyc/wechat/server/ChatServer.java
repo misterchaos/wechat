@@ -218,25 +218,41 @@ public class ChatServer {
     /**
      * 用于向系统中的在线用户的聊天管理map中添加新成员
      *
-     * @param member 成员
+     * @param newMember  成员
      * @param message 加群打招呼信息
      * @name addMember
      * @notice none
      * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
      * @date 2019/5/13
      */
-    public static void addMember(Member member,Message message) {
-        List<Member> memberList=MEMBER_DAO.listMemberByChatId(member.getChatId());
-        for (Member m:memberList) {
-            //从容器中获取该成员的server,添加成员并发送消息
-            ChatServer server = SERVER_MAP.get(String.valueOf(m.getUserId()));
+    public static void addMember(Member newMember, Message message) {
+        List<Member> memberList = MEMBER_DAO.listMemberByChatId(newMember.getChatId());
+        for (Member oldMember : memberList) {
+            //除开自己
+            if(newMember.getUserId().equals(oldMember.getUserId())){
+                continue;
+            }
+            //从容器中获取该新成员的server
+            ChatServer server = SERVER_MAP.get(String.valueOf(newMember.getUserId()));
+            //把一个旧成员加入这个新成员的memberMap
             if (server != null && server.session != null && server.session.isOpen()) {
-                server.memberMap.put(member.getId(), member);
-                //向该群成员发送打招呼消息
-                sendNotify(message,member.getUserId());
+                server.memberMap.put(oldMember.getId(), oldMember);
+            }
+            //把新成员自己加入到旧成员对方的memberMap
+            server = SERVER_MAP.get(String.valueOf(oldMember.getUserId()));
+            if (server != null && server.session != null && server.session.isOpen()) {
+                server.memberMap.put(newMember.getId(), newMember);
             }
         }
-
+        //使用该成员的server在这个聊天中向该群成员发送打招呼消息
+        ChatServer server = SERVER_MAP.get(String.valueOf(newMember.getUserId()));
+        if (server != null && server.session != null && server.session.isOpen()) {
+            try {
+                server.sendMessage(message, String.valueOf(newMember.getUserId()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

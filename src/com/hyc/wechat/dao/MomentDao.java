@@ -103,6 +103,6 @@ public interface MomentDao extends BaseDao {
      * @date 2019/5/10
      */
     @Result(entity = Moment.class, returns = ResultType.LIST)
-    @Query("select photo from " + TABLE + " where owner_id = ?  order by time limit ? offset ?  ")
+    @Query("select photo from " + TABLE + " where owner_id = ?  order by time desc limit ? offset ?  ")
     List<Moment> listPhoto(Object ownerId, int limit, int offset);
 }

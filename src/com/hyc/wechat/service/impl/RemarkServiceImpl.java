@@ -138,6 +138,39 @@ public class RemarkServiceImpl implements RemarkService {
         return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, remarkVOList);
     }
 
+    /**
+     * 删除一条评论
+     *
+     * @param remarkId 评论id
+     * @name removeRemark
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/14
+     */
+    @Override
+    public ServiceResult removeRemark(BigInteger remarkId) {
+        try {
+            //判空
+            if (remarkId == null) {
+                throw new ServiceException(ServiceMessage.NOT_NULL.message);
+            }
+            //检查是否存在
+            if (remarkDao.getRemarkById(remarkId) == null) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.NOT_FOUND.message, remarkId);
+            }
+            //删除
+            Remark Remark = new Remark();
+            Remark.setId(remarkId);
+            if (remarkDao.delete(Remark) != 1) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.PLEASE_REDO.message, Remark);
+            }
+        } catch (DaoException e) {
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, remarkId);
+        }
+        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, remarkId);
+    }
+
 
     /**
      * 检查一段内容是否合法
@@ -174,7 +207,9 @@ public class RemarkServiceImpl implements RemarkService {
         remarkVO.setUserName(user.getName());
         remarkVO.setUserPhoto(user.getPhoto());
         remarkVO.setLove(remark.getLove());
+        remarkVO.setReply(remark.getReply());
         remarkVO.setTime(remark.getTime());
+        remarkVO.setMomentId(remark.getMomentId());
         return remarkVO;
     }
 

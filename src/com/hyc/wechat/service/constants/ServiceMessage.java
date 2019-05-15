@@ -143,6 +143,10 @@ public enum ServiceMessage {
      * 退出聊天失败
      */
     QUIT_CHAT_FAILED("退出聊天失败，请重试"),
+    /**
+     * 不是群主
+     */
+    NOT_OWNER("您并不是该群的群主或管理员，没有权限进行此操作"),
 
     /*
      **************************************************************
@@ -169,6 +173,14 @@ public enum ServiceMessage {
      * 退出聊天成功
      */
     QUIT_CHAT_SUCCESS("退出聊天成功，以后你将收不到该聊天的任何信息"),
+    /**
+     * 移除聊天成员成功
+     */
+    REMOVE_MEMBER_SUCCESS("移除聊天成员成功"),
+    /**
+     * 移除聊天成员失败
+     */
+    REMOVE_MEMBER_FAILED("移除聊天成员失败"),
     /**
      * 当前没有聊天
      */
@@ -298,7 +310,7 @@ public enum ServiceMessage {
     /**
      * 没有更多
      */
-    NO_MORE("没有更多数据了,再次点击列表中的选项可以回到第一页"),
+    NO_MORE("没有更多数据了"),
     /**
      * 无评论
      */

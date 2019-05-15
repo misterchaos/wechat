@@ -264,6 +264,9 @@ public class MomentServiceImpl implements MomentService {
                 Moment moment = momentDao.getMomentById(news.getMomentId());
                 //获取朋友圈的发布者的用户信息
                 User user = userDao.getUserById(moment.getOwnerId());
+                if(user==null){
+                    return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, momentVOList);
+                }
                 //将朋友圈和动态信息转化成朋友圈视图层对象
                 toMomentVOObject(momentVOList, news, moment, user);
             }
