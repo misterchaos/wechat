@@ -17,6 +17,7 @@
 package com.hyc.wechat.service;
 
 import com.hyc.wechat.model.dto.ServiceResult;
+import com.hyc.wechat.model.po.Friend;
 import com.hyc.wechat.model.po.Moment;
 
 import java.math.BigInteger;
@@ -38,6 +39,19 @@ public interface MomentService {
      * @date 2019/5/7
      */
     ServiceResult insertMoment(Moment moment);
+
+
+    /**
+     * 给好友双方初始化朋友圈，互相添加动态
+     *
+     * @param friend 好友
+     * @return
+     * @name initNews
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/18
+     */
+    ServiceResult initNews(Friend friend);
 
     /**
      * 删除一条朋友圈

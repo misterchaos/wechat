@@ -21,16 +21,19 @@
   Time: 3:51
   To change this template use File | Settings | File Templates.
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="host" value="localhost:8080/wechat"/>
+<%--设置主机名--%>
 <html>
 <head>
-    <title>wechat</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=1920px, initial-scale=0.8,maximum-scale=0.8,user-scalable=0">
+    <title>wechat</title>
+    <link rel="shortcut icon" type=image/x-icon href=https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/jquery-3.4.1.js"></script>
+    <!--BEGIN——发送请求脚本-->
+    <!--END——发送请求脚本-->
 </head>
 <body>
 <div class="background">
@@ -38,8 +41,10 @@
     <div class="login-head" style="height: 100px">
         <div class="jumbotron" style="padding-bottom: 20px;padding-top:20px;margin:0px">
             <div class="logo">
-                <a href="${pageContext.request.contextPath}/index.jsp" style="color: #999;font-size: 44px;text-decoration: none"><img
-                        src="${pageContext.request.contextPath}/static/img/logo.png" alt="logo" style="width: 100px;margin: 10px">微信，是一种生活方式</h2>
+                <a href="${pageContext.request.contextPath}/index.jsp"
+                   style="color: #999;font-size: 44px;text-decoration: none"><img
+                        src="${pageContext.request.contextPath}/static/img/logo.png" alt="logo"
+                        style="width: 100px;margin: 10px">微信，是一种生活方式</h2>
                 </a>
             </div>
         </div>
@@ -51,30 +56,24 @@
     </script>
     <div class="input-box">
         <div class="color-input-field">
+            <form  action="http://${host}/wechat/user?method=login.do" method="post">
+                <input id="index" type="submit" style="display: none">
             <h2 class="input-box-title">邮箱登陆</h2>
-            <form action="${pageContext.request.contextPath}/wechat/user?method=login.do"
-                  method="post">
-                <c:if test="${data!=null}">
-                    <input type="text" required="required" class="form-control" name="email"
-                           value="${data.email}" placeholder="请输入登陆邮箱">
-                </c:if>
-                <c:if test="${data==null}">
-                    <input type="text" required="required" class="form-control" name="email"
-                           placeholder="请输入登陆邮箱">
-                </c:if>
-                <br/>
-                <input type="password" required="required" class="form-control" name="password"
-                       placeholder="请输入密码">
-                <div class="remember-me">
-                    <input type="checkbox" name="auto_login" value="true">记住登陆
-                </div>
-                <input type="submit" class="submit-button" value="登陆">
-            </form>
+            <input type="text" required="required" class="form-control" id="email"
+                   value="${param.email}" name="email" placeholder="请输入登陆邮箱" >
+            <br/>
+            <input id="password" type="password" required="required" class="form-control" name="password"
+                   placeholder="请输入密码">
+            <div class="remember-me">
+                <input id="option" name="auto_login" type="checkbox" value="true">记住登陆
+            </div>
+            <input type="submit" class="submit-button" value="登陆">
             <br>
             <div class="switch-button">
                 <a href="${pageContext.request.contextPath}/register.jsp">立即注册</a>
-                <a href="${pageContext.request.contextPath}/wechat/user?method=login.do&wechatId=visitor">游客模式</a>
+                <a href="http://${host}/wechat/user?method=login.do&email=visitor" onclick="visitor()">| 游客模式</a>
             </div>
+            </form>
         </div>
     </div>
 </div>
@@ -82,7 +81,7 @@
 </body>
 <style type="text/css">
     .background {
-        height: 100%;
+        height: -webkit-fill-available;
         min-height: 750px;
         text-align: center;
         font-size: 14px;
@@ -129,7 +128,7 @@
 
     .submit-button {
         margin-top: 20px;
-        background-color:#1AAD19;
+        background-color: #1AAD19;
         color: #FFFFFF;
         padding: 9px 18px;
         border-radius: 5px;

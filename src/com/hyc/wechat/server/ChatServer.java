@@ -70,7 +70,7 @@ public class ChatServer {
     /**
      * 启动一个消息队列缓存
      */
-    private final ScheduledExecutorService service = new ScheduledThreadPoolExecutor(10);
+    private static final ScheduledExecutorService SERVICE = new ScheduledThreadPoolExecutor(10);
     /**
      * 用于记录当前系统在线用户人数
      */
@@ -124,7 +124,7 @@ public class ChatServer {
             }
         }
         //启动消息队列的定时器，定时将消息存入数据库
-        service.scheduleAtFixedRate(server.messageTask, INIT_DELAY, SAVE_PERIOD_SECOND, TimeUnit.SECONDS);
+        SERVICE.scheduleAtFixedRate(server.messageTask, INIT_DELAY, SAVE_PERIOD_SECOND, TimeUnit.SECONDS);
         //加载用户所在的所有聊天中的所有成员
         List<Chat> chatList = CHAT_DAO.listByUserId(userId);
         for (Chat chat : chatList) {

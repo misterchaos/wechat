@@ -70,7 +70,7 @@ public class MomentServiceImpl implements MomentService {
                 throw new ServiceException(ServiceMessage.NOT_NULL.message);
             }
             //检查长度
-            if(moment.getContent().length()>400){
+            if(moment.getContent().length()>800){
                 return new ServiceResult(Status.ERROR, ServiceMessage.CONTENT_TOO_LONG.message, moment);
             }
             //检查内容
@@ -111,6 +111,42 @@ public class MomentServiceImpl implements MomentService {
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, moment);
         }
         return new ServiceResult(Status.SUCCESS, message.append(ServiceMessage.POST_MOMENT_SUCCESS.message).toString(), moment);
+    }
+
+    /**
+     * 给好友双方初始化朋友圈，互相添加动态
+     *
+     * @param friend 好友
+     * @return
+     * @name initNews
+     * @notice none
+     * @author <a href="mailto:kobe524348@gmail.com">黄钰朝</a>
+     * @date 2019/5/18
+     */
+    @Override
+    public ServiceResult initNews(Friend friend) {
+        if(friend==null|friend.getFriendId()==null||friend.getUserId()==null){
+            return new ServiceResult(Status.ERROR, ServiceMessage.PARAMETER_NOT_ENOUGHT.message, null);
+        }
+        try{
+        List<Moment> momentList = momentDao.listMyMomentByOwnerIdDesc(friend.getUserId(), 1000, 0);
+        for (Moment moment : momentList) {
+            News news = new News();
+            news.setMomentId(moment.getId());
+            news.setUserId(friend.getFriendId());
+            newsDao.insert(news);
+        }
+        momentList =momentDao.listMyMomentByOwnerIdDesc(friend.getFriendId(), 1000, 0);
+        for (Moment moment : momentList) {
+            News news = new News();
+            news.setMomentId(moment.getId());
+            news.setUserId(friend.getUserId());
+            newsDao.insert(news);
+        }}catch (DaoException e){
+            e.printStackTrace();
+            return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
+        }
+        return new ServiceResult(Status.SUCCESS,null,null);
     }
 
     /**
@@ -223,7 +259,7 @@ public class MomentServiceImpl implements MomentService {
         } catch (DaoException e) {
             e.printStackTrace();
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, momentVOList);
+        return new ServiceResult(Status.SUCCESS,null, momentVOList);
     }
 
     /**
@@ -269,12 +305,19 @@ public class MomentServiceImpl implements MomentService {
                 }
                 //将朋友圈和动态信息转化成朋友圈视图层对象
                 toMomentVOObject(momentVOList, news, moment, user);
+                //统计浏览量
+                if(!news.getViewed()){
+                    moment.setView(moment.getView()+1L);
+                    momentDao.update(moment);
+                    news.setViewed(true);
+                    newsDao.update(news);
+                }
             }
         } catch (DaoException e) {
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, momentVOList);
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, momentVOList);
+        return new ServiceResult(Status.SUCCESS,null, momentVOList);
     }
 
     /**
@@ -312,7 +355,7 @@ public class MomentServiceImpl implements MomentService {
         } catch (DaoException e) {
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, null);
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, news.getLoved());
+        return new ServiceResult(Status.SUCCESS,null, news.getLoved());
     }
 
     /**
@@ -351,7 +394,7 @@ public class MomentServiceImpl implements MomentService {
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, photoList);
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, photoList);
+        return new ServiceResult(Status.SUCCESS, null, photoList);
     }
 
     /**

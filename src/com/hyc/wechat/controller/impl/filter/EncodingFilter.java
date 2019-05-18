@@ -63,6 +63,13 @@ public class EncodingFilter implements Filter {
             req.setCharacterEncoding(ENCODING);
             resp.setContentType("text/html;charset=utf-8");
             resp.setCharacterEncoding(ENCODING);
+            resp.addHeader("Access-Control-Allow-Origin", "*");
+            resp.addHeader("Access-Control-Allow-Headers",
+                    "origin, content-type, accept, x-requested-with, sid, mycustom, smuser");
+            resp.addHeader("Access-Control-Allow-Methods", "*");
+            resp.addHeader("Access-Control-Max-Age", "100");
+            resp.addHeader("Access-Control-Allow-Credentials", "false");
+
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (IOException | ServletException e) {
             e.printStackTrace();

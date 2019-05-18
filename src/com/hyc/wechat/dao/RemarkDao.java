@@ -45,7 +45,7 @@ public interface RemarkDao extends BaseDao{
      * @date 2019/5/14
      */
     @Result(entity = Remark.class, returns = ResultType.LIST)
-    @Query("select " + ALL_FIELD + " from " + TABLE + " where moment_id = ?  order by time desc limit ? offset ?  ")
+    @Query("select " + ALL_FIELD + " from " + TABLE + " where moment_id = ?  order by time limit ? offset ?  ")
     List<Remark> listRemarkDesc(Object momentId, int limit, int offset);
 
     /**

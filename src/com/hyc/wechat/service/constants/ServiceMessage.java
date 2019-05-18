@@ -89,7 +89,7 @@ public enum ServiceMessage {
     /**
      * 登陆成功
      */
-    LOGIN_SUCCESS("登陆成功，欢迎回来"),
+    LOGIN_SUCCESS("登陆成功，欢迎进入wechat在线聊天系统"),
     /**
      * 退出登陆成功
      */
@@ -182,6 +182,10 @@ public enum ServiceMessage {
      */
     REMOVE_MEMBER_FAILED("移除聊天成员失败"),
     /**
+     * 不可移除好友
+     */
+    CANNOT_REMOVE_FRIEND("该成员所处的聊天是好友私聊，不可移除，您可以选择删除该好友"),
+    /**
      * 当前没有聊天
      */
     NO_CHAT_NOW("您当前没有加入任何聊天，请先添加好友或者加入群聊吧"),
@@ -268,6 +272,10 @@ public enum ServiceMessage {
      * 不可删除系统账号
      */
     CANNOT_DELETE_SYSTEM("这是系统账号，负责提供消息推送功能，不可以被删除"),
+    /**
+     * 不可删除开发者账号
+     */
+    CANNOT_DELETE_HYC("这是开发者账号，他掌握着本系统的后台数据库，所以你是删不掉的哈哈哈"),
     /*
      **************************************************************
      *             聊天记录服务消息

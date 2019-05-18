@@ -61,25 +61,26 @@ public class LoginFilter implements Filter {
         String path = uri.substring(contextPath.length());
         HttpSession sess = req.getSession(false);
 
+        //尝试自动登陆
+        userProvider.autoLogin(req);
+        sess=req.getSession();
         //放行登陆注册
-        if (WebPage.LOGIN_JSP.toString().equalsIgnoreCase(path) ||
-                (WebPage.REGISTER_JSP.toString()).equalsIgnoreCase(path) ||
-                (RequestMethod.LOGIN_DO.toString()).equalsIgnoreCase(method) ||
-                (RequestMethod.REGISTER_DO.toString()).equalsIgnoreCase(method) ||
-                path.endsWith("logo.png")) {
-            filterChain.doFilter(req, resp);
-            return;
-        } else {
-            if (sess == null) {
-                //如果没有session，尝试调用自动登陆，写入‘login’属性
-                userProvider.autoLogin(req);
-            }
-            sess = req.getSession();
-            //检查session是否有'login'属性,没有则重定向到登陆界面
-            if (sess == null || sess.getAttribute("login") == null) {
-                req.getRequestDispatcher(WebPage.LOGIN_JSP.toString()).forward(req, resp);
+        if (sess == null || sess.getAttribute("login") == null) {
+            if (WebPage.LOGIN_JSP.toString().equalsIgnoreCase(path) ||
+                    (WebPage.REGISTER_JSP.toString()).equalsIgnoreCase(path) ||
+                    (RequestMethod.LOGIN_DO.toString()).equalsIgnoreCase(method) ||
+                    (RequestMethod.REGISTER_DO.toString()).equalsIgnoreCase(method) ||
+                    path.endsWith("logo.png") || path.endsWith(".js") || path.endsWith("agreement.html")) {
+                filterChain.doFilter(req, resp);
                 return;
+            } else {
+                //检查session是否有'login'属性,没有则重定向到登陆界面
+                if (sess == null || sess.getAttribute("login") == null) {
+                    req.getRequestDispatcher(WebPage.LOGIN_JSP.toString()).forward(req, resp);
+                    return;
+                }
             }
+        }else {
             //已登陆用户检查登陆身份
             if (path.startsWith("/wechat/moment") || path.startsWith("/wechat/friend")) {
                 //检查登陆身份
@@ -91,6 +92,7 @@ public class LoginFilter implements Filter {
                 }
             }
         }
+
         filterChain.doFilter(req, resp);
     }
 

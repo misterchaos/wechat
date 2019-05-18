@@ -108,7 +108,7 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public ServiceResult listAllMessage(Object userId, Object chatId, int page) {
-        int limit = 20;
+        int limit = 200;
         int offset = (page - 1) * limit;
         //检查页数
         if (offset < 0) {

@@ -108,8 +108,8 @@ public class StringUtils {
         String htmlLabel = "<[^>]+>";
         str = str.replaceAll(htmlLabel, "");
         str = str.replace("\"", "");
-        str = str.replaceAll("\\s*|\t|\r|\n", "");
-        return str.trim();
+        str = str.replaceAll("\t|\r|\n", "");
+        return str;
     }
 
     /**

@@ -135,7 +135,7 @@ public class RemarkServiceImpl implements RemarkService {
             e.printStackTrace();
             return new ServiceResult(Status.ERROR, ServiceMessage.DATABASE_ERROR.message, remarkVOList);
         }
-        return new ServiceResult(Status.SUCCESS, ServiceMessage.OPERATE_SUCCESS.message, remarkVOList);
+        return new ServiceResult(Status.SUCCESS, null, remarkVOList);
     }
 
     /**
@@ -159,10 +159,15 @@ public class RemarkServiceImpl implements RemarkService {
                 return new ServiceResult(Status.ERROR, ServiceMessage.NOT_FOUND.message, remarkId);
             }
             //删除
-            Remark Remark = new Remark();
-            Remark.setId(remarkId);
-            if (remarkDao.delete(Remark) != 1) {
-                return new ServiceResult(Status.ERROR, ServiceMessage.PLEASE_REDO.message, Remark);
+            Remark remark = remarkDao.getRemarkById(remarkId);
+            if (remarkDao.delete(remark) != 1) {
+                return new ServiceResult(Status.ERROR, ServiceMessage.PLEASE_REDO.message, remark);
+            }
+            //将评论数减一
+            Moment moment = momentDao.getMomentById(remark.getMomentId());
+            moment.setRemark(moment.getRemark() - 1L);
+            if (momentDao.update(moment) != 1) {
+                throw new ServiceException("无法更新该朋友圈的评论数" + moment.toString());
             }
         } catch (DaoException e) {
             e.printStackTrace();

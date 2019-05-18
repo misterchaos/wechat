@@ -205,10 +205,7 @@ public class FriendServiceImpl implements FriendService {
         if (friend == null) {
             return new ServiceResult(Status.ERROR, PARAMETER_NOT_ENOUGHT.message, friend);
         }
-        //不可移除系统账号
-        if(UserServiceImpl.systemId.equals(friend.getFriendId())||UserServiceImpl.systemId.equals(friend.getUserId())){
-            return new ServiceResult(Status.ERROR,CANNOT_DELETE_SYSTEM.message, friend);
-        }
+
         try {
             //检查成员是否存在
             if (friendDao.getFriendByUIDAndFriendId(friend.getUserId(), friend.getFriendId()) != null) {

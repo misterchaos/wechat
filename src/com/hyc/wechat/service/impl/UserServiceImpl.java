@@ -52,6 +52,10 @@ public class UserServiceImpl implements UserService {
      * 系统账号id
      */
     public static final BigInteger systemId = BigInteger.valueOf(0);
+    /**
+     * 开发者账号
+     */
+    public static final BigInteger hycId = BigInteger.valueOf(1);
 
 
     /**

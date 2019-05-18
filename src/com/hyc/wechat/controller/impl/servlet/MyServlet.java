@@ -39,8 +39,8 @@ import static com.hyc.wechat.provider.Provider.toErrorPage;
  * @description 接收客户端请求，将其转发到controller
  * @date 2019-05-02 03:28
  */
-//@MultipartConfig(location = "/home/pan/tomcat/webapps/wechat/upload")
-@MultipartConfig(location = "C:\\Users\\Misterchaos\\Documents\\Java Develop Workplaces\\IDEA workspace\\wechat\\out\\artifacts\\wechat_war_exploded\\upload")
+@MultipartConfig(location = "/home/pan/tomcat/webapps/wechat/upload")
+//@MultipartConfig(location = "C:\\Users\\Misterchaos\\Documents\\Java Develop Workplaces\\IDEA workspace\\wechat\\out\\artifacts\\wechat_war_exploded\\upload")
 @WebServlet("/wechat/*")
 public class MyServlet extends HttpServlet {
 

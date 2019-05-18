@@ -33,6 +33,7 @@ import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.hyc.wechat.util.StringUtils.toLegalText;
 import static com.hyc.wechat.util.UUIDUtils.getUUID;
 
 /**
@@ -77,6 +78,8 @@ public class ChatServiceImpl implements ChatService {
             if (!isValidChatNumber(chat.getNumber())) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.CHAT_NUMBER_INVALID.message, chat);
             }
+            //群名
+            chat.setName(toLegalText(chat.getName()));
             //检查群号是否已存在
             if (chatDao.getByChatNumber(chat.getNumber()) != null) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.CHAT_NUMBER_ALREADT_EXIST.message, chat);
@@ -331,13 +334,17 @@ public class ChatServiceImpl implements ChatService {
                 return new ServiceResult(Status.ERROR, ServiceMessage.MEMBER_NOT_FOUND.message, null);
             }
             Member member = memberDao.getMemberById(memberId);
+            Chat chat = chatDao.getChatById(member.getChatId());
+            //不可移除好友
+            if(ChatType.FRIEND.toString().equalsIgnoreCase(chat.getType())){
+                return new ServiceResult(Status.ERROR, ServiceMessage.CANNOT_REMOVE_FRIEND.message, memberId);
+            }
 
             //将该成员从聊天中移除
             if (memberDao.delete(member) != 1) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.REMOVE_MEMBER_FAILED.message, memberId);
             }
             //将该聊天的成员减一
-            Chat chat = chatDao.getChatById(member.getChatId());
             if (chat == null) {
                 return new ServiceResult(Status.ERROR, ServiceMessage.CHAT_NOT_FOUND.message, memberId);
             }

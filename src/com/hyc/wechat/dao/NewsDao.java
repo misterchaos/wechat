@@ -44,7 +44,7 @@ public interface NewsDao extends BaseDao {
      * @date 2019/5/7
      */
     @Result(entity = News.class, returns = ResultType.LIST)
-    @Query("select " + ALL_FIELD + " from " + TABLE + " where user_id = ?  order by gmt_create limit ? offset ?  ")
+    @Query("select " + ALL_FIELD + " from " + TABLE + " where user_id = ?  order by gmt_create desc limit ? offset ?  ")
     List<News> listNewsByUserId(Object userId, int limit, int offset);
 
 
