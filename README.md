@@ -1,34 +1,27 @@
 
 # wechat在线聊天系统使用说明书
 #### QG工作室终期考核：QG版微信（黄钰朝）
-------
-欢迎使用本软件，wechat是一个在线聊天系统，主要由在线聊天，账户管理，好友管理，聊天记录管理，聊天群组，朋友圈，相册等功能模块所组成。程序使用java作为后台开发语言，tomcat服务器，以及mysql数据库，以jsp实现界面展示，使用websocket和ajax，以及json实现前后端数据传输
 
-------
+wechat是一个在线聊天系统，主要由在线聊天，账户管理，好友管理，聊天记录管理，聊天群组，朋友圈，相册等功能模块所组成。程序使用java作为后台开发语言，tomcat服务器，以及mysql数据库，以jsp实现界面展示，使用websocket和ajax，以及json实现前后端数据传输
+
+
+### Quick Start
+### :heavy_check_mark:[点击这里](http://www.cxkball.club:9090/wechat/)在线体验本聊天系统
 # 开发者信息：
->开发者：黄钰朝
->联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a>
->项目启动时间：2019-05-01
->版本号：1.0
->发布时间：2019-01-10
->开源许可：Apache License 2.0
->开发环境：
-Idea IntelliJ IDEA 2019.1.1 (Ultimate Edition)
-Build #IU-191.6707.61, built on April 16, 2019
-Licensed to wu anjun
-Subscription is active until January 8, 2020
-JRE: 1.8.0_202-release-1483-b44 amd64
-JVM: OpenJDK 64-Bit Server VM by JetBrains s.r.o
-Windows 10 10.0
-
-------
-# 目录
-> * 安装运行
-> * 功能介绍
-> * 错误处理
-> * 版权声明
-
-------
+> 开发者：黄钰朝</br>
+> 联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a></br>
+> 项目启动时间：2019-05-01</br>
+> 版本号：1.0</br>
+> 发布时间：2019-01-10</br></br>
+> 开源许可：Apache License 2.0</br>
+> 开发环境：</br>
+Idea IntelliJ IDEA 2019.1.1 (Ultimate Edition)</br></br>
+Build #IU-191.6707.61, built on April 16, 2019</br>
+Licensed to wu anjun</br>
+Subscription is active until January 8, 2020</br>
+JRE: 1.8.0_202-release-1483-b44 amd64</br>
+JVM: OpenJDK 64-Bit Server VM by JetBrains s.r.o</br>
+Windows 10 10.0</br>
 
 # 安装环境说明
 ###  安装环境
