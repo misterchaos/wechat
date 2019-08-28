@@ -7,6 +7,16 @@
         <element id="directory" name="classes">
           <element id="module-output" name="wechat" />
         </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="mysql-connector-java-8.0.15" />
+          <element id="library" level="project" name="tomcat-juli" />
+          <element id="library" level="project" name="tomcat-api" />
+          <element id="library" level="project" name="tomcat-util" />
+          <element id="library" level="project" name="tomcat-websocket" />
+          <element id="library" level="project" name="websocket-api" />
+          <element id="library" level="project" name="log4j-1.2.17" />
+          <element id="library" level="project" name="fastjson-1.2.58" />
+        </element>
       </element>
     </root>
   </artifact>

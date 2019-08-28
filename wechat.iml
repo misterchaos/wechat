@@ -19,5 +19,15 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="jsp-api" level="project" />
+    <orderEntry type="library" name="mysql-connector-java-8.0.15" level="project" />
+    <orderEntry type="library" name="servlet-api" level="project" />
+    <orderEntry type="library" name="log4j-1.2.17" level="project" />
+    <orderEntry type="library" name="websocket-api" level="project" />
+    <orderEntry type="library" name="tomcat-websocket" level="project" />
+    <orderEntry type="library" name="tomcat-util" level="project" />
+    <orderEntry type="library" name="tomcat-api" level="project" />
+    <orderEntry type="library" name="tomcat-juli" level="project" />
+    <orderEntry type="library" name="fastjson-1.2.58" level="project" />
   </component>
 </module>
