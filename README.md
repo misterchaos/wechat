@@ -3,16 +3,21 @@
 ---------
 
 [![release](https://img.shields.io/badge/release-1.0.0-green)](https://github.com/misterchaos/wechat/releases)
+[![release](https://img.shields.io/badge/version-beta-orange)](https://github.com/misterchaos/wechat/releases)
+[![release](https://img.shields.io/badge/build-passing-green)](https://github.com/misterchaos/wechat/releases)
 
 ## Introduction
 
 QG工作室终期考核项目：QG版微信（黄钰朝）
 
-wechat是一个在线聊天系统，提供在线聊天，账户管理，好友管理，聊天记录管理，聊天群组，朋友圈，相册等功能。程序使用java作为后台开发语言，tomcat服务器，以及mysql数据库，以jsp实现界面展示，使用websocket和ajax，以及json实现前后端数据传输
+wechat是一个在线聊天系统，提供实时聊天，账户管理，好友管理，聊天记录管理，聊天群组，朋友圈，相册等功能</br>
+后台技术：Java,tomcat,mysql,servlet,jsp</br>
+前端技术：html,js,css,ajax</br>
+通信技术：websocket,json</br>
 
 ## Quick Start
 
-### :heavy_check_mark:[点击这里](http://www.cxkball.club:9090/wechat/)在线体验本聊天系统
+### :heavy_check_mark:[点击这里](http://www.cxkball.club:9090/wechat/)立即体验
 
 ## Information
 
@@ -20,7 +25,7 @@ wechat是一个在线聊天系统，提供在线聊天，账户管理，好友�
 联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a></br>
 项目启动时间：2019-05-01</br>
 版本号：1.0.0</br>
-发布时间：2019-05-10</br></br>
+发布时间：2019-05-10</br>
 开源许可：Apache License 2.0</br>
 
 ## Features
@@ -29,8 +34,8 @@ wechat是一个在线聊天系统，提供在线聊天，账户管理，好友�
 
 登陆页面可以选择输入邮箱号和密码进行登陆，登陆之后将进入程序的主页面，也可以选择跳转到注册页面进行账号注册，还可以选择游客模式快速登陆，这种方式无须用户操作，系统将自动注册一个游客账号，并自动通过登陆验证，同样会进入程序的主页面，但是进入的是功能受限模式，无法使用好友和朋友圈的功能。输入框的左下角还有一个自动登陆选项，如果用户选择该选项，则在30天内在此浏览器上会执行自动登陆功能。
 
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg)
 
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg)
  
 
 #### 2.游客模式
