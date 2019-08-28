@@ -6,7 +6,7 @@
 [![release](https://img.shields.io/badge/version-beta-orange)](https://github.com/misterchaos/wechat/releases)
 [![release](https://img.shields.io/badge/build-passing-green)](https://github.com/misterchaos/wechat/releases)
 
-## Introduction
+## :smile:Introduction
 
 QG工作室终期考核项目：QG版微信（黄钰朝）
 
@@ -15,11 +15,12 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 前端技术：html,js,css,ajax</br>
 通信技术：websocket,json</br>
 
-## Quick Start
+## :heavy_check_mark:Quick Start
 
-### :heavy_check_mark:[点击这里](http://www.cxkball.club:9090/wechat/)立即体验
+### :point_right:[点击这里](http://www.cxkball.club:9090/wechat/)立即体验
 
-## Information
+
+## :bulb:Information
 
 开发者：黄钰朝</br>
 联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a></br>
@@ -28,101 +29,29 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 发布时间：2019-05-10</br>
 开源许可：Apache License 2.0</br>
 
-## Features
+## :sunny:Features
 
 #### 1.登陆页面
 
-登陆页面可以选择输入邮箱号和密码进行登陆，登陆之后将进入程序的主页面，也可以选择跳转到注册页面进行账号注册，还可以选择游客模式快速登陆，这种方式无须用户操作，系统将自动注册一个游客账号，并自动通过登陆验证，同样会进入程序的主页面，但是进入的是功能受限模式，无法使用好友和朋友圈的功能。输入框的左下角还有一个自动登陆选项，如果用户选择该选项，则在30天内在此浏览器上会执行自动登陆功能。
-
-
-![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/聊天功能.png)
+登陆页面可以选择输入邮箱号和密码进行登陆，登陆之后将进入程序的主页面，也可以选择跳转到注册页面进行账号注册，还可以选择游客模式快速登陆，这种方式无须用户操作，系统将自动注册一个游客账号，并自动通过登陆验证，同样会进入程序的主页面，但是进入的是功能受限模式，无法使用好友和朋友圈的功能。输入框的左下角还有一个自动登陆选项，如果用户选择该选项，则在30天内在此浏览器上会执行自动登陆功能
+![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/登陆页面.jpg)
  
 
-#### 2.游客模式
+#### 2.聊天功能
 
-这是游客模式，游客模式自动分配的用户昵称都是“游客”，并且被自动加入到聊天总群中，自动和“微信团队”账号建立好友关系，
+聊天功能包括一对一单聊，多人群聊，聊天中可以发送文字，图片，文件等不同类型的消息内容，同时提供了保存聊天记录的功能，可以加载漫游的聊天记录，还支持自由更换聊天背景等个性化设置
+![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/聊天功能.jpg)
 
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image004.jpg)
+#### 3.朋友圈功能
 
-#### 3.游客模式
+用户可以查看好友的朋友圈，发布自己的朋友圈，朋友圈支持点赞和评论功能
+![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/朋友圈功能.jpg)
 
-游客的好友功能和朋友圈功能被限制，当他尝试使用该功能时，会弹出如图所示的提示
+#### 4.项目亮点
 
- 
+![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/项目亮点.jpg)
 
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image006.jpg)
-
- 
-
-#### 4.用户模式
-
-使用邮箱注册之后的初始个人昵称是邮箱账号
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image008.jpg)
-
- 
-
-#### 5.修改个人信息
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image010.jpg)
-
- 
-
- 
-
-#### 6.在聊天中发送不同类型的信息
-
-#### ![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image012.jpg)
-
- 
-
-#### 7.朋友圈
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image014.jpg)
-
- 
-
-#### 8.发送好友申请
-
- 
-
- 
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image016.jpg)
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image018.jpg)
-
- 
-
- 
-
-#### 9.实时聊天
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image020.jpg)
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image022.jpg)
-
- 
-
- 
-
- 
-
-#### 10.朋友圈
-
- 
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image024.jpg)
-
- 
-
- 
-
- 
-
- 
-
-## Installation
+## :triangular_flag_on_post:Installation
 
 #### 安装环境
 
@@ -146,7 +75,7 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 
 如果运行环境的主机名不是localhost:8080，需要修改/web/views/index.jsp文件的第二行配置，将host的值改为对应的主机名
 
-## Problems
+## :question:Problems
 
 #### 一直提示访问参数不足？
 
@@ -156,7 +85,7 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 
 检查一下upload文件夹有没有配置路径映射...
 
-## License
+## :star:License
 
 本软件仅供交流学习，不得用于商业用途
 
