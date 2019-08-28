@@ -24,9 +24,8 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 
 开发者：黄钰朝</br>
 联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a></br>
-项目启动时间：2019-05-01</br>
+项目开发时间：2019-05-01至2019-05-10</br>
 版本号：1.0.0</br>
-发布时间：2019-05-10</br>
 开源许可：Apache License 2.0</br>
 
 ## :sunny:Features
