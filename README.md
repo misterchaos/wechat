@@ -19,7 +19,8 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 
 ### :point_right:[点击这里](http://www.cxkball.club:9090/wechat/)立即体验
 
-## Information
+
+## :bulb:Information
 
 开发者：黄钰朝</br>
 联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a></br>
