@@ -1,167 +1,170 @@
+# wechat
 
-# wechat在线聊天系统使用说明书
-#### QG工作室终期考核：QG版微信（黄钰朝）
+---------
 
-wechat是一个在线聊天系统，主要由在线聊天，账户管理，好友管理，聊天记录管理，聊天群组，朋友圈，相册等功能模块所组成。程序使用java作为后台开发语言，tomcat服务器，以及mysql数据库，以jsp实现界面展示，使用websocket和ajax，以及json实现前后端数据传输
+[![release](https://img.shields.io/badge/release-1.0.0-green)](https://github.com/misterchaos/wechat/releases)
 
+## Introduction
 
-### Quick Start
+QG工作室终期考核项目：QG版微信（黄钰朝）
+
+wechat是一个在线聊天系统，提供在线聊天，账户管理，好友管理，聊天记录管理，聊天群组，朋友圈，相册等功能。程序使用java作为后台开发语言，tomcat服务器，以及mysql数据库，以jsp实现界面展示，使用websocket和ajax，以及json实现前后端数据传输
+
+## Quick Start
+
 ### :heavy_check_mark:[点击这里](http://www.cxkball.club:9090/wechat/)在线体验本聊天系统
-# 开发者信息：
-> 开发者：黄钰朝</br>
-> 联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a></br>
-> 项目启动时间：2019-05-01</br>
-> 版本号：1.0</br>
-> 发布时间：2019-01-10</br></br>
-> 开源许可：Apache License 2.0</br>
-> 开发环境：</br>
-Idea IntelliJ IDEA 2019.1.1 (Ultimate Edition)</br></br>
-Build #IU-191.6707.61, built on April 16, 2019</br>
-Licensed to wu anjun</br>
-Subscription is active until January 8, 2020</br>
-JRE: 1.8.0_202-release-1483-b44 amd64</br>
-JVM: OpenJDK 64-Bit Server VM by JetBrains s.r.o</br>
-Windows 10 10.0</br>
 
-# 安装环境说明
-###  安装环境
+## Information
+
+开发者：黄钰朝</br>
+联系邮箱：<a href="mailto:kobe524348@gmail.com">kobe524348@gmail.com</a></br>
+项目启动时间：2019-05-01</br>
+版本号：1.0.0</br>
+发布时间：2019-05-10</br></br>
+开源许可：Apache License 2.0</br>
+
+## Features
+
+#### 1.登陆页面
+
+登陆页面可以选择输入邮箱号和密码进行登陆，登陆之后将进入程序的主页面，也可以选择跳转到注册页面进行账号注册，还可以选择游客模式快速登陆，这种方式无须用户操作，系统将自动注册一个游客账号，并自动通过登陆验证，同样会进入程序的主页面，但是进入的是功能受限模式，无法使用好友和朋友圈的功能。输入框的左下角还有一个自动登陆选项，如果用户选择该选项，则在30天内在此浏览器上会执行自动登陆功能。
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg)
+
+ 
+
+#### 2.游客模式
+
+这是游客模式，游客模式自动分配的用户昵称都是“游客”，并且被自动加入到聊天总群中，自动和“微信团队”账号建立好友关系，
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image004.jpg)
+
+#### 3.游客模式
+
+游客的好友功能和朋友圈功能被限制，当他尝试使用该功能时，会弹出如图所示的提示
+
+ 
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image006.jpg)
+
+ 
+
+#### 4.用户模式
+
+使用邮箱注册之后的初始个人昵称是邮箱账号
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image008.jpg)
+
+ 
+
+#### 5.修改个人信息
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image010.jpg)
+
+ 
+
+ 
+
+#### 6.在聊天中发送不同类型的信息
+
+#### ![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image012.jpg)
+
+ 
+
+#### 7.朋友圈
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image014.jpg)
+
+ 
+
+#### 8.发送好友申请
+
+ 
+
+ 
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image016.jpg)
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image018.jpg)
+
+ 
+
+ 
+
+#### 9.实时聊天
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image020.jpg)
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image022.jpg)
+
+ 
+
+ 
+
+ 
+
+#### 10.朋友圈
+
+ 
+
+![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image024.jpg)
+
+ 
+
+ 
+
+ 
+
+ 
+
+## Installation
+
+#### 安装环境
+
 > Tomcat版本：9.0.17
 > Jdk 版本：1.8
 > MySQL版本：5.7
-###  配置说明
+
+#### 配置说明
+
 - 数据库配置文件路径：wechat/src/data_source.properties
 - sql文件路径: wechat/wechat.sql
 - 数据库配置：
-##### 配置文件中已配置阿里云服务器中的数据库，在联网情况下可以不用配置数据库，如果要更换数据库服务器，在运行sql文件时要将数据一并获取，否则需要在数据库chat表添加一个id为0的记录，作为聊天总群，并且在group表添加一个id为0的记录，作为默认好友分组，否则程序无法正常运行
--  web.xml配置说明：
-##### \<multipart-config>中\<location>的值为上传文件路径，需要改为项目文件中upload文件夹在系统中的绝对路径，并且在idea的tomcat的deployment配置中配置web目录的application context 为空
+
+配置文件中已配置阿里云服务器中的数据库，在联网情况下可以不用配置数据库，如果要更换数据库服务器，在运行sql文件时要将数据一并获取，否则需要在数据库chat表添加一个id为0的记录，作为聊天总群，并且在group表添加一个id为0的记录，作为默认好友分组，否则程序无法正常运行
+
+- web.xml配置说明：
+
+<multipart-config>中\<location>的值为上传文件路径，需要改为项目文件中upload文件夹在系统中的绝对路径，并且idea的tomcat的deployment配置中配置web目录的application context 为空
+
 - 服务器主机名配置
-##### 如果运行环境的主机名不是localhost:8080，需要修改/web/views/index.jsp文件的第二行配置，将host的值改为对应的主机名
-### 如果参照以上配置仍然存在问题，请参照本文档错误处理部分
 
+如果运行环境的主机名不是localhost:8080，需要修改/web/views/index.jsp文件的第二行配置，将host的值改为对应的主机名
 
+## Problems
 
+#### 一直提示访问参数不足？
 
-----------
-# 功能介绍
-
-## 1. 账户管理
-
-#### 注册账号
-#### 登陆系统
-
-- 自动登陆
--  游客模式
-
-####  个人信息管理
-
-- 修改微信号/个人昵称/个性签名/地区/性别
-- 修改个人头像
-- 更换聊天背景
-- 修改密码
-- 修改用户名
-
-## 2.好友管理
-
-#### 添加好友
-
-#### 删除好友
-
-#### 审核添加
-
-#### 通过好友列表发起聊天
-
-#### 好友信息
-
-- 好友备注
-- 好友描述
-
-## 3.聊天消息管理
-
-#### 登陆时获取未读消息
-
-#### 未查看时生成未读消息
-
-#### 查看消息自动修改为已读
-
-## 4.聊天管理
-
-#### 私聊
-- 加好友成功自动创建私聊
-- 删除好友自动解除私聊
-
-#### 群聊
-
-- 创建群聊
-
-	- 设置群名
-	- 设置群号
-
-- 加入群聊
-
-	- 通过群号加入群聊
-
-- 退出群聊
-- 查看群信息
-- 群昵称
-
-## 5.聊天记录管理
-
-#### 接收的消息生成聊天记录
-
-#### 按时间顺序获取聊天记录
-
-#### 分页显示聊天记录
-
-## 6.朋友圈
-
-#### 发朋友圈
-
-#### 好友点赞
-
-#### 查看朋友圈
-
-#### 生成朋友圈相册
-
-#### 分页查看
-
-#### 查看自己发布的朋友圈
-
-#### 删除朋友圈
-
-
-------
-## 错误处理
-### 1.第一次启动tomcat服务器访问时提示MyServlet这个类ClassNotFound?
-这种情况下需要重新热部署一下项目即可（redeploy）,我不知道这个问题的具体原因，我查看编译后的的文件目录中是有这个class的...
-### 2.无法访问？
-可能原因：
-1.url路径不对，我的jsp都在/web/views里，servlet都使用/wechat/XX进行路径映射。
-### 3.一直提示访问参数不足？
 可能是数据库连接有问题，如果使用阿里云的数据库，先检查网络，其次，数据库连接池可能在并发访问的过程中出现问题，我测试时发现出现数据库连接问题，尝试使用线程锁进行改进了，但是我多线程的东西我还没学，应该没有处理好...
-### 4.图片加载不出？
+
+#### 图片加载不出？
+
 检查一下upload文件夹有没有配置路径映射...
-------
-## 版权声明
+
+## License
 
 本软件仅供交流学习，不得用于商业用途
 
+Copyright 黄钰朝 
 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
+       http://www.apache.org/licenses/LICENSE-2.0
 
-
-
-
-
-
-
-
-
-
-
-
-
-## 项目开发日志
-##### 2019-05-07：完成基本前端界面搭建，好友管理等相关功能
-##### 2019-05-03：完成注册登陆，用户管理，聊天管理相关后台代码
-##### 2019-05-01：建立项目
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
