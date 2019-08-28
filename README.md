@@ -35,14 +35,14 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 登陆页面可以选择输入邮箱号和密码进行登陆，登陆之后将进入程序的主页面，也可以选择跳转到注册页面进行账号注册，还可以选择游客模式快速登陆，这种方式无须用户操作，系统将自动注册一个游客账号，并自动通过登陆验证，同样会进入程序的主页面，但是进入的是功能受限模式，无法使用好友和朋友圈的功能。输入框的左下角还有一个自动登陆选项，如果用户选择该选项，则在30天内在此浏览器上会执行自动登陆功能。
 
 
-![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/聊天功能.png)
+![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/登陆页面.png)
  
 
 #### 2.游客模式
 
 这是游客模式，游客模式自动分配的用户昵称都是“游客”，并且被自动加入到聊天总群中，自动和“微信团队”账号建立好友关系，
 
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image004.jpg)
+![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/登陆页面.png)
 
 #### 3.游客模式
 
@@ -51,74 +51,6 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
  
 
 ![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image006.jpg)
-
- 
-
-#### 4.用户模式
-
-使用邮箱注册之后的初始个人昵称是邮箱账号
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image008.jpg)
-
- 
-
-#### 5.修改个人信息
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image010.jpg)
-
- 
-
- 
-
-#### 6.在聊天中发送不同类型的信息
-
-#### ![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image012.jpg)
-
- 
-
-#### 7.朋友圈
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image014.jpg)
-
- 
-
-#### 8.发送好友申请
-
- 
-
- 
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image016.jpg)
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image018.jpg)
-
- 
-
- 
-
-#### 9.实时聊天
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image020.jpg)
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image022.jpg)
-
- 
-
- 
-
- 
-
-#### 10.朋友圈
-
- 
-
-![img](file:///C:/Users/MISTER~1/AppData/Local/Temp/msohtmlclip1/01/clip_image024.jpg)
-
- 
-
- 
-
- 
 
  
 
