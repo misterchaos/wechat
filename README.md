@@ -17,8 +17,8 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 
 ## :heavy_check_mark:Quick Start
 
-### :point_right:[点击这里](http://47.102.139.183:9090/wechat/)立即体验
-### （如果使用过程中出现问题，欢迎发送邮件到hyc@mail2.gdut.edu.cn进行反馈，我会及时处理）
+### :point_right:[点击这里](http://47.102.210.203:8080/wechat/)立即体验
+
 
 
 ## :bulb:Information
