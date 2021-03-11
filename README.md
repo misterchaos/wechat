@@ -1,7 +1,5 @@
 # wechat
 
----------
-
 [![release](https://img.shields.io/badge/release-1.0.0-green)](https://github.com/misterchaos/wechat/releases)
 [![release](https://img.shields.io/badge/version-beta-orange)](https://github.com/misterchaos/wechat/releases)
 [![release](https://img.shields.io/badge/build-passing-green)](https://github.com/misterchaos/wechat/releases)
@@ -17,9 +15,7 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 
 ## :heavy_check_mark:Quick Start
 
-### :point_right:[点击这里](http://47.102.210.203:8080/wechat/)立即体验
-
-
+### :point_right:[点击这里](https://app.hellochaos.cn/wechat/)立即体验
 
 ## :bulb:Information
 
@@ -34,8 +30,9 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 #### 1.登陆页面
 
 登陆页面可以选择输入邮箱号和密码进行登陆，登陆之后将进入程序的主页面，也可以选择跳转到注册页面进行账号注册，还可以选择游客模式快速登陆，这种方式无须用户操作，系统将自动注册一个游客账号，并自动通过登陆验证，同样会进入程序的主页面，但是进入的是功能受限模式，无法使用好友和朋友圈的功能。输入框的左下角还有一个自动登陆选项，如果用户选择该选项，则在30天内在此浏览器上会执行自动登陆功能
-![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/登陆功能.jpg)
- 
+
+![](http://img.hellochaos.cn/img/20210311105914.jpg)
+
 
 #### 2.聊天功能
 
