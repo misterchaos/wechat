@@ -31,22 +31,24 @@ wechat是一个在线聊天系统，提供实时聊天，账户管理，好友�
 
 登陆页面可以选择输入邮箱号和密码进行登陆，登陆之后将进入程序的主页面，也可以选择跳转到注册页面进行账号注册，还可以选择游客模式快速登陆，这种方式无须用户操作，系统将自动注册一个游客账号，并自动通过登陆验证，同样会进入程序的主页面，但是进入的是功能受限模式，无法使用好友和朋友圈的功能。输入框的左下角还有一个自动登陆选项，如果用户选择该选项，则在30天内在此浏览器上会执行自动登陆功能
 
-![](http://img.hellochaos.cn/img/20210311105914.jpg)
+![](https://raw.githubusercontent.com/misterchaos/wechat/master/wechat项目截图/登陆功能.jpg)
 
 
 #### 2.聊天功能
 
 聊天功能包括一对一单聊，多人群聊，聊天中可以发送文字，图片，文件等不同类型的消息内容，同时提供了保存聊天记录的功能，可以加载漫游的聊天记录，还支持自由更换聊天背景等个性化设置
-![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/聊天功能.jpg)
+
+![img](https://raw.githubusercontent.com/misterchaos/wechat/master/wechat项目截图/聊天功能.jpg)
 
 #### 3.朋友圈功能
 
 用户可以查看好友的朋友圈，发布自己的朋友圈，朋友圈支持点赞和评论功能
-![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/朋友圈功能.jpg)
+
+![img](https://raw.githubusercontent.com/misterchaos/wechat/master/wechat项目截图/朋友圈功能.jpg)
 
 #### 4.项目亮点
 
-![img](https://github.com/misterchaos/wechat/blob/dev/wechat项目截图/项目亮点.jpg)
+![img](https://raw.githubusercontent.com/misterchaos/wechat/master/wechat项目截图/项目亮点.jpg)
 
 ## :triangular_flag_on_post:Installation
 
